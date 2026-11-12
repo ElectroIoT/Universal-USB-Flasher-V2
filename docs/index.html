@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Universal USB Flasher V2</title>
+<meta name="description" content="Open-source CH343G USB-C flasher for ESP32, ESP8266, ESP-01, Arduino and UPDI AVR: design plan, schematic connections, LCSC BOM and footprint placement.">
+<style>
+:root{
+  --bg:#f3f6fa;--card:#ffffff;--ink:#0f1b2b;--mute:#5a6b80;--line:#dce4ee;--soft:#eef3f9;
+  --a:#0d9488;--b:#2563eb;--hero1:#04121f;--hero2:#063a3a;--hero3:#0d9488;
+  --n3v3:#dc2626;--n5v:#9333ea;--nvio:#db2777;--ngnd:#334155;--ntx:#ea580c;--nrx:#16a34a;--nctl:#2563eb;--nesp:#ca8a04;--nusb:#0891b2;--nnc:#94a3b8;
+  --sym:#0f1b2b;--pcb:#0b5d3b;--pcb2:#0a4f33;--pad:#d4a34a;--silk:#f8fafc;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#07111c;--card:#0e1b2a;--ink:#e6eef8;--mute:#9cb0c6;--line:#1e3246;--soft:#122335;
+  --a:#2dd4bf;--b:#60a5fa;
+  --n3v3:#f87171;--n5v:#c084fc;--nvio:#f472b6;--ngnd:#94a3b8;--ntx:#fb923c;--nrx:#4ade80;--nctl:#60a5fa;--nesp:#facc15;--nusb:#22d3ee;--nnc:#64748b;
+  --sym:#e6eef8;
+}}
+:root[data-theme="dark"]{
+  --bg:#07111c;--card:#0e1b2a;--ink:#e6eef8;--mute:#9cb0c6;--line:#1e3246;--soft:#122335;
+  --a:#2dd4bf;--b:#60a5fa;
+  --n3v3:#f87171;--n5v:#c084fc;--nvio:#f472b6;--ngnd:#94a3b8;--ntx:#fb923c;--nrx:#4ade80;--nctl:#60a5fa;--nesp:#facc15;--nusb:#22d3ee;--nnc:#64748b;
+  --sym:#e6eef8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--b)}
+code,.mono{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:.92em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* hero */
+header.hero{position:relative;overflow:hidden;color:#fff;padding:46px 0 86px;
+  background:radial-gradient(1200px 500px at 85% -10%,#14b8a655,transparent 60%),linear-gradient(135deg,var(--hero1) 0%,var(--hero2) 55%,#0b6e66 100%)}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:64px;background:var(--bg);clip-path:ellipse(75% 100% at 50% 100%)}
+.traces{position:absolute;inset:0;opacity:.16}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}}
+.kicker{display:inline-block;background:#ffffff1f;border:1px solid #ffffff40;border-radius:99px;padding:4px 14px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(32px,5.6vw,56px);line-height:1.05;margin:14px 0 10px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,#5eead4,#a7f3d0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:clamp(16px,2.2vw,20px);opacity:.92;margin:0 0 18px;max-width:34em}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{background:#ffffff1a;border:1px solid #ffffff38;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-block;padding:10px 18px;border-radius:12px;font-weight:700;text-decoration:none;background:#fff;color:#063a3a}
+.btn.o{background:transparent;color:#fff;border:2px solid #ffffff80}
+.hero svg.board{width:100%;height:auto;filter:drop-shadow(0 18px 34px rgba(0,0,0,.45))}
+
+/* nav */
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:none}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--mute);font-weight:600;font-size:14px;padding:6px 12px;border-radius:99px}
+nav.toc a:hover{background:var(--soft);color:var(--ink)}
+
+section{padding:44px 0 4px;scroll-margin-top:56px}
+h2{font-size:clamp(24px,3.4vw,32px);margin:0 0 6px;letter-spacing:-.01em}
+h2 small{font-size:.5em;color:var(--a);font-weight:800;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:4px}
+.lead{color:var(--mute);margin:0 0 22px;max-width:50em}
+h3{margin:0 0 6px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(8,40,70,.05)}
+.card p{margin:0;color:var(--mute);font-size:15px}
+.ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:var(--soft);margin-bottom:10px}
+.fix{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start}
+.fix .num{grid-row:span 2;width:30px;height:30px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.fix .was{color:var(--mute);font-size:14.5px}
+.fix .now{font-size:15px}
+.fix .now b{color:var(--a)}
+
+.figure{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;overflow-x:auto}
+.figure svg{display:block;width:100%;height:auto;min-width:640px}
+.figcap{color:var(--mute);font-size:14px;margin:10px 4px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:auto}
+th,td{padding:9px 12px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+th{background:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);border-top:0;position:sticky;top:0}
+td.ref{font-weight:700;white-space:nowrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.p-ok{background:#16a34a22;color:#15803d}.p-warn{background:#f59e0b26;color:#b45309}.p-info{background:#2563eb1f;color:#1d4ed8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .p-ok{color:#4ade80}:root:not([data-theme="light"]) .p-warn{color:#fbbf24}:root:not([data-theme="light"]) .p-info{color:#93c5fd}}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;font-weight:600;font-size:13.5px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#fff}
+.bomtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bomtools input{flex:1;min-width:200px;max-width:320px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-size:26px;letter-spacing:-.02em}
+.stat span{color:var(--mute);font-size:13px}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--mute);margin:10px 4px 0}
+.pins{display:flex;gap:6px;flex-wrap:wrap}
+.pinbox{flex:1;min-width:84px;border-radius:12px;padding:10px 8px;text-align:center;color:#fff;font-weight:800;font-size:14px}
+.pinbox small{display:block;font-weight:600;opacity:.85;font-size:11.5px}
+.warn{border-left:4px solid #f59e0b;background:#f59e0b14;padding:12px 14px;border-radius:10px;margin:14px 0;font-size:15px}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
+.step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px 18px}
+.step:before{counter-increment:s;content:counter(s);position:absolute;top:-13px;left:16px;width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.step p{margin:0;color:var(--mute);font-size:14.5px}
+.ck{width:18px;height:18px;accent-color:var(--a);cursor:pointer;vertical-align:-3px}
+tr.done td{opacity:.55}tr.done td:first-child,tr.done td.tick{opacity:1}
+td.tick{width:38px;text-align:center}
+.prog{display:flex;align-items:center;gap:12px;margin:0 0 12px;flex-wrap:wrap}
+.bar{flex:1;min-width:160px;height:10px;border-radius:99px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),#22c55e);width:0;transition:width .25s}
+.prog b{font-size:14px;white-space:nowrap}
+.tbtn{border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:10px;padding:6px 12px;font:600 13.5px system-ui;cursor:pointer}
+.tbtn:hover{color:var(--ink)}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.ptab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 14px;cursor:pointer;text-align:left;font:inherit;min-width:170px}
+.ptab small{display:block;color:var(--mute);font-size:12.5px}
+.ptab[aria-pressed="true"]{border-color:var(--a);box-shadow:0 0 0 2px color-mix(in srgb,var(--a) 35%,transparent)}
+.ptab .pp{font-weight:800;color:var(--a);font-size:12.5px}
+.net{display:inline-block;padding:1px 8px;border-radius:7px;font:700 12.5px ui-monospace,Consolas,monospace;color:#fff;white-space:nowrap}
+.ncflag{white-space:nowrap;display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:7px;font:800 12px system-ui;background:#64748b26;color:var(--mute);border:1px dashed var(--nnc)}
+.ncflag:before{content:"\2715";color:#dc2626;font-weight:900}
+.partline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--soft);border-top:1px solid var(--line);padding:9px 12px;font-size:14px}
+.partline b{font-size:15px}
+.partline .mute{color:var(--mute);font-size:13px}
+.labels{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+
+/* svg helpers */
+.s-sym{stroke:var(--sym);fill:none;stroke-width:2}
+.s-fill{fill:var(--card);stroke:var(--sym);stroke-width:2}
+.s-txt{fill:var(--ink);font:600 13px system-ui,Segoe UI,sans-serif}
+.s-sm{fill:var(--mute);font:500 11.5px system-ui,Segoe UI,sans-serif}
+.s-ref{fill:var(--a);font:800 13px system-ui,Segoe UI,sans-serif}
+.w{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.j{stroke:none}
+.blk{fill:var(--card);stroke:var(--line);stroke-width:2}
+.blkt{fill:var(--ink);font:800 15px system-ui,Segoe UI,sans-serif}
+.blks{fill:var(--mute);font:500 12px system-ui,Segoe UI,sans-serif}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg class="traces" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#5eead4" stroke-width="2">
+      <path d="M0 80H220l40 40H520l30-30H800"/><path d="M0 160H140l60 60H460"/><path d="M1200 60H980l-40 40H760"/>
+      <path d="M1200 300H1020l-50 50H700l-30 30H420"/><path d="M0 420H300l40-40H600"/><path d="M1200 440H900l-40-40H760"/>
+    </g>
+    <g fill="#5eead4"><circle cx="800" cy="90" r="6"/><circle cx="460" cy="220" r="6"/><circle cx="760" cy="100" r="6"/><circle cx="420" cy="380" r="6"/><circle cx="600" cy="380" r="6"/><circle cx="760" cy="400" r="6"/></g>
+  </svg>
+  <div class="wrap">
+    <div>
+      <span class="kicker">ElectroIoT · Open hardware · V2 design</span>
+      <h1>Universal USB <span>Flasher V2</span></h1>
+      <p class="tagline">One USB-C board to flash ESP32, ESP8266, ESP-01, Arduino and UPDI AVR chips. True 3.3&nbsp;V / 5&nbsp;V logic, no wires for ESP-01, no button pressing.</p>
+      <div class="badges">
+        <span class="badge">CH343G · VIO 1.8–5 V</span><span class="badge">USB-C + ESD + PTC</span><span class="badge">Auto-program</span><span class="badge">ESP-01 socket</span><span class="badge">SerialUPDI</span><span class="badge">72 × 34 mm</span>
+      </div>
+      <div class="cta">
+        <a class="btn" href="#bom">LCSC BOM</a>
+        <a class="btn o" href="#schematic">Schematic</a>
+        <a class="btn o" href="#placement">Placement</a>
+      </div>
+    </div>
+    <div id="heroBoard"></div>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#fixes">V1 → V2</a><a href="#features">Features</a><a href="#block">Block diagram</a><a href="#schematic">Schematic</a><a href="#sch-check">EasyEDA checklist</a><a href="#pinout">Pinout</a><a href="#bom">BOM</a><a href="#placement">Placement</a><a href="#wiring">Wiring</a><a href="#test">Bring-up</a>
+</div></nav>
+
+<main class="wrap">
+
+<!-- FIXES -->
+<section id="fixes">
+  <h2><small>Review</small>What V2 fixes from V1</h2>
+  <p class="lead">These came from reviewing the V1 CH340C board (schematic, BOM and PCB in the GitHub repo).</p>
+  <div class="grid">
+    <div class="card fix"><span class="num">1</span><div class="was">Q2 (IO0 transistor) drawn with collector on DTR and emitter on IO0, which runs it backwards at very low gain.</div><div class="now"><b>Fixed:</b> C = IO0, B = RTS# via 10k, E = DTR# (NodeMCU circuit).</div></div>
+    <div class="card fix"><span class="num">2</span><div class="was">"SJ" jumpers are really 2-pin headers, so auto-program is off until you fit jumper caps.</div><div class="now"><b>Fixed:</b> real solder jumpers, bridged by default.</div></div>
+    <div class="card fix"><span class="num">3</span><div class="was">Pin labelled "RST" was raw RTS. No proper Arduino reset.</div><div class="now"><b>Fixed:</b> RST pin = DTR# through 100 nF, plus a 10k pull-up.</div></div>
+    <div class="card fix"><span class="num">4</span><div class="was">CH340C at 3.3 V: a 5 V Arduino TX drives 5 V into a 3.3 V input.</div><div class="now"><b>Fixed:</b> CH343G VIO pin + slide switch: true 3.3 V or 5 V logic.</div></div>
+    <div class="card fix"><span class="num">5</span><div class="was">No fuse: a short on the 5V pin goes straight back to the PC.</div><div class="now"><b>Fixed:</b> 500 mA PTC (1 A trip) on VBUS.</div></div>
+    <div class="card fix"><span class="num">6</span><div class="was">"PWD" typo, a 13 mA power LED, and README values that don't match the BOM.</div><div class="now"><b>Fixed:</b> PWR label, 1.3 mA LED, docs match the BOM.</div></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <h2><small>What it does</small>Features</h2>
+  <p class="lead">Each feature is a small block on the schematic. Section 4 shows every one wire by wire.</p>
+  <div class="grid">
+    <div class="card"><div class="ico">⚡</div><h3>3.3 V / 5 V logic switch</h3><p>SW3 sets CH343G VIO. TX, RX, DTR and RTS match the target, so no level shifter is needed.</p></div>
+    <div class="card"><div class="ico">🔁</div><h3>ESP auto-program</h3><p>Two MMBT3904 transistors drive EN and IO0 from DTR/RTS. esptool, Arduino IDE and PlatformIO flash with no button pressing.</p></div>
+    <div class="card"><div class="ico">📡</div><h3>ESP-01 socket</h3><p>Plug an ESP-01/01S into J2 and flash. GPIO2, RST and CH_PD pull-ups are on the board.</p></div>
+    <div class="card"><div class="ico">🧩</div><h3>Bare ESP-12F / WROOM</h3><p>EN and IO0 pull-ups plus an IO15 pin with a 10k pull-down. A bare module or pogo jig needs only the header wires.</p></div>
+    <div class="card"><div class="ico">♾️</div><h3>Arduino auto-reset</h3><p>RST pin = DTR# via 100 nF. Works with a bare ATmega328P, Pro Mini, LGT8F328P and similar.</p></div>
+    <div class="card"><div class="ico">🔧</div><h3>UPDI mode</h3><p>SW4 links TX to RX through 4.7k, so RX becomes a SerialUPDI pin for ATtiny 0/1/2-series and AVR-Dx.</p></div>
+    <div class="card"><div class="ico">🛡️</div><h3>Protected USB-C</h3><p>5.1k CC resistors, USBLC6-2SC6 ESD, 500 mA polyfuse and a Schottky back-feed diode.</p></div>
+    <div class="card"><div class="ico">💡</div><h3>4 status LEDs</h3><p>PWR, USB ACT (enumerated), TX and RX activity. The LEDs run from VIO, so they work at either logic level.</p></div>
+  </div>
+</section>
+
+<!-- BLOCK -->
+<section id="block">
+  <h2><small>Overview</small>Block diagram</h2>
+  <p class="lead">USB power goes through the protection chain to the 3.3 V LDO. Data goes through the CH343G to the target headers. Wire colours match the net legend used everywhere on this page.</p>
+  <div class="figure">
+  <svg viewBox="0 0 980 420" role="img" aria-label="Block diagram">
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+    <!-- wires -->
+    <g class="w" marker-end="url(#ar)">
+      <path d="M130 150H178" stroke="var(--nusb)"/>
+      <path d="M298 150H400" stroke="var(--nusb)"/>
+      <path d="M90 200V300H160" stroke="var(--n5v)"/>
+      <path d="M250 300H290" stroke="var(--n5v)"/>
+      <path d="M380 300H420" stroke="var(--n5v)"/>
+      <path d="M540 300H570" stroke="var(--n3v3)"/>
+      <path d="M335 330V370H612" stroke="var(--n5v)"/>
+      <path d="M660 300V346" stroke="var(--n3v3)"/>
+      <path d="M612 386H580V240H562" stroke="var(--nvio)"/>
+      <path d="M560 110H650" stroke="var(--nctl)"/>
+      <path d="M560 150H650" stroke="var(--ntx)"/>
+      <path d="M790 90H840" stroke="var(--nesp)"/>
+      <path d="M790 160H840" stroke="var(--nrx)"/>
+      <path d="M790 220H840" stroke="var(--nesp)"/>
+      <path d="M700 300H840" stroke="var(--n3v3)"/>
+      <path d="M890 320V346" stroke="var(--nesp)"/>
+      <path d="M200 270V244H400" stroke="var(--n5v)"/>
+    </g>
+    <!-- blocks -->
+    <g>
+      <rect class="blk" x="20" y="105" width="110" height="95" rx="14"/><text class="blkt" x="75" y="145" text-anchor="middle">USB-C</text><text class="blks" x="75" y="166" text-anchor="middle">USB1 · CC 5.1k</text>
+      <rect class="blk" x="180" y="115" width="118" height="70" rx="14"/><text class="blkt" x="239" y="146" text-anchor="middle">ESD</text><text class="blks" x="239" y="166" text-anchor="middle">U3 USBLC6-2SC6</text>
+      <rect class="blk" x="160" y="270" width="90" height="60" rx="14"/><text class="blkt" x="205" y="297" text-anchor="middle">PTC</text><text class="blks" x="205" y="315" text-anchor="middle">F1 500 mA</text>
+      <rect class="blk" x="290" y="270" width="90" height="60" rx="14"/><text class="blkt" x="335" y="297" text-anchor="middle">Schottky</text><text class="blks" x="335" y="315" text-anchor="middle">D1 1N5819HW</text>
+      <rect class="blk" x="420" y="270" width="120" height="60" rx="14"/><text class="blkt" x="480" y="297" text-anchor="middle">3.3 V LDO</text><text class="blks" x="480" y="315" text-anchor="middle">U1 SGM2212 800 mA</text>
+      <rect class="blk" x="400" y="80" width="160" height="180" rx="16" style="stroke:var(--a)"/><text class="blkt" x="480" y="140" text-anchor="middle">CH343G</text><text class="blks" x="480" y="160" text-anchor="middle">U2 USB ⇄ UART</text><text class="blks" x="480" y="178" text-anchor="middle">VDD5 from VBUS_F</text><text class="blks" x="480" y="238" text-anchor="middle">VIO →</text>
+      <rect class="blk" x="612" y="346" width="96" height="56" rx="14"/><text class="blkt" x="660" y="372" text-anchor="middle">SW3</text><text class="blks" x="660" y="390" text-anchor="middle">VIO 3V3 / 5V</text>
+      <rect class="blk" x="570" y="280" width="130" height="40" rx="12"/><text class="blks" x="635" y="305" text-anchor="middle">+3V3 rail · 22 µF</text>
+      <rect class="blk" x="650" y="70" width="140" height="56" rx="14"/><text class="blkt" x="720" y="95" text-anchor="middle">Auto-program</text><text class="blks" x="720" y="113" text-anchor="middle">Q1/Q2 · SJ1/SJ2</text>
+      <rect class="blk" x="650" y="134" width="140" height="56" rx="14"/><text class="blkt" x="720" y="159" text-anchor="middle">UPDI · RST</text><text class="blks" x="720" y="177" text-anchor="middle">SW4 4.7k · 100 nF</text>
+      <rect class="blk" x="650" y="198" width="140" height="56" rx="14"/><text class="blkt" x="720" y="223" text-anchor="middle">Pull-ups</text><text class="blks" x="720" y="241" text-anchor="middle">EN · IO0 · IO15</text>
+      <rect class="blk" x="840" y="60" width="120" height="260" rx="16" style="stroke:var(--a)"/><text class="blkt" x="900" y="180" text-anchor="middle">H1</text><text class="blks" x="900" y="198" text-anchor="middle">1×11 header</text><text class="blks" x="900" y="214" text-anchor="middle">to target</text>
+      <rect class="blk" x="840" y="346" width="120" height="56" rx="14"/><text class="blkt" x="900" y="372" text-anchor="middle">J2 ESP-01</text><text class="blks" x="900" y="390" text-anchor="middle">2×4 socket</text>
+    </g>
+    <text class="s-sm" x="140" y="140">D+ / D−</text><text class="s-sm" x="300" y="140">D+ / D−</text>
+    <text class="s-sm" x="96" y="250">VBUS</text><text class="s-sm" x="268" y="236">VBUS_F → VDD5</text>
+    <text class="s-sm" x="566" y="104">DTR# RTS#</text><text class="s-sm" x="566" y="144">TXD · RXD</text>
+  </svg>
+  <div class="legend" id="legend1"></div>
+  </div>
+</section>
+
+<!-- SCHEMATIC -->
+<section id="schematic">
+  <h2><small>Connections</small>Schematic, block by block</h2>
+  <p class="lead">Draw the EasyEDA schematic from these diagrams, then check it net by net against <a href="../hardware/netlist.csv">hardware/netlist.csv</a>. Net names (<code>VBUS_F</code>, <code>DTR_N</code>…) match the netlist.</p>
+
+  <h3>4.1 Power path</h3>
+  <div class="figure">
+  <svg viewBox="0 0 980 300" role="img" aria-label="Power schematic">
+    <!-- rails -->
+    <path class="w" d="M30 80H110" stroke="var(--n5v)"/>
+    <path class="w" d="M170 80H260" stroke="var(--n5v)"/>
+    <path class="w" d="M300 80H420" stroke="var(--n5v)"/>
+    <path class="w" d="M540 80H760" stroke="var(--n3v3)"/>
+    <path class="w" d="M30 240H900" stroke="var(--ngnd)"/>
+    <!-- USB -->
+    <rect class="s-fill" x="0" y="55" width="30" height="50" rx="6"/><text class="s-ref" x="6" y="45">USB1</text><text class="s-sm" x="38" y="70">VBUS</text>
+    <!-- F1 -->
+    <rect class="s-fill" x="110" y="68" width="60" height="24" rx="4"/><text class="s-ref" x="128" y="40">F1</text><text class="s-sm" x="104" y="58">PTC 500 mA</text>
+    <!-- VBUS_F node -->
+    <circle class="j" cx="210" cy="80" r="5" fill="var(--n5v)"/><text class="s-txt" x="180" y="40">VBUS_F</text>
+    <path class="w" d="M210 80V140" stroke="var(--n5v)"/>
+    <path class="s-sym" d="M195 140H225M195 150H225"/><path class="w" d="M210 150V240" stroke="var(--ngnd)"/><text class="s-ref" x="230" y="140">C1</text><text class="s-sm" x="230" y="156">10 µF</text>
+    <path class="w" d="M210 110H120V170" stroke="var(--n5v)"/><rect class="s-fill" x="60" y="170" width="120" height="44" rx="8"/><text class="s-sm" x="70" y="189">U2 pin 16 VDD5</text><text class="s-sm" x="70" y="205">U2 pin 7 VBUS</text>
+    <!-- D1 -->
+    <path class="s-sym" d="M260 66V94L292 80Z" style="fill:var(--sym)"/><path class="s-sym" d="M294 64V96"/><text class="s-ref" x="262" y="56">D1</text><text class="s-sm" x="250" y="114">1N5819HW</text>
+    <!-- +5V node -->
+    <circle class="j" cx="350" cy="80" r="5" fill="var(--n5v)"/><text class="s-txt" x="330" y="40">+5V</text>
+    <path class="w" d="M350 80V140" stroke="var(--n5v)"/><path class="s-sym" d="M335 140H365M335 150H365"/><path class="w" d="M350 150V240" stroke="var(--ngnd)"/><text class="s-ref" x="370" y="140">C5</text><text class="s-sm" x="370" y="156">10 µF</text>
+    <!-- U1 -->
+    <rect class="s-fill" x="420" y="50" width="120" height="90" rx="8"/><text class="s-ref" x="420" y="40">U1 SGM2212-3.3</text>
+    <text class="s-sm" x="428" y="84">3 VIN</text><text class="s-sm" x="478" y="84">VOUT 2/4</text><text class="s-sm" x="458" y="132">1 GND</text>
+    <path class="w" d="M480 140V240" stroke="var(--ngnd)"/>
+    <!-- +3V3 -->
+    <circle class="j" cx="600" cy="80" r="5" fill="var(--n3v3)"/><circle class="j" cx="660" cy="80" r="5" fill="var(--n3v3)"/><text class="s-txt" x="580" y="40">+3V3</text>
+    <path class="w" d="M600 80V140" stroke="var(--n3v3)"/><path class="s-sym" d="M585 140H615M585 150H615"/><path class="w" d="M600 150V240" stroke="var(--ngnd)"/><text class="s-ref" x="565" y="172">C6</text><text class="s-sm" x="560" y="188">22 µF</text>
+    <path class="w" d="M660 80V140" stroke="var(--n3v3)"/><path class="s-sym" d="M645 140H675M645 150H675"/><path class="w" d="M660 150V240" stroke="var(--ngnd)"/><text class="s-ref" x="680" y="140">C7</text><text class="s-sm" x="680" y="156">100 nF</text>
+    <text class="s-sm" x="700" y="70">→ H1-1, J2 VCC (+C8 22 µF), pull-ups</text>
+    <!-- SW3 -->
+    <path class="w" d="M760 80V120H800" stroke="var(--n3v3)"/>
+    <path class="w" d="M350 110H390V20H900V160H860" stroke="var(--n5v)"/>
+    <circle class="s-fill" cx="806" cy="120" r="5"/><circle class="s-fill" cx="856" cy="160" r="5"/><circle class="s-fill" cx="806" cy="200" r="5"/>
+    <path class="s-sym" d="M810 198L852 162" style="stroke-width:3"/>
+    <text class="s-ref" x="770" y="150">SW3</text><text class="s-sm" x="812" y="116">1 = 3V3</text><text class="s-sm" x="864" y="176">3 = 5V</text><text class="s-sm" x="760" y="220">2 common</text>
+    <path class="w" d="M806 205V240" stroke="none"/>
+    <path class="w" d="M800 200H740V196" stroke="var(--nvio)"/><text class="s-txt" x="690" y="200" style="fill:var(--nvio)">VIO</text>
+    <text class="s-sm" x="600" y="276">VIO → U2 pin 15 (+C4 100 nF), LED anodes, RST pull-up R14</text>
+    <text class="s-sm" x="30" y="276">GND: one solid pour, both layers</text>
+  </svg>
+  <p class="figcap">The CH343G core runs from VBUS_F (5 V). Its I/O runs from VIO. The 5 V logic level is the +5V rail after D1 (~4.6–4.7 V), which is inside the VIO 1.8–5 V range.</p>
+  </div>
+
+  <div class="two" style="margin-top:14px">
+    <div>
+      <h3>4.2 CH343G (U2, SOP-16)</h3>
+      <div class="figure">
+      <svg viewBox="0 0 520 400" role="img" aria-label="CH343G pinout" id="chipSvg" style="min-width:420px"></svg>
+      <p class="figcap">Pin 4 V3 gets <b>only</b> 100 nF (VDD5 is 5 V). Pin 10 DTR#: <b>no pull-down</b>, because a 3–8k pull-down at power-up turns it into TNOW (RS485 mode).</p>
+      </div>
+    </div>
+    <div>
+      <h3>4.3 Auto-program (Q1, Q2)</h3>
+      <div class="figure">
+      <svg viewBox="0 0 470 400" role="img" aria-label="Auto program schematic" style="min-width:420px">
+        <!-- inputs -->
+        <text class="s-txt" x="0" y="74" style="fill:var(--nctl)">DTR#</text><text class="s-txt" x="0" y="264" style="fill:var(--nctl)">RTS#</text>
+        <rect x="44" y="62" width="10" height="16" rx="2" fill="var(--pad)"/><rect x="58" y="62" width="10" height="16" rx="2" fill="var(--pad)"/><text class="s-ref" x="40" y="54">SJ1</text>
+        <rect x="44" y="252" width="10" height="16" rx="2" fill="var(--pad)"/><rect x="58" y="252" width="10" height="16" rx="2" fill="var(--pad)"/><text class="s-ref" x="40" y="244">SJ2</text>
+        <!-- DTR_AP -->
+        <path class="w" d="M68 70H160" stroke="var(--nctl)"/><path class="w" d="M210 70H270" stroke="var(--nctl)"/>
+        <circle class="j" cx="96" cy="70" r="5" fill="var(--nctl)"/>
+        <path class="w" d="M96 70V350H316V302" stroke="var(--nctl)"/>
+        <!-- RTS_AP -->
+        <path class="w" d="M68 260H160" stroke="var(--nctl)" style="stroke-dasharray:0"/><path class="w" d="M210 260H270" stroke="var(--nctl)"/>
+        <circle class="j" cx="130" cy="260" r="5" fill="var(--nctl)"/>
+        <path class="w" d="M130 260V168H316V112" stroke="var(--nctl)"/>
+        <!-- resistors -->
+        <rect class="s-fill" x="160" y="60" width="50" height="20" rx="3"/><text class="s-ref" x="166" y="52">R7 10k</text>
+        <rect class="s-fill" x="160" y="250" width="50" height="20" rx="3"/><text class="s-ref" x="166" y="242">R8 10k</text>
+        <!-- Q1 at (300,70) -->
+        <g transform="translate(300,70)"><circle cx="8" cy="0" r="24" class="s-sym" style="stroke-width:1.5"/><path class="s-sym" d="M-30 0H0M0 -15V15M0 -7L16 -22V-42M0 7L16 22V42"/><path d="M16 22L6 20L12 13Z" fill="var(--sym)"/></g>
+        <text class="s-ref" x="336" y="66">Q1</text><text class="s-sm" x="336" y="82">MMBT3904</text>
+        <!-- Q2 at (300,260) -->
+        <g transform="translate(300,260)"><circle cx="8" cy="0" r="24" class="s-sym" style="stroke-width:1.5"/><path class="s-sym" d="M-30 0H0M0 -15V15M0 -7L16 -22V-42M0 7L16 22V42"/><path d="M16 22L6 20L12 13Z" fill="var(--sym)"/></g>
+        <text class="s-ref" x="336" y="256">Q2</text><text class="s-sm" x="336" y="272">MMBT3904</text>
+        <!-- outputs -->
+        <path class="w" d="M316 28V14H420" stroke="var(--nesp)"/><text class="s-txt" x="426" y="19" style="fill:var(--nesp)">EN</text>
+        <path class="w" d="M316 218V204H420" stroke="var(--nesp)"/><text class="s-txt" x="426" y="209" style="fill:var(--nesp)">IO0</text>
+        <text class="s-sm" x="70" y="96">DTR_AP</text><text class="s-sm" x="136" y="190">RTS_AP</text>
+        <text class="s-sm" x="322" y="132">E</text><text class="s-sm" x="322" y="40">C</text><text class="s-sm" x="322" y="230">C</text><text class="s-sm" x="322" y="322">E</text>
+        <text class="s-sm" x="0" y="388">SOT-23: 1 = B, 2 = E, 3 = C. Check the EasyEDA pin map.</text>
+      </svg>
+      <div class="tbl" style="margin-top:10px"><table>
+        <tr><th>DTR#</th><th>RTS#</th><th>EN</th><th>IO0</th><th>Meaning</th></tr>
+        <tr><td>1</td><td>1</td><td>high</td><td>high</td><td>Idle / run</td></tr>
+        <tr><td>1</td><td>0</td><td><b>low</b></td><td>high</td><td>Reset</td></tr>
+        <tr><td>0</td><td>1</td><td>high</td><td><b>low</b></td><td>Boot mode</td></tr>
+        <tr><td>0</td><td>0</td><td>high</td><td>high</td><td>Both asserted (serial monitor), no reset</td></tr>
+      </table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two" style="margin-top:14px">
+    <div>
+      <h3>4.4 UPDI mode + Arduino reset</h3>
+      <div class="figure">
+      <svg viewBox="0 0 500 300" role="img" aria-label="UPDI and reset schematic" style="min-width:420px">
+        <text class="s-txt" x="0" y="64" style="fill:var(--ntx)">TXD</text>
+        <path class="w" d="M40 60H120" stroke="var(--ntx)"/>
+        <circle class="s-fill" cx="126" cy="60" r="5"/><circle class="s-fill" cx="176" cy="40" r="5"/><circle class="s-fill" cx="126" cy="20" r="5"/>
+        <path class="s-sym" d="M180 40L131 58" style="stroke-width:3"/><text class="s-ref" x="150" y="86">SW4</text><text class="s-sm" x="20" y="16">3 = NC (UART)</text><text class="s-sm" x="40" y="96">1 = TXD (UPDI)</text>
+        <path class="w" d="M181 40H220" stroke="var(--nnc)"/><rect class="s-fill" x="220" y="30" width="56" height="20" rx="3"/><text class="s-ref" x="222" y="22">R15 4.7k</text>
+        <path class="w" d="M276 40H340" stroke="var(--nrx)"/><circle class="j" cx="340" cy="40" r="5" fill="var(--nrx)"/>
+        <path class="w" d="M340 40H480" stroke="var(--nrx)"/><text class="s-txt" x="390" y="30" style="fill:var(--nrx)">RXD / UPDI</text>
+        <path class="w" d="M340 40V100H300" stroke="var(--nrx)"/><text class="s-sm" x="196" y="106">U2 pin 3 RXD</text>
+        <path class="s-sym" d="M0 140H500" style="stroke:var(--line);stroke-dasharray:4 6"/>
+        <text class="s-txt" x="0" y="214" style="fill:var(--nctl)">DTR#</text>
+        <path class="w" d="M44 210H140" stroke="var(--nctl)"/>
+        <path class="s-sym" d="M140 190V230M152 190V230"/><text class="s-ref" x="124" y="180">C10 100 nF</text>
+        <path class="w" d="M152 210H300" stroke="var(--nesp)"/><circle class="j" cx="300" cy="210" r="5" fill="var(--nesp)"/>
+        <path class="w" d="M300 210H480" stroke="var(--nesp)"/><text class="s-txt" x="400" y="200" style="fill:var(--nesp)">RST (H1-8)</text>
+        <path class="w" d="M300 210V250" stroke="var(--nesp)"/><rect class="s-fill" x="290" y="250" width="20" height="30" rx="3"/><text class="s-ref" x="318" y="270">R14 10k → VIO</text>
+      </svg>
+      <p class="figcap">With SW4 on UART the board is a normal serial adapter. With SW4 on UPDI, connect RX/UPDI, GND and VCC, then pick "SerialUPDI" in megaTinyCore/DxCore.</p>
+      </div>
+    </div>
+    <div>
+      <h3>4.5 ESP-01 socket (J2)</h3>
+      <div class="figure">
+      <svg viewBox="0 0 500 300" role="img" aria-label="ESP-01 socket" id="espSvg" style="min-width:420px"></svg>
+      <p class="figcap">Component side up, antenna pointing away from the header. Check this against your module: some clones differ. <b>Set SW3 to 3V3 before plugging in an ESP-01.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEMATIC CHECKLIST -->
+<section id="sch-check">
+  <h2><small>EasyEDA · page by page</small>Schematic checklist</h2>
+  <p class="lead">Draw the schematic as 4 EasyEDA pages. On each page, first tick every symbol you place, then tick each pin as you wire it. Pins marked <span class="ncflag">NC flag</span> get a <b>No-Connect flag</b> in EasyEDA, so tick those when the flag is placed. Ticks are saved in this browser only.</p>
+  <div class="prog"><b id="schAll">0 / 0</b><div class="bar"><i id="schAllBar"></i></div><button class="tbtn" id="schHide">Hide done</button><button class="tbtn" id="schReset">Reset schematic ticks</button></div>
+  <div class="ptabs" id="schTabs"></div>
+  <div id="schPage"></div>
+  <div class="warn"><b>Before you trust a pin number:</b> resistors, capacitors and the PTC aren't polarised, so pins 1 and 2 are interchangeable. For <b>D1 and LED1&ndash;LED4</b>, check which symbol pin is K (cathode) on the LCSC part you place. For <b>Q1/Q2</b>, confirm SOT-23 pin 1 = B, 2 = E, 3 = C. For <b>J2</b>, this list assumes odd pins on the top row (1,3,5,7) and even pins on the bottom row, so check the footprint. Cross-page nets need a net label or net port with exactly the same name on each page. Afterwards, check them with <i>Design &rarr; Netlist</i> against <a href="../hardware/netlist.csv">netlist.csv</a>.</div>
+</section>
+
+<!-- PINOUT -->
+<section id="pinout">
+  <h2><small>Header</small>H1 pinout (1×11, 2.54 mm)</h2>
+  <p class="lead">Same colour-coded silkscreen idea as V1, now with a real RST pin and an IO15 pull-down pin.</p>
+  <div class="pins" id="pinStrip"></div>
+  <div class="tbl" style="margin-top:14px"><table id="pinTable"><tr><th>Pin</th><th>Label</th><th>Net</th><th>Use</th></tr></table></div>
+</section>
+
+<!-- BOM -->
+<section id="bom">
+  <h2><small>Parts</small>Bill of materials (LCSC)</h2>
+  <p class="lead">Every LCSC number was looked up on lcsc.com on 2026-11-12. Prices are LCSC's low-quantity tier where it was captured. Tick a line once that part is added to your EasyEDA schematic (by its LCSC number). CSV: <a href="../hardware/BOM_V2_LCSC.csv">hardware/BOM_V2_LCSC.csv</a>.</p>
+  <div class="stats" id="bomStats"></div>
+  <div class="bomtools">
+    <div class="chips" id="bomChips"></div>
+    <input id="bomSearch" type="search" placeholder="Search ref, part, LCSC #…" aria-label="Search BOM">
+  </div>
+  <div class="prog"><b id="bomProg">0 / 0</b><div class="bar"><i id="bomBar"></i></div><button class="tbtn" id="bomHide">Hide done</button><button class="tbtn" id="bomReset">Reset BOM ticks</button></div>
+  <div class="tbl" style="max-height:640px"><table id="bomTable"></table></div>
+  <div class="warn"><b>CH343G stock is low</b> (500 pcs at LCSC, more from other suppliers with a 3–7 day lead). Fallback: CH343P C2846043 (QFN-16), which has a different pinout and isn't hand-solderable. No DPDT slide switch was in stock, so V2 has no "5V IO" warning LED.</div>
+</section>
+
+<!-- PLACEMENT -->
+<section id="placement">
+  <h2><small>PCB</small>Board design and footprint placement</h2>
+  <p class="lead">Suggested 72 × 34 mm, 2-layer, 1.6 mm board. Power flows left to right, the CH343G sits in the middle, and the target I/O is on the right. The ESP-01 hangs off the bottom edge so it covers no LEDs or buttons. Coordinates are a starting point for EasyEDA (origin top-left, mm). Move parts as routing needs.</p>
+  <div class="chips" id="plChips"></div>
+  <div class="figure" style="background:#0b1a14">
+    <svg id="boardSvg" viewBox="-6 -6 84 66" role="img" aria-label="Footprint placement" style="min-width:680px"></svg>
+  </div>
+  <div class="legend" id="legend2"></div>
+  <div class="grid" style="margin-top:14px">
+    <div class="card"><h3>USB + ESD</h3><p>U3 within 3 mm of USB1. Route D+/D− short and side by side over solid GND, with no vias. At USB full-speed, controlled impedance isn't critical over this length.</p></div>
+    <div class="card"><h3>Decoupling</h3><p>C2 (VDD5), C3 (V3) and C4 (VIO) within 2 mm of U2 pins 16, 4 and 15. C6/C7 right at U1 VOUT.</p></div>
+    <div class="card"><h3>LDO heat</h3><p>U1 SOT-223 tab on at least 1 cm² of top copper, with 4–6 vias to the bottom GND pour. ESP32 Wi-Fi peaks reach ~500 mA.</p></div>
+    <div class="card"><h3>Controls on the edge</h3><p>SW1–SW4 along the top edge with big silk labels: <code>RESET</code> <code>BOOT</code> <code>IO 3V3|5V</code> <code>UART|UPDI</code>.</p></div>
+    <div class="card"><h3>ESP-01 overhang</h3><p>J2 on the bottom edge with a dashed module outline in silk. No copper needed under the module footprint beyond the edge.</p></div>
+    <div class="card"><h3>Test pads</h3><p>VBUS_F, +5V, +3V3, VIO, GND, TXD, RXD, DTR#, RTS# as 1.5 mm pads on the bottom side for bring-up.</p></div>
+  </div>
+  <h3 style="margin-top:22px">Placement table</h3>
+  <p class="figcap" style="margin:0 4px 10px">Tick each footprint once it is placed on the EasyEDA PCB. Placed parts turn green with a &check; on the board map above.</p>
+  <div class="prog"><b id="plProg">0 / 0</b><div class="bar"><i id="plBar"></i></div><button class="tbtn" id="plHide">Hide done</button><button class="tbtn" id="plReset">Reset placement ticks</button></div>
+  <div class="tbl" style="max-height:620px"><table id="plTable"></table></div>
+</section>
+
+<!-- WIRING -->
+<section id="wiring">
+  <h2><small>Use</small>Wiring cheat-sheet</h2>
+  <p class="lead">Print this on the back silkscreen. Flasher TX always goes to target RX, and RX to TX.</p>
+  <div class="tbl"><table>
+    <tr><th>Target</th><th>SW3</th><th>SW4</th><th>Connect</th></tr>
+    <tr><td class="ref">ESP32 / ESP8266 dev board</td><td>3V3</td><td>UART</td><td>3V3 · GND · TX→RX · RX←TX · EN · IO0 (or just use the board's own USB)</td></tr>
+    <tr><td class="ref">Bare ESP-12F</td><td>3V3</td><td>UART</td><td>3V3 · GND · TX · RX · EN · IO0 · IO15</td></tr>
+    <tr><td class="ref">Bare ESP32-WROOM / C3 / S3</td><td>3V3</td><td>UART</td><td>3V3 · GND · TX · RX · EN · IO0 (IO15 not needed)</td></tr>
+    <tr><td class="ref">ESP-01 / ESP-01S</td><td><b>3V3!</b></td><td>UART</td><td>Plug into J2. No wires.</td></tr>
+    <tr><td class="ref">Arduino Pro Mini 5 V / bare ATmega328P</td><td>5V</td><td>UART</td><td>5V · GND · TX · RX · <b>RST</b></td></tr>
+    <tr><td class="ref">Arduino Pro Mini 3.3 V</td><td>3V3</td><td>UART</td><td>3V3 · GND · TX · RX · RST</td></tr>
+    <tr><td class="ref">ATtiny 1614 / AVR128DA (UPDI)</td><td>target V</td><td><b>UPDI</b></td><td>VCC · GND · <b>RX/UPDI</b></td></tr>
+  </table></div>
+  <div class="warn">esptool example: <code>esptool.py --port COM7 --baud 921600 write_flash 0x0 firmware.bin</code>. Auto-program handles reset and boot. If a board refuses, hold BOOT, tap RESET, then release BOOT.</div>
+</section>
+
+<!-- TEST -->
+<section id="test">
+  <h2><small>Bring-up</small>First-power test plan</h2>
+  <p class="lead">Nothing here has been built yet. Do these steps in order on the first board.</p>
+  <div class="steps">
+    <div class="step"><h3>No shorts</h3><p>Before fitting U1/U2, check there's no short between VBUS, +5V, +3V3 and GND.</p></div>
+    <div class="step"><h3>Rails</h3><p>+5V ≈ 4.6–4.7 V, +3V3 = 3.30 V, and VIO follows SW3. PWR LED on.</p></div>
+    <div class="step"><h3>Enumerate</h3><p>ACT LED on, and a COM port appears ("USB-SERIAL CH343" or "USB Serial Device").</p></div>
+    <div class="step"><h3>Loopback</h3><p>Bridge TX↔RX and type at 115200, then 2 Mbaud. TX/RX LEDs blink.</p></div>
+    <div class="step"><h3>Auto-program</h3><p><code>esptool.py chip_id</code>: EN pulses low, then IO0 is held low as EN rises.</p></div>
+    <div class="step"><h3>Real targets</h3><p>Flash an ESP32 DevKit, a bare ESP-12F, an ESP-01, a Pro Mini 5 V via RST, and an ATtiny1614 via UPDI.</p></div>
+    <div class="step"><h3>Fuse</h3><p>Briefly short 5V to GND. The PTC trips and the PC port survives.</p></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">
+  Universal USB Flasher V2 by <b>ElectroIoT</b> · <a href="https://github.com/ElectroIoT/Universal-USB-Flasher-V2">GitHub</a> · <a href="https://electroiot.in">electroiot.in</a><br>
+  Design-plan stage: schematic and PCB are drawn in EasyEDA, and nothing is hardware-tested yet. Open hardware: share, learn, build.
+</div></footer>
+
+<script>
+/* tick store (browser only) */
+const TK='uusbf-v2-ticks';
+let TICK={};try{TICK=JSON.parse(localStorage.getItem(TK)||'{}')||{}}catch(e){TICK={}}
+function saveTicks(){try{localStorage.setItem(TK,JSON.stringify(TICK))}catch(e){}}
+function setTick(k,v){if(v)TICK[k]=1;else delete TICK[k];saveTicks()}
+function clearTicks(prefix){Object.keys(TICK).forEach(k=>{if(k.startsWith(prefix))delete TICK[k]});saveTicks()}
+function prog(id,done,total){document.getElementById(id).textContent=`${done} / ${total} done`;document.getElementById(id.replace('Prog','Bar')).style.width=(total?100*done/total:0)+'%'}
+const HIDE={bom:false,pl:false,sch:false};
+function hideBtn(id,key,fn){const b=document.getElementById(id);b.addEventListener('click',()=>{HIDE[key]=!HIDE[key];b.textContent=HIDE[key]?'Show all':'Hide done';fn()})}
+const NET={'3V3':'--n3v3','5V':'--n5v','VIO':'--nvio','GND':'--ngnd','TX':'--ntx','RX':'--nrx','CTL':'--nctl','ESP':'--nesp','USB':'--nusb','NC':'--nnc'};
+const NETNAME={'3V3':'+3V3','5V':'+5V / VBUS','VIO':'VIO','GND':'GND','TX':'TXD','RX':'RXD / UPDI','CTL':'DTR# / RTS#','ESP':'EN / IO0 / RST','USB':'USB D+/D−','NC':'not connected'};
+const cv=n=>`var(${NET[n]})`;
+function legend(id){document.getElementById(id).innerHTML=Object.keys(NET).map(k=>`<span><span class="dot" style="background:${cv(k)}"></span>${NETNAME[k]}</span>`).join('')}
+legend('legend1');
+
+/* CH343G chip */
+(function(){
+  const L=[[1,'GND','GND','GND'],[2,'TXD','TX','TXD → H1-4, J2 RXD'],[3,'RXD','RX','RXD ← H1-5, J2 TXD'],[4,'V3','GND','C3 100 nF only'],[5,'UD+','USB','USB D+'],[6,'UD−','USB','USB D−'],[7,'VBUS','5V','VBUS_F'],[8,'ACT#','CTL','LED4 green']];
+  const R=[[16,'VDD5','5V','VBUS_F + C2'],[15,'VIO','VIO','VIO + C4'],[14,'RI#','NC','NC'],[13,'CTS#','NC','NC'],[12,'DSR#','NC','NC'],[11,'RTS#','CTL','RTS_N → SJ2, H1-7'],[10,'DTR#','CTL','DTR_N → SJ1, C10, H1-6'],[9,'DCD#','NC','NC']];
+  let s='';const x0=190,w=140,y0=40,dy=40;
+  s+=`<rect class="s-fill" x="${x0}" y="${y0-10}" width="${w}" height="${dy*8}" rx="10" style="stroke:var(--a)"/>`;
+  s+=`<circle cx="${x0+w/2}" cy="${y0-10}" r="7" fill="var(--card)" stroke="var(--a)" stroke-width="2"/><circle cx="${x0+8}" cy="${y0-3}" r="3" fill="var(--a)"/><text class="blkt" x="${x0+w/2}" y="${y0-26}" text-anchor="middle">CH343G · U2 · SOP-16</text>`;
+  L.forEach((p,i)=>{const y=y0+10+i*dy;s+=`<path class="w" d="M${x0} ${y}H${x0-60}" stroke="${cv(p[2])}"/><text class="s-sm" x="${x0+8}" y="${y+4}">${p[0]} ${p[1]}</text><text class="s-txt" x="${x0-66}" y="${y+4}" text-anchor="end" style="font-size:12px">${p[3]}</text>`});
+  R.forEach((p,i)=>{const y=y0+10+i*dy;s+=`<path class="w" d="M${x0+w} ${y}H${x0+w+60}" stroke="${cv(p[2])}"/><text class="s-sm" x="${x0+w-8}" y="${y+4}" text-anchor="end">${p[1]} ${p[0]}</text><text class="s-txt" x="${x0+w+66}" y="${y+4}" style="font-size:12px">${p[3]}</text>`});
+  const sv=document.getElementById('chipSvg');sv.setAttribute('viewBox','-10 -10 540 390');sv.innerHTML=s;
+})();
+
+/* ESP-01 socket */
+(function(){
+  const top=[['GND','GND','to GND'],['GPIO2','3V3','R13 10k ↑'],['GPIO0','ESP','IO0'],['RXD','TX','← TXD']];
+  const bot=[['TXD','RX','→ RXD'],['CH_PD','ESP','EN'],['RST','3V3','R12 10k ↑'],['VCC','3V3','+3V3 · C8']];
+  let s=`<rect x="30" y="20" width="440" height="270" rx="14" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 6"/><text class="s-sm" x="44" y="42">ESP-01 module outline · antenna ↑ away from the header</text>`;
+  s+=`<rect class="s-fill" x="110" y="124" width="280" height="80" rx="8"/><text class="s-ref" x="250" y="276" text-anchor="middle">J2 · 2×4 female header, 2.54 mm</text>`;
+  const cell=(p,i,y,below)=>{const x=145+i*70;const col=p[1]==='GND'?'var(--ngnd)':cv(p[1]);
+    return `<rect x="${x-14}" y="${y-14}" width="28" height="28" rx="5" fill="${col}"/><circle cx="${x}" cy="${y}" r="5" fill="#0b1320"/>`+
+    `<text class="s-txt" x="${x}" y="${below?y+36:y-24}" text-anchor="middle" style="font-size:12.5px">${p[0]}</text>`+
+    `<text class="s-sm" x="${x}" y="${below?y+53:y-41}" text-anchor="middle" style="fill:${col};font-weight:700">${p[2]}</text>`};
+  for(let i=0;i<4;i++){s+=cell(top[i],i,142,false)+cell(bot[i],i,186,true)}
+  const sv=document.getElementById('espSvg');sv.setAttribute('viewBox','20 10 460 290');sv.innerHTML=s;
+})();
+
+/* Pin header */
+const PINS=[[1,'3V3','+3V3','3V3','3.3 V out (LDO, 800 mA shared)'],[2,'5V','+5V','5V','5 V out (~4.6 V after Schottky, 500 mA PTC)'],[3,'GND','GND','GND','Ground'],[4,'TX','TXD','TX','Flasher TX → target RX'],[5,'RX/UPDI','RXD','RX','Flasher RX ← target TX · UPDI pin in UPDI mode'],[6,'DTR','DTR_N','CTL','Raw DTR# (for boards with their own reset circuit)'],[7,'RTS','RTS_N','CTL','Raw RTS#'],[8,'RST','RST','ESP','Arduino reset: DTR# via 100 nF, 10k pull-up to VIO'],[9,'EN','EN','ESP','ESP EN / CH_PD (auto-program, 10k pull-up, 100 nF)'],[10,'IO0','IO0','ESP','ESP boot strap (auto-program, 10k pull-up)'],[11,'IO15','IO15','NC','10k pull-down for bare ESP8266 GPIO15']];
+document.getElementById('pinStrip').innerHTML=PINS.map(p=>`<div class="pinbox" style="background:${p[3]==='NC'?'#64748b':cv(p[3])}">${p[1]}<small>pin ${p[0]}</small></div>`).join('');
+document.getElementById('pinTable').innerHTML+=PINS.map(p=>`<tr><td class="ref">${p[0]}</td><td><span class="dot" style="background:${p[3]==='NC'?'#64748b':cv(p[3])}"></span><b>${p[1]}</b></td><td class="mono">${p[2]}</td><td>${p[4]}</td></tr>`).join('');
+
+/* BOM */
+const GROUPS={pwr:['Power','#dc2626'],usb:['USB + ESD','#0891b2'],uart:['USB-UART','#0d9488'],ap:['Auto-program','#2563eb'],io:['Target I/O','#ca8a04'],ui:['LEDs + switches','#9333ea'],con:['Connectors','#64748b']};
+// ref, qty, desc, fp, mpn, mfr, lcsc, stock, price, status(ok|v1|warn), group
+const BOM=[
+['U2',1,'USB-UART bridge with VIO (1.8–5 V I/O)','SOP-16','CH343G','WCH','C2844153','500',0.59,'warn','uart','Low stock; alt CH343P C2846043'],
+['C2 C3 C4',3,'100 nF X7R: VDD5, V3, VIO decoupling','0805','CC0805KRX7R9BB104','YAGEO','C49678','',0.0,'v1','uart',''],
+['USB1',1,'USB-C 16-pin receptacle','SMD','TYPE-C 16PIN 2MD(073)','SHOU HAN','C2765186','1,057,160',null,'ok','usb',''],
+['U3',1,'ESD array D+/D−/VBUS','SOT-23-6','USBLC6-2SC6','ST','C7519','44,990',0.157,'ok','usb',''],
+['R1 R2',2,'5.1k 1%: USB-C CC pull-downs','0805','0805W8F5101T5E','UNI-ROYAL','C27834','',null,'v1','usb',''],
+['F1',1,'PTC fuse 500 mA hold / 1 A trip, 16 V','1206','JK-nSMD050-16','Jinrui','C2680506','30,620',0.024,'ok','pwr',''],
+['D1',1,'Schottky 40 V 1 A back-feed diode','SOD-123','1N5819HW-7-F','Diodes Inc','C82544','358,260',null,'ok','pwr',''],
+['U1',1,'3.3 V 800 mA LDO','SOT-223','SGM2212-3.3XKC3G/TR','SGMICRO','C3294699','5,002',0.57,'ok','pwr',''],
+['C1 C5',2,'10 µF 25 V X5R: VBUS / LDO in','0805','CL21A106KAYNNNE','Samsung','C15850','',null,'v1','pwr',''],
+['C6 C8',2,'22 µF 25 V X5R: LDO out / ESP-01 bulk','0805','CL21A226MAQNNNE','Samsung','C45783','615,400',0.107,'ok','pwr',''],
+['C7',1,'100 nF X7R: LDO out','0805','CC0805KRX7R9BB104','YAGEO','C49678','',null,'v1','pwr',''],
+['Q1 Q2',2,'NPN auto-program transistors','SOT-23','MMBT3904LT1G','onsemi','C81464','1,362,700',null,'ok','ap','Pin map B=1 E=2 C=3'],
+['R7 R8',2,'10k: Q1/Q2 base resistors','0805','RC0805FR-0710KL','YAGEO','C84376','',null,'v1','ap',''],
+['SJ1 SJ2',2,'Solder jumper, bridged by default','PCB pads','—','—','—','',null,'info','ap','PCB feature, not a part'],
+['R9 R10',2,'10k: EN / IO0 pull-ups','0805','RC0805FR-0710KL','YAGEO','C84376','',null,'v1','io',''],
+['R11',1,'10k: IO15 pull-down','0805','RC0805FR-0710KL','YAGEO','C84376','',null,'v1','io',''],
+['R12 R13',2,'10k: ESP-01 RST / GPIO2 pull-ups','0805','RC0805FR-0710KL','YAGEO','C84376','',null,'v1','io',''],
+['R14',1,'10k: Arduino RST pull-up to VIO','0805','RC0805FR-0710KL','YAGEO','C84376','',null,'v1','io',''],
+['C9',1,'100 nF: EN filter','0805','CC0805KRX7R9BB104','YAGEO','C49678','',null,'v1','io',''],
+['C10',1,'100 nF: Arduino auto-reset (DTR → RST)','0805','CC0805KRX7R9BB104','YAGEO','C49678','',null,'v1','io',''],
+['R15',1,'4.7k: UPDI series resistor','0805','0805W8F4701T5E','UNI-ROYAL','C17673','1,051,500',0.003,'ok','io',''],
+['SW1 SW2',2,'Tactile switch RESET / BOOT','SMD 3.9×3.0','TS-1088-AR02016','XUNPU','C720477','679,440',null,'ok','ui',''],
+['SW3 SW4',2,'SPDT slide: IO 3V3/5V · UART/UPDI','SMD','MSK12C02','SHOU HAN','C431540','164,660',0.052,'ok','ui',''],
+['LED1',1,'Red LED: PWR','0805','NCD0805R1','NATIONSTAR','C84256','222,850',0.012,'ok','ui',''],
+['LED2',1,'Orange LED: TX','0805','NCD0805O1','NATIONSTAR','C84262','',null,'v1','ui',''],
+['LED3',1,'Yellow LED: RX','0805','XL-2012UYC','XINGLIGHT','C965814','',null,'v1','ui',''],
+['LED4',1,'Green LED: USB ACT','0805','NCD0805G1','NATIONSTAR','C84260','',null,'v1','ui',''],
+['R3',1,'1k: PWR LED','0805','RC0805FR-071KL','YAGEO','C95781','',null,'v1','ui',''],
+['R4 R5 R6',3,'2.2k: TX / RX / ACT LEDs','0805','0805W8F2201T5E','UNI-ROYAL','C17520','2,263,800',0.005,'ok','ui',''],
+['H1',1,'1×11 male header 2.54 mm','THT','PZ254V-11-11P','XFCN','C2840011','16,430',0.073,'ok','con',''],
+['J2',1,'2×4 female header 2.54 mm (ESP-01)','THT','PM254-2-04-Z-8.5','HCTL','C2897405','6,120',0.146,'ok','con',''],
+];
+const ST={ok:['In stock','p-ok'],v1:['From V1 BOM','p-info'],warn:['Low stock','p-warn'],info:['PCB only','p-info']};
+let bomGroup='all';
+function renderBom(){
+  const q=document.getElementById('bomSearch').value.trim().toLowerCase();
+  const rows=BOM.filter(r=>(bomGroup==='all'||r[10]===bomGroup)&&(!q||r.join(' ').toLowerCase().includes(q)));
+  const vis=rows.filter(r=>!(HIDE.bom&&TICK['bom:'+r[0]]));
+  let h='<tr><th>Added</th><th>Ref</th><th>Qty</th><th>Description</th><th>Part (MPN)</th><th>Package</th><th>LCSC #</th><th>Stock</th><th>Status</th></tr>';
+  h+=vis.map(r=>`<tr class="${TICK['bom:'+r[0]]?'done':''}"><td class="tick"><input type="checkbox" class="ck" data-k="bom:${r[0]}" ${TICK['bom:'+r[0]]?'checked':''} aria-label="${r[0]} added in EasyEDA"></td><td class="ref"><span class="dot" style="background:${GROUPS[r[10]][1]}"></span>${r[0]}</td><td>${r[1]}</td><td>${r[2]}${r[11]?`<br><small style="color:var(--mute)">${r[11]}</small>`:''}</td><td class="mono">${r[4]}<br><small style="color:var(--mute)">${r[5]}</small></td><td>${r[3]}</td><td class="mono">${r[6].startsWith('C')?`<a href="https://www.lcsc.com/product-detail/${r[6]}.html" target="_blank" rel="noopener">${r[6]}</a>`:r[6]}</td><td>${r[7]||'<small style="color:var(--mute)">not rechecked</small>'}</td><td><span class="pill ${ST[r[9]][1]}">${ST[r[9]][0]}</span></td></tr>`).join('');
+  if(!vis.length)h+='<tr><td colspan="9" style="color:var(--mute)">No parts to show.</td></tr>';
+  document.getElementById('bomTable').innerHTML=h;
+  prog('bomProg',BOM.filter(r=>TICK['bom:'+r[0]]).length,BOM.length);
+}
+(function(){
+  const lines=new Set(BOM.filter(r=>r[6].startsWith('C')).map(r=>r[6])).size;
+  const qty=BOM.filter(r=>r[6].startsWith('C')).reduce((a,r)=>a+r[1],0);
+  document.getElementById('bomStats').innerHTML=[[qty,'parts placed'],[lines,'unique LCSC numbers'],['~$2.5','est. parts cost / board*'],['72×34','mm, 2-layer']].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('')+'';
+  const chips=[['all','All','var(--a)']].concat(Object.entries(GROUPS).map(([k,v])=>[k,v[0],v[1]]));
+  const box=document.getElementById('bomChips');
+  box.innerHTML=chips.map(c=>`<button class="chip" data-g="${c[0]}" aria-pressed="${c[0]==='all'}"><span class="dot" style="background:${c[2]}"></span>${c[1]}</button>`).join('');
+  box.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;bomGroup=b.dataset.g;box.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));renderBom()});
+  document.getElementById('bomSearch').addEventListener('input',renderBom);
+  document.getElementById('bomTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;setTick(c.dataset.k,c.checked);renderBom()});
+  hideBtn('bomHide','bom',renderBom);
+  document.getElementById('bomReset').addEventListener('click',()=>{if(confirm('Clear all BOM ticks?')){clearTicks('bom:');renderBom()}});
+  renderBom();
+  document.querySelector('#bomStats').insertAdjacentHTML('afterend','<p class="figcap" style="margin:-6px 4px 14px">*Rough single-board estimate from low-quantity LCSC prices, excluding PCB, assembly and shipping. Biggest items: CH343G ~$0.59, SGM2212 ~$0.57.</p>');
+})();
+
+/* Placement: ref, x, y (centre, mm, top-left origin), w, h, group, label */
+const PL=[
+['USB1',3.4,17,7.4,9,'usb','USB-C'],['U3',12,17,3,3,'usb','USBLC6'],['R1',11,11,2,1.25,'usb','5.1k'],['R2',11,23,2,1.25,'usb','5.1k'],
+['F1',12,29.5,3.2,1.6,'pwr','PTC'],['C1',17,29.5,2,1.25,'pwr','10µ'],['D1',22,29.5,3.7,1.6,'pwr','SS'],
+['U1',24,7.5,6.5,7,'pwr','LDO'],['C5',18,5,2,1.25,'pwr','10µ'],['C6',30,4,2,1.25,'pwr','22µ'],['C7',30,8,2,1.25,'pwr','100n'],
+['U2',25,18,10,6,'uart','CH343G'],['C2',21,23.5,2,1.25,'uart','100n'],['C3',25,23.5,2,1.25,'uart','100n'],['C4',29,23.5,2,1.25,'uart','100n'],
+['LED1',17,11,2,1.25,'ui','PWR'],['R3',17,13.5,2,1.25,'ui','1k'],
+['Q1',36,15,2.9,2.4,'ap','Q1'],['R7',40,15,2,1.25,'ap','10k'],['SJ1',44,15,2.4,1.6,'ap','SJ1'],
+['Q2',36,20,2.9,2.4,'ap','Q2'],['R8',40,20,2,1.25,'ap','10k'],['SJ2',44,20,2.4,1.6,'ap','SJ2'],
+['LED2',47,9.5,2,1.25,'ui','TX'],['LED3',51,9.5,2,1.25,'ui','RX'],['LED4',55,9.5,2,1.25,'ui','ACT'],
+['R4',47,12.5,2,1.25,'ui','2.2k'],['R5',51,12.5,2,1.25,'ui','2.2k'],['R6',55,12.5,2,1.25,'ui','2.2k'],
+['R14',50,17.5,2,1.25,'io','10k'],['C10',54,17.5,2,1.25,'io','100n'],['R15',58,17.5,2,1.25,'io','4.7k'],
+['R9',35,24.5,2,1.25,'io','10k'],['C9',39,24.5,2,1.25,'io','100n'],['R10',43,24.5,2,1.25,'io','10k'],['R11',47,24.5,2,1.25,'io','10k'],['R12',51,24.5,2,1.25,'io','10k'],['R13',55,24.5,2,1.25,'io','10k'],
+['SW1',36,3.5,5,3,'ui','RESET'],['SW2',42.5,3.5,5,3,'ui','BOOT'],['SW3',50,3.5,7,3,'ui','3V3|5V'],['SW4',59,3.5,7,3,'ui','UART|UPDI'],
+['C8',43,30.5,2,1.25,'pwr','22µ'],['J2',52,30.5,10.2,5.1,'con','ESP-01'],
+['H1',69.5,18,2.6,28,'con','H1'],
+];
+const HOLES=[[4,3.5],[4,30.5],[38.5,30.5]];
+let plGroup='all';
+function renderBoard(){
+  const W=72,H=34;let s='';
+  s+=`<defs><pattern id="hatch" width="1.2" height="1.2" patternUnits="userSpaceOnUse"><path d="M0 1.2L1.2 0" stroke="#ffffff22" stroke-width=".15"/></pattern></defs>`;
+  // ESP-01 overhang
+  s+=`<rect x="44.85" y="27.5" width="14.3" height="24.8" rx="1" fill="url(#hatch)" stroke="#facc15" stroke-width=".25" stroke-dasharray="1 .7"/><text x="52" y="44" text-anchor="middle" fill="#facc15" style="font:700 1.6px system-ui">ESP-01 module</text><text x="52" y="46.4" text-anchor="middle" fill="#facc15aa" style="font:600 1px system-ui">overhangs the bottom edge</text><text x="52" y="50.6" text-anchor="middle" fill="#facc15aa" style="font:600 1.2px system-ui">antenna ↓</text>`;
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" rx="2.2" fill="var(--pcb)" stroke="#1f9d6b" stroke-width=".35"/>`;
+  s+=`<rect x="0.8" y="0.8" width="${W-1.6}" height="${H-1.6}" rx="1.6" fill="none" stroke="#ffffff14" stroke-width=".2"/>`;
+  // zones
+  const Z=[[7.8,0.8,10,32.4,'#0891b2','USB'],[14,0.8,19,32.4,'#dc2626','POWER · UART'],[33,10.5,15,12,'#2563eb','AUTO-PROG'],[33,22.6,25,3.8,'#ca8a04','PULL-UPS']];
+  // silk title
+  s+=`<text x="8" y="33.1" fill="#f8fafc" style="font:800 1.4px system-ui;letter-spacing:.1px">USB FLASHER V2 · ElectroIoT</text>`;
+  HOLES.forEach(h=>s+=`<circle cx="${h[0]}" cy="${h[1]}" r="1.6" fill="#d4a34a"/><circle cx="${h[0]}" cy="${h[1]}" r="1.1" fill="#04120c"/>`);
+  PL.forEach(p=>{
+    const [ref,x,y,w,h,g,lab]=p;const col=GROUPS[g][1];const dim=plGroup!=='all'&&plGroup!==g;
+    const op=dim?.18:1;
+    const placed=!!TICK['pl:'+ref];
+    s+=`<g opacity="${op}"><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx=".35" fill="${placed?'#22c55e66':col+'33'}" stroke="${placed?'#4ade80':col}" stroke-width="${placed?.35:.22}"/>`;
+    if(placed&&ref!=='H1'&&ref!=='J2')s+=`<circle cx="${x+w/2}" cy="${y-h/2}" r=".75" fill="#22c55e"/><path d="M${x+w/2-.38} ${y-h/2}l.28 .3l.5-.6" stroke="#fff" stroke-width=".22" fill="none"/>`;
+    if(ref==='H1'){for(let i=0;i<11;i++){const py=y-12.7+i*2.54;s+=`<circle cx="${x}" cy="${py}" r=".85" fill="#d4a34a"/><circle cx="${x}" cy="${py}" r=".45" fill="#04120c"/><text x="${x-2.2}" y="${py+.5}" text-anchor="end" fill="${['NC','GND'].includes(PINS[i][3])?'#cbd5e1':getComputedStyle(document.documentElement).getPropertyValue(NET[PINS[i][3]])}" style="font:800 1.25px system-ui">${PINS[i][1]}</text>`}}
+    else if(ref==='J2'){for(let r=0;r<2;r++)for(let i=0;i<4;i++){s+=`<circle cx="${x-3.81+i*2.54}" cy="${y-1.27+r*2.54}" r=".8" fill="#d4a34a"/><circle cx="${x-3.81+i*2.54}" cy="${y-1.27+r*2.54}" r=".42" fill="#04120c"/>`}}
+    else if(w>=4&&h>=4){s+=`<text x="${x}" y="${y+.5}" text-anchor="middle" fill="#fff" style="font:800 1.4px system-ui">${lab}</text>`}
+    if(ref!=='H1'){const ty=(ref.startsWith('SW')||ref==='U1')?y+h/2+1.5:(ref==='J2'?y-h/2-.6:y-h/2-.35);s+=`<text x="${x}" y="${ty}" text-anchor="middle" fill="#f8fafc" style="font:700 ${w<3?.95:1.15}px system-ui">${ref}${w<4||h<4?'':''}</text>`;}
+    if((w<4||h<4)&&!['H1','J2'].includes(ref)&&!ref.startsWith('SW')){}
+    s+='</g>';
+  });
+  // SW labels inside
+  s+=`<text x="70" y="1.9" text-anchor="middle" fill="#f8fafc" style="font:700 1px system-ui">H1</text>`;
+  // dims
+  s+=`<path d="M0 -2.5H72M0 -3.4V-1.6M72 -3.4V-1.6" stroke="#94a3b8" stroke-width=".18"/><text x="36" y="-3.3" text-anchor="middle" fill="#94a3b8" style="font:600 1.4px system-ui">72 mm</text>`;
+  s+=`<path d="M-2.5 0V34M-3.4 0H-1.6M-3.4 34H-1.6" stroke="#94a3b8" stroke-width=".18"/><text x="-3.6" y="17" text-anchor="middle" fill="#94a3b8" transform="rotate(-90 -3.6 17)" style="font:600 1.4px system-ui">34 mm</text>`;
+  document.getElementById('boardSvg').innerHTML=s;
+}
+(function(){
+  const chips=[['all','All','var(--a)']].concat(Object.entries(GROUPS).map(([k,v])=>[k,v[0],v[1]]));
+  const box=document.getElementById('plChips');
+  box.innerHTML=chips.map(c=>`<button class="chip" data-g="${c[0]}" aria-pressed="${c[0]==='all'}"><span class="dot" style="background:${c[2]}"></span>${c[1]}</button>`).join('');
+  box.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;plGroup=b.dataset.g;box.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));renderBoard()});
+  renderBoard();
+  document.getElementById('legend2').innerHTML=Object.values(GROUPS).map(g=>`<span><span class="dot" style="background:${g[1]}"></span>${g[0]}</span>`).join('')+'<span>● gold = THT pad / mounting hole</span>';
+  const fpOf=ref=>{const r=BOM.find(b=>b[0].split(' ').includes(ref));return r?r[3]:''};
+  const NOTE={USB1:'Mouth flush with left edge',U3:'≤ 3 mm from USB1',U1:'Tab up, big copper + vias',U2:'Pin 1 top-left',C2:'At U2 pin 16',C3:'At U2 pin 4',C4:'At U2 pin 15',J2:'Bottom edge, module overhangs',H1:'Right edge, pin 1 (3V3) at top',SW3:'Edge, silk "IO 3V3 | 5V"',SW4:'Edge, silk "UART | UPDI"',SW1:'Edge, silk RESET',SW2:'Edge, silk BOOT',Q1:'Check pin map',Q2:'Check pin map: C = IO0',C8:'Next to J2 VCC'};
+  window.renderPl=function(){
+  let h='<tr><th>Placed</th><th>Ref</th><th>X (mm)</th><th>Y (mm)</th><th>Footprint</th><th>Block</th><th>Placement note</th></tr>';
+  h+=PL.filter(p=>!(HIDE.pl&&TICK['pl:'+p[0]])).map(p=>`<tr class="${TICK['pl:'+p[0]]?'done':''}"><td class="tick"><input type="checkbox" class="ck" data-k="pl:${p[0]}" ${TICK['pl:'+p[0]]?'checked':''} aria-label="${p[0]} placed"></td><td class="ref"><span class="dot" style="background:${GROUPS[p[5]][1]}"></span>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${fpOf(p[0])}</td><td>${GROUPS[p[5]][0]}</td><td>${NOTE[p[0]]||''}</td></tr>`).join('');
+  document.getElementById('plTable').innerHTML=h;
+  prog('plProg',PL.filter(p=>TICK['pl:'+p[0]]).length,PL.length);
+  };
+  renderPl();
+  document.getElementById('plTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;setTick(c.dataset.k,c.checked);renderPl();renderBoard()});
+  hideBtn('plHide','pl',renderPl);
+  document.getElementById('plReset').addEventListener('click',()=>{if(confirm('Clear all placement ticks?')){clearTicks('pl:');renderPl();renderBoard()}});
+})();
+
+/* ===== Schematic checklist (EasyEDA pages) ===== */
+const NETCOL={'+3V3':'--n3v3','+5V':'--n5v','VBUS':'--n5v','VBUS_F':'--n5v','VIO':'--nvio','GND':'--ngnd','TXD':'--ntx','RXD':'--nrx','USB_DP':'--nusb','USB_DM':'--nusb','CC1':'--nusb','CC2':'--nusb','DTR_N':'--nctl','RTS_N':'--nctl','DTR_AP':'--nctl','RTS_AP':'--nctl','Q1_B':'--nctl','Q2_B':'--nctl','ACT_N':'--nctl','EN':'--nesp','IO0':'--nesp','RST':'--nesp','IO15':'--nesp','ESP01_RST':'--nesp','ESP01_IO2':'--nesp','UPDI_R':'--nrx','V3':'--ngnd'};
+const netTag=n=>n==='NC'?'<span class="ncflag">NC flag</span>':`<span class="net" style="background:var(${NETCOL[n]||'--nnc'})">${n}</span>`;
+const SCHDATA={"pages": [["P1", "Page 1 · USB + Power", "USB-C, ESD, fuse, LDO, IO switch, PWR LED"], ["P2", "Page 2 · USB-UART", "CH343G, decoupling, TX/RX/ACT LEDs"], ["P3", "Page 3 · Auto-program + control", "Q1/Q2, SJ1/SJ2, pull-ups, buttons, UPDI, Arduino RST"], ["P4", "Page 4 · Connectors", "H1 header, J2 ESP-01 socket"]], "parts": [["USB1", "P1", "USB-C 16P", "USB-C-SMD_TYPE-C-16PIN-2MD(073)", "C2765186", [["1", "GND", "GND"], ["2", "VBUS", "VBUS"], ["3", "SBU2", "NC"], ["4", "CC1", "CC1"], ["5", "DN2", "USB_DM"], ["6", "DP1", "USB_DP"], ["7", "DN1", "USB_DM"], ["8", "DP2", "USB_DP"], ["9", "SBU1", "NC"], ["10", "CC2", "CC2"], ["11", "VBUS", "VBUS"], ["12", "GND", "GND"], ["13", "SHELL", "GND"], ["14", "SHELL", "GND"]]], ["R1", "P1", "5.1k", "R0805", "C27834", [["1", "1", "CC1"], ["2", "2", "GND"]]], ["R2", "P1", "5.1k", "R0805", "C27834", [["1", "1", "CC2"], ["2", "2", "GND"]]], ["U3", "P1", "USBLC6-2SC6", "SOT-23-6", "C7519", [["1", "I/O1", "USB_DP"], ["2", "GND", "GND"], ["3", "I/O2", "USB_DM"], ["4", "I/O2", "USB_DM"], ["5", "VBUS", "VBUS"], ["6", "I/O1", "USB_DP"]]], ["F1", "P1", "PTC 500 mA", "F1206", "C2680506", [["1", "1", "VBUS"], ["2", "2", "VBUS_F"]]], ["C1", "P1", "10 µF", "C0805", "C15850", [["1", "1", "VBUS_F"], ["2", "2", "GND"]]], ["D1", "P1", "1N5819HW", "SOD-123", "C82544", [["1", "K (band)", "+5V"], ["2", "A", "VBUS_F"]]], ["C5", "P1", "10 µF", "C0805", "C15850", [["1", "1", "+5V"], ["2", "2", "GND"]]], ["U1", "P1", "SGM2212-3.3", "SOT-223-3", "C3294699", [["1", "GND", "GND"], ["2", "VOUT", "+3V3"], ["3", "VIN", "+5V"], ["4", "VOUT (tab)", "+3V3"]]], ["C6", "P1", "22 µF", "C0805", "C45783", [["1", "1", "+3V3"], ["2", "2", "GND"]]], ["C7", "P1", "100 nF", "C0805", "C49678", [["1", "1", "+3V3"], ["2", "2", "GND"]]], ["SW3", "P1", "MSK12C02 (IO 3V3|5V)", "SW-SMD_MSK12C02", "C431540", [["1", "throw A", "+3V3"], ["2", "common", "VIO"], ["3", "throw B", "+5V"]]], ["R3", "P1", "1k", "R0805", "C95781", [["1", "1", "+3V3"], ["2", "2", "LED1_A"]]], ["LED1", "P1", "Red (PWR)", "LED0805", "C84256", [["2", "A", "LED1_A"], ["1", "K", "GND"]]], ["U2", "P2", "CH343G", "SOP-16", "C2844153", [["1", "GND", "GND"], ["2", "TXD", "TXD"], ["3", "RXD", "RXD"], ["4", "V3", "V3"], ["5", "UD+", "USB_DP"], ["6", "UD-", "USB_DM"], ["7", "VBUS", "VBUS_F"], ["8", "ACT#", "ACT_N"], ["9", "DCD#", "NC"], ["10", "TNOW/DTR#", "DTR_N"], ["11", "RTS#", "RTS_N"], ["12", "DSR#", "NC"], ["13", "CTS#", "NC"], ["14", "RI#", "NC"], ["15", "VIO", "VIO"], ["16", "VDD5", "VBUS_F"]]], ["C2", "P2", "100 nF (VDD5)", "C0805", "C49678", [["1", "1", "VBUS_F"], ["2", "2", "GND"]]], ["C3", "P2", "100 nF (V3)", "C0805", "C49678", [["1", "1", "V3"], ["2", "2", "GND"]]], ["C4", "P2", "100 nF (VIO)", "C0805", "C49678", [["1", "1", "VIO"], ["2", "2", "GND"]]], ["R4", "P2", "2.2k", "R0805", "C17520", [["1", "1", "VIO"], ["2", "2", "LED2_A"]]], ["LED2", "P2", "Orange (TX)", "LED0805", "C84262", [["2", "A", "LED2_A"], ["1", "K", "TXD"]]], ["R5", "P2", "2.2k", "R0805", "C17520", [["1", "1", "VIO"], ["2", "2", "LED3_A"]]], ["LED3", "P2", "Yellow (RX)", "LED0805", "C965814", [["2", "A", "LED3_A"], ["1", "K", "RXD"]]], ["R6", "P2", "2.2k", "R0805", "C17520", [["1", "1", "VIO"], ["2", "2", "LED4_A"]]], ["LED4", "P2", "Green (ACT)", "LED0805", "C84260", [["2", "A", "LED4_A"], ["1", "K", "ACT_N"]]], ["SJ1", "P3", "Solder jumper (bridged)", "SolderJumper-2_Bridged", "-", [["1", "1", "DTR_N"], ["2", "2", "DTR_AP"]]], ["SJ2", "P3", "Solder jumper (bridged)", "SolderJumper-2_Bridged", "-", [["1", "1", "RTS_N"], ["2", "2", "RTS_AP"]]], ["R7", "P3", "10k", "R0805", "C84376", [["1", "1", "DTR_AP"], ["2", "2", "Q1_B"]]], ["R8", "P3", "10k", "R0805", "C84376", [["1", "1", "RTS_AP"], ["2", "2", "Q2_B"]]], ["Q1", "P3", "MMBT3904 (EN)", "SOT-23-3", "C81464", [["1", "B", "Q1_B"], ["2", "E", "RTS_AP"], ["3", "C", "EN"]]], ["Q2", "P3", "MMBT3904 (IO0)", "SOT-23-3", "C81464", [["1", "B", "Q2_B"], ["2", "E", "DTR_AP"], ["3", "C", "IO0"]]], ["R9", "P3", "10k (EN pull-up)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "EN"]]], ["C9", "P3", "100 nF (EN)", "C0805", "C49678", [["1", "1", "EN"], ["2", "2", "GND"]]], ["R10", "P3", "10k (IO0 pull-up)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "IO0"]]], ["R11", "P3", "10k (IO15 pull-down)", "R0805", "C84376", [["1", "1", "IO15"], ["2", "2", "GND"]]], ["SW1", "P3", "RESET", "SW-SMD_L3.9-W3.0-P4.45", "C720477", [["1", "1", "EN"], ["2", "2", "GND"]]], ["SW2", "P3", "BOOT", "SW-SMD_L3.9-W3.0-P4.45", "C720477", [["1", "1", "IO0"], ["2", "2", "GND"]]], ["C10", "P3", "100 nF (Arduino reset)", "C0805", "C49678", [["1", "1", "DTR_N"], ["2", "2", "RST"]]], ["R14", "P3", "10k (RST pull-up)", "R0805", "C84376", [["1", "1", "VIO"], ["2", "2", "RST"]]], ["SW4", "P3", "MSK12C02 (UART|UPDI)", "SW-SMD_MSK12C02", "C431540", [["1", "throw A (UPDI)", "TXD"], ["2", "common", "UPDI_R"], ["3", "throw B (UART)", "NC"]]], ["R15", "P3", "4.7k (UPDI)", "R0805", "C17673", [["1", "1", "UPDI_R"], ["2", "2", "RXD"]]], ["H1", "P4", "1x11 male header", "HDR-TH_11P-P2.54-V-M", "C2840011", [["1", "3V3", "+3V3"], ["2", "5V", "+5V"], ["3", "GND", "GND"], ["4", "TX", "TXD"], ["5", "RX/UPDI", "RXD"], ["6", "DTR", "DTR_N"], ["7", "RTS", "RTS_N"], ["8", "RST", "RST"], ["9", "EN", "EN"], ["10", "IO0", "IO0"], ["11", "IO15", "IO15"]]], ["J2", "P4", "2x4 female (ESP-01)", "HDR-TH_8P-P2.54-V-F-R2-C4", "C2897405", [["1", "GND", "GND"], ["2", "TXD (ESP out)", "RXD"], ["3", "GPIO2", "ESP01_IO2"], ["4", "CH_PD", "EN"], ["5", "GPIO0", "IO0"], ["6", "RST", "ESP01_RST"], ["7", "RXD (ESP in)", "TXD"], ["8", "VCC", "+3V3"]]], ["C8", "P4", "22 µF (ESP-01 bulk)", "C0805", "C45783", [["1", "1", "+3V3"], ["2", "2", "GND"]]], ["R12", "P4", "10k (ESP-01 RST)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "ESP01_RST"]]], ["R13", "P4", "10k (ESP-01 GPIO2)", "R0805", "C84376", [["1", "1", "+3V3"], ["2", "2", "ESP01_IO2"]]]]};
+const SPAGES=SCHDATA.pages, SPARTS=SCHDATA.parts;
+const NETIDX={};SPARTS.forEach(p=>p[5].forEach(pin=>{if(pin[2]==='NC')return;(NETIDX[pin[2]]=NETIDX[pin[2]]||[]).push([p[0],pin[0],pin[1],p[1]])}));
+const pagesOfNet=n=>[...new Set((NETIDX[n]||[]).map(x=>x[3]))];
+const PWRN=['GND','+3V3','+5V'];
+let schPage='P1';
+function schCounts(pg){let t=0,d=0;SPARTS.filter(p=>!pg||p[1]===pg).forEach(p=>{t++;if(TICK['sym:'+p[0]])d++;p[5].forEach(pin=>{t++;if(TICK['pin:'+p[0]+'.'+pin[0]])d++})});return [d,t]}
+function renderSch(){
+  document.getElementById('schTabs').innerHTML=SPAGES.map(pg=>{const [d,t]=schCounts(pg[0]);return `<button class="ptab" data-p="${pg[0]}" aria-pressed="${pg[0]===schPage}"><span class="pp">${d===t?'&check; ':''}${d}/${t}</span><br><b>${pg[1]}</b><small>${pg[2]}</small></button>`}).join('');
+  const [ad,at]=schCounts(null);document.getElementById('schAll').textContent=`${ad} / ${at} done`;document.getElementById('schAllBar').style.width=(at?100*ad/at:0)+'%';
+  const parts=SPARTS.filter(p=>p[1]===schPage);
+  const nets=[...new Set(parts.flatMap(p=>p[5].map(x=>x[2])))].filter(n=>n!=='NC');
+  const cross=nets.filter(n=>pagesOfNet(n).length>1&&!PWRN.includes(n));
+  const ncs=parts.flatMap(p=>p[5].filter(x=>x[2]==='NC').map(x=>p[0]+'.'+x[0]+' ('+x[1]+')'));
+  let h=`<div class="card" style="margin-bottom:12px"><h3>Net labels needed on this page</h3><p>These nets continue on another page. Put a net label with exactly this name on each. GND, +3V3 and +5V use EasyEDA power/ground symbols, which are global, so they need no label.</p><div class="labels">${cross.map(n=>netTag(n)+`<small style="color:var(--mute);margin-right:8px"> &rarr; ${pagesOfNet(n).filter(x=>x!==schPage).join(', ')}</small>`).join('')||'<small>none</small>'}</div>`+
+    `<p><b>No-Connect flags on this page:</b> ${ncs.length?ncs.map(x=>`<code>${x}</code>`).join(' &middot; '):'none'}</p></div>`;
+  h+='<div class="tbl"><table><tr><th>Done</th><th>Pin #</th><th>Pin name</th><th>Net</th><th>Connects to (Ref.pin)</th></tr>';
+  parts.forEach(p=>{
+    const sk='sym:'+p[0];const symDone=!!TICK[sk];
+    const pinsLeft=p[5].filter(pin=>!TICK['pin:'+p[0]+'.'+pin[0]]);
+    if(HIDE.sch&&symDone&&!pinsLeft.length)return;
+    h+=`<tr><td colspan="5" style="padding:0"><div class="partline"><input type="checkbox" class="ck" data-k="${sk}" ${symDone?'checked':''} aria-label="${p[0]} symbol placed"><b>${p[0]}</b><span>${p[2]}</span><span class="mute">Footprint: <code>${p[3]}</code></span><span class="mute">LCSC: ${p[4].startsWith('C')?`<a href="https://www.lcsc.com/product-detail/${p[4]}.html" target="_blank" rel="noopener">${p[4]}</a>`:p[4]}</span><span class="mute">${symDone?'symbol placed &check;':'tick when the symbol is placed'}</span></div></td></tr>`;
+    p[5].forEach(pin=>{
+      const k='pin:'+p[0]+'.'+pin[0];const dn=!!TICK[k];if(HIDE.sch&&dn)return;
+      const others=PWRN.includes(pin[2])?`<span style="color:var(--mute)">Use the <b>${pin[2]}</b> power symbol (global, ${(NETIDX[pin[2]]||[]).length} pins on this net)</span>`:pin[2]==='NC'?'<span style="color:var(--mute)">Place a No-Connect flag on this pin</span>':(NETIDX[pin[2]]||[]).filter(x=>!(x[0]===p[0]&&x[1]===pin[0])).map(x=>`<span style="white-space:nowrap">${x[0]}.${x[1]}${x[3]!==schPage?`<small style="color:var(--a)"> (${x[3]})</small>`:''}</span>`).join(', ');
+      h+=`<tr class="${dn?'done':''}"><td class="tick"><input type="checkbox" class="ck" data-k="${k}" ${dn?'checked':''} aria-label="${p[0]} pin ${pin[0]} ${pin[2]==='NC'?'no-connect flag placed':'wired'}"></td><td class="mono"><b>${p[0]}.${pin[0]}</b></td><td>${pin[1]}</td><td>${netTag(pin[2])}</td><td style="font-size:13.5px">${others||'<small style="color:var(--mute)">local net</small>'}</td></tr>`;
+    });
+  });
+  h+='</table></div>';
+  document.getElementById('schPage').innerHTML=h;
+}
+(function(){
+  document.getElementById('schTabs').addEventListener('click',e=>{const b=e.target.closest('.ptab');if(!b)return;schPage=b.dataset.p;renderSch()});
+  document.getElementById('schPage').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;setTick(c.dataset.k,c.checked);renderSch()});
+  hideBtn('schHide','sch',renderSch);
+  document.getElementById('schReset').addEventListener('click',()=>{if(confirm('Clear all schematic ticks?')){clearTicks('sym:');clearTicks('pin:');renderSch()}});
+  renderSch();
+})();
+
+/* Hero board render (3D-ish) */
+(function(){
+  const el=document.getElementById('heroBoard');
+  let s=`<svg class="board" viewBox="-4 -4 80 50" aria-label="Board render"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f7a4f"/><stop offset="1" stop-color="#07432b"/></linearGradient><linearGradient id="chipg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2f36"/><stop offset="1" stop-color="#121418"/></linearGradient></defs>`;
+  s+=`<rect x="1" y="2" width="72" height="34" rx="2.4" fill="#021a10"/><rect x="0" y="0" width="72" height="34" rx="2.4" fill="url(#pg)" stroke="#2bd48f55" stroke-width=".3"/>`;
+  // traces
+  s+=`<g stroke="#2bd48f40" stroke-width=".45" fill="none"><path d="M8 16H20V18H30"/><path d="M8 18H19V20H22"/><path d="M30 18H36V15H44"/><path d="M30 19H36V20H44"/><path d="M46 15H60V9H66"/><path d="M46 20H62V24H66"/><path d="M14 29H26V10"/><path d="M30 22H40V26H66"/></g>`;
+  // usb
+  s+=`<rect x="-1.5" y="12.5" width="9" height="9" rx="1.2" fill="#c0c7d1" stroke="#8a94a3" stroke-width=".3"/><rect x="-1.5" y="14.6" width="2.4" height="4.8" rx="1" fill="#3a4150"/>`;
+  // chips
+  s+=`<rect x="20" y="15" width="10" height="6" rx=".5" fill="url(#chipg)"/>`;for(let i=0;i<8;i++){s+=`<rect x="${20.6+i*1.27}" y="13.9" width=".5" height="1.1" fill="#cfd6df"/><rect x="${20.6+i*1.27}" y="21" width=".5" height="1.1" fill="#cfd6df"/>`}
+  s+=`<text x="25" y="18.6" text-anchor="middle" fill="#d1d5db" style="font:700 1.2px system-ui">CH343G</text>`;
+  s+=`<rect x="20.8" y="4" width="6.5" height="3.5" rx=".3" fill="url(#chipg)"/><rect x="21.5" y="2.2" width="5" height="1.8" fill="#cfd6df"/><rect x="21" y="7.5" width="1" height="1.6" fill="#cfd6df"/><rect x="23.5" y="7.5" width="1" height="1.6" fill="#cfd6df"/><rect x="26" y="7.5" width="1" height="1.6" fill="#cfd6df"/>`;
+  s+=`<rect x="10.5" y="15.5" width="3" height="3" rx=".3" fill="url(#chipg)"/>`;
+  // passives
+  [[11,11],[11,23],[17,13.5],[21,23.5],[25,23.5],[29,23.5],[30,4],[30,8],[18,5],[40,15],[40,20],[47,12.5],[51,12.5],[55,12.5],[35,24.5],[39,24.5],[43,24.5],[47,24.5],[51,24.5],[55,24.5],[50,17.5],[54,17.5],[58,17.5],[17,29.5],[43,30.5]].forEach(p=>{s+=`<rect x="${p[0]-1}" y="${p[1]-.62}" width="2" height="1.25" rx=".15" fill="#3b2f22"/><rect x="${p[0]-1}" y="${p[1]-.62}" width=".45" height="1.25" fill="#d9dee5"/><rect x="${p[0]+.55}" y="${p[1]-.62}" width=".45" height="1.25" fill="#d9dee5"/>`});
+  [[36,15],[36,20]].forEach(p=>s+=`<rect x="${p[0]-1.4}" y="${p[1]-.7}" width="2.8" height="1.4" rx=".2" fill="url(#chipg)"/>`);
+  // LEDs glow
+  [[17,11,'#ef4444'],[47,9.5,'#fb923c'],[51,9.5,'#facc15'],[55,9.5,'#22c55e']].forEach(l=>s+=`<circle cx="${l[0]}" cy="${l[1]}" r="2.2" fill="${l[2]}" opacity=".28"/><rect x="${l[0]-1}" y="${l[1]-.62}" width="2" height="1.25" rx=".2" fill="${l[2]}"/>`);
+  // switches
+  [[36,3.5],[42.5,3.5]].forEach(p=>s+=`<rect x="${p[0]-2.5}" y="${p[1]-1.5}" width="5" height="3" rx=".4" fill="#e5e7eb"/><circle cx="${p[0]}" cy="${p[1]}" r=".9" fill="#1f2937"/>`);
+  [[50,3.5],[59,3.5]].forEach(p=>s+=`<rect x="${p[0]-3.5}" y="${p[1]-1.4}" width="7" height="2.8" rx=".3" fill="#cbd5e1"/><rect x="${p[0]-2.2}" y="${p[1]-.8}" width="1.8" height="1.6" fill="#111827"/>`);
+  // H1 + labels
+  for(let i=0;i<11;i++){const y=5.3+i*2.54;const c=PINS[i][3]==='NC'?'#94a3b8':PINS[i][3]==='GND'?'#334155':getComputedStyle(document.documentElement).getPropertyValue(NET[PINS[i][3]]);s+=`<rect x="68.3" y="${y-1.1}" width="2.4" height="2.2" fill="#111827"/><rect x="69.1" y="${y-.35}" width=".8" height=".7" fill="#f4c542"/><rect x="61.6" y="${y-.95}" width="5.6" height="1.9" rx=".4" fill="${c}"/><text x="64.4" y="${y+.48}" text-anchor="middle" fill="#fff" style="font:800 1.15px system-ui">${PINS[i][1]}</text>`}
+  // J2 socket + module ghost
+  s+=`<rect x="46.9" y="28" width="10.2" height="5.1" rx=".4" fill="#111827"/>`;for(let r=0;r<2;r++)for(let i=0;i<4;i++)s+=`<rect x="${48.2+i*2.54-.4}" y="${29.27+r*2.54-.4}" width=".8" height=".8" fill="#475569"/>`;
+  s+=`<rect x="44.85" y="32" width="14.3" height="11" rx=".8" fill="#0f172a" opacity=".85" stroke="#facc15" stroke-width=".25" stroke-dasharray="1 .6"/><text x="52" y="38.6" text-anchor="middle" fill="#facc15" style="font:700 1.4px system-ui">ESP-01</text>`;
+  [[4,3.5],[4,30.5],[38.5,30.5]].forEach(h=>s+=`<circle cx="${h[0]}" cy="${h[1]}" r="1.6" fill="#d4a34a"/><circle cx="${h[0]}" cy="${h[1]}" r="1" fill="#02150d"/>`);
+  s+=`<text x="8" y="33.1" fill="#e5e7eb" style="font:800 1.3px system-ui">USB FLASHER V2 · ElectroIoT</text></svg>`;
+  el.innerHTML=s;
+})();
+</script>
+</body>
+</html>

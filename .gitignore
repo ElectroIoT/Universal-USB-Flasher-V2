@@ -1,0 +1,7 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.bak
+# EasyEDA local backups
+*.epro.bak
+__pycache__/

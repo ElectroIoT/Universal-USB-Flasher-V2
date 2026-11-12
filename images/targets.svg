@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" role="img">
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif}
+.t{fill:#e6eef8;font-weight:700;font-size:15px}
+.s{fill:#9cb0c6;font-size:12.5px}
+.h{fill:#e6eef8;font-weight:800;font-size:22px}
+.box{fill:#122235;stroke:#25405c;stroke-width:2}
+.flow{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:10 12;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-44}}
+
+.pulse{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.45}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<rect width="960" height="430" rx="22" fill="#0b1622"/>
+<text x="40" y="52" class="h">One board, every common target</text><text x="40" y="78" class="s">PC software talks to a COM port. The flasher turns it into UART plus control lines for the module you plug in or wire up.</text><rect x="50" y="140" width="150" height="96" rx="8" fill="#122235" stroke="#25405c" stroke-width="2"/><rect x="62" y="152" width="126" height="72" rx="4" fill="#0f2a3d"/><path d="M30 244H220L208 258H42Z" fill="#25405c"/><text x="125" y="186" text-anchor="middle" style="fill:#2dd4bf;font-weight:800;font-size:13px">esptool</text><text x="125" y="204" text-anchor="middle" class="s">Arduino IDE · PIO</text><path class="flow" d="M222 200H330" stroke="#22d3ee"/><text x="276" y="190" text-anchor="middle" class="s">USB-C</text><rect class="box" x="330" y="146" width="170" height="108" rx="16" style="stroke:#2dd4bf"/><text class="t" x="415" y="190" text-anchor="middle">Flasher V2</text><text class="s" x="415" y="212" text-anchor="middle">CH343G + auto-program</text><path class="flow" d="M502 200C560 200 560 128 620 128" stroke="#facc15" style="animation-duration:1.10s"/><rect class="box" x="620" y="104" width="300" height="48" rx="12"/><circle class="pulse" cx="644" cy="128" r="7" fill="#facc15" style="animation-delay:0.0s"/><text class="t" x="664" y="126">ESP32 / S3 / C3</text><text class="s" x="664" y="144">auto-program</text><path class="flow" d="M502 200C560 200 560 190 620 190" stroke="#facc15" style="animation-duration:1.25s"/><rect class="box" x="620" y="166" width="300" height="48" rx="12"/><circle class="pulse" cx="644" cy="190" r="7" fill="#facc15" style="animation-delay:0.3s"/><text class="t" x="664" y="188">ESP8266 / ESP-12F</text><text class="s" x="664" y="206">IO15 pull-down</text><path class="flow" d="M502 200C560 200 560 252 620 252" stroke="#facc15" style="animation-duration:1.40s"/><rect class="box" x="620" y="228" width="300" height="48" rx="12"/><circle class="pulse" cx="644" cy="252" r="7" fill="#facc15" style="animation-delay:0.6s"/><text class="t" x="664" y="250">ESP-01 / 01S</text><text class="s" x="664" y="268">plug into J2</text><path class="flow" d="M502 200C560 200 560 314 620 314" stroke="#fb923c" style="animation-duration:1.55s"/><rect class="box" x="620" y="290" width="300" height="48" rx="12"/><circle class="pulse" cx="644" cy="314" r="7" fill="#fb923c" style="animation-delay:0.9s"/><text class="t" x="664" y="312">Arduino / ATmega</text><text class="s" x="664" y="330">RST pin (DTR+cap)</text><path class="flow" d="M502 200C560 200 560 376 620 376" stroke="#4ade80" style="animation-duration:1.70s"/><rect class="box" x="620" y="352" width="300" height="48" rx="12"/><circle class="pulse" cx="644" cy="376" r="7" fill="#4ade80" style="animation-delay:1.2s"/><text class="t" x="664" y="374">ATtiny / AVR-Dx</text><text class="s" x="664" y="392">UPDI mode</text>
+</svg>

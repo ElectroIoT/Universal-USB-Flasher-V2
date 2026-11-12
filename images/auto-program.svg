@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" role="img">
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif}
+.t{fill:#e6eef8;font-weight:700;font-size:15px}
+.s{fill:#9cb0c6;font-size:12.5px}
+.h{fill:#e6eef8;font-weight:800;font-size:22px}
+.box{fill:#122235;stroke:#25405c;stroke-width:2}
+.flow{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:10 12;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-44}}
+
+.wave{fill:none;stroke-width:3.2;stroke-linejoin:round}
+.cursor{animation:sweep 6s linear infinite}
+@keyframes sweep{from{transform:translateX(0)}to{transform:translateX(700px)}}
+.reveal{animation:reveal 6s linear infinite}
+@keyframes reveal{from{width:0}to{width:700px}}
+.ph{opacity:.0;animation:ph 6s linear infinite}
+@keyframes ph{0%,100%{opacity:.25}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<rect width="960" height="430" rx="22" fill="#0b1622"/>
+<defs><clipPath id="clipw"><rect class="reveal" x="200" y="100" width="0" height="300"/></clipPath></defs><text x="40" y="52" class="h">How auto-program works</text><text x="40" y="78" class="s">esptool toggles DTR/RTS. Q1 and Q2 turn that into a reset with IO0 held low, so the ESP enters the bootloader by itself.</text><rect x="200" y="100" width="130" height="280" fill="#334155" opacity=".28"/><text x="265.0" y="122" text-anchor="middle" style="fill:#e6eef8;font-weight:800;font-size:13px">Idle</text><rect x="330" y="100" width="140" height="280" fill="#7f1d1d" opacity=".28"/><text x="400.0" y="122" text-anchor="middle" style="fill:#e6eef8;font-weight:800;font-size:13px">① Reset</text><rect x="470" y="100" width="150" height="280" fill="#713f12" opacity=".28"/><text x="545.0" y="122" text-anchor="middle" style="fill:#e6eef8;font-weight:800;font-size:13px">② Boot</text><rect x="620" y="100" width="280" height="280" fill="#064e3b" opacity=".28"/><text x="760.0" y="122" text-anchor="middle" style="fill:#e6eef8;font-weight:800;font-size:13px">③ Flashing</text><text x="40" y="180" class="t" style="fill:#60a5fa">DTR#</text><text x="120" y="180" class="s">PC output</text><path d="M200 200H900" stroke="#25405c" stroke-width="1"/><path class="wave" d="M200 158H470V194H620V158H900" stroke="#60a5fa" opacity=".18"/><path class="wave" d="M200 158H470V194H620V158H900" stroke="#60a5fa" clip-path="url(#clipw)"/><text x="40" y="238" class="t" style="fill:#60a5fa">RTS#</text><text x="120" y="238" class="s">PC output</text><path d="M200 258H900" stroke="#25405c" stroke-width="1"/><path class="wave" d="M200 216H330V252H470V216H900" stroke="#60a5fa" opacity=".18"/><path class="wave" d="M200 216H330V252H470V216H900" stroke="#60a5fa" clip-path="url(#clipw)"/><text x="40" y="296" class="t" style="fill:#facc15">EN</text><text x="120" y="296" class="s">to ESP</text><path d="M200 316H900" stroke="#25405c" stroke-width="1"/><path class="wave" d="M200 274H330V310H470V274H900" stroke="#facc15" opacity=".18"/><path class="wave" d="M200 274H330V310H470V274H900" stroke="#facc15" clip-path="url(#clipw)"/><text x="40" y="354" class="t" style="fill:#facc15">IO0</text><text x="120" y="354" class="s">to ESP</text><path d="M200 374H900" stroke="#25405c" stroke-width="1"/><path class="wave" d="M200 332H470V368H640V332H900" stroke="#facc15" opacity=".18"/><path class="wave" d="M200 332H470V368H640V332H900" stroke="#facc15" clip-path="url(#clipw)"/><g class="cursor"><path d="M200 100V380" stroke="#e6eef8" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="200" cy="100" r="5" fill="#2dd4bf"/></g><text x="40" y="412" class="s">EN goes low (reset) → IO0 goes low while EN rises → the ESP boots into download mode. When a serial monitor asserts both lines, nothing resets.</text>
+</svg>

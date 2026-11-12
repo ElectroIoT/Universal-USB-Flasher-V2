@@ -1,0 +1,33 @@
+Net,Connections (Ref.pin),Notes
+VBUS,USB1.VBUS(A4/A9/B4/B9); U3.5; F1.1,Raw USB 5V
+VBUS_F,F1.2; C1.1; U2.16(VDD5); U2.7(VBUS); C2.1; D1.A,After 500mA polyfuse
++5V,D1.K; U1.3(VIN); C5.1; H1.2; SW3.3,~4.6-4.7V after Schottky
++3V3,U1.2(VOUT); U1.4(TAB); C6.1; C7.1; H1.1; J2.VCC; C8.1; SW3.1; R3.1; R9.1; R10.1; R12.1; R13.1,SGM2212 800mA LDO output
+VIO,SW3.2(common); U2.15(VIO); C4.1; R4.1; R5.1; R6.1; R14.1,UART logic level 3V3 or 5V
+GND,USB1.GND(A1/A12/B1/B12); USB1.SHELL; R1.2; R2.2; U3.2; C1.2; C2.2; C3.2; C4.2; C5.2; C6.2; C7.2; C8.2; C9.2; U1.1; U2.1; LED1.K; R11.2; SW1.2; SW2.2; H1.3; J2.GND,Solid pour both layers
+CC1,USB1.CC1(A5); R1.1,5.1k to GND
+CC2,USB1.CC2(B5); R2.1,5.1k to GND
+USB_DP,USB1.DP1(A6); USB1.DP2(B6); U3.1; U3.6; U2.5(UD+),Short parallel pair with USB_DM
+USB_DM,USB1.DN1(A7); USB1.DN2(B7); U3.3; U3.4; U2.6(UD-),
+V3,U2.4(V3); C3.1,100nF only - do NOT tie to VDD5
+TXD,U2.2(TXD); H1.4; J2.RXD; LED2.K; SW4.1,Flasher TX -> target RX
+RXD,U2.3(RXD); H1.5; J2.TXD; LED3.K; R15.2,Flasher RX <- target TX; also UPDI pin
+UPDI_R,SW4.2(common); R15.1,SW4 throw 1 = TXD (UPDI mode); throw 3 = NC (UART mode)
+ACT_N,U2.8(ACT#); LED4.K,Low when USB enumerated
+DTR_N,U2.10(TNOW/DTR#); H1.6; SJ1.1; C10.1,NO pull-down on this pin
+RTS_N,U2.11(RTS#); H1.7; SJ2.1,
+DTR_AP,SJ1.2; R7.1; Q2.2(E),Auto-program side of SJ1
+RTS_AP,SJ2.2; R8.1; Q1.2(E),Auto-program side of SJ2
+Q1_B,R7.2; Q1.1(B),
+Q2_B,R8.2; Q2.1(B),
+EN,Q1.3(C); R9.2; C9.1; SW1.1; H1.9; J2.CH_PD,ESP EN / CH_PD
+IO0,Q2.3(C); R10.2; SW2.1; H1.10; J2.GPIO0,ESP boot strap
+IO15,H1.11; R11.1,10k pull-down for bare ESP8266
+RST,C10.2; R14.2; H1.8,Arduino auto-reset (DTR via 100nF)
+ESP01_RST,J2.RST; R12.2,10k pull-up
+ESP01_IO2,J2.GPIO2; R13.2,10k pull-up
+LED1_A,R3.2; LED1.A,PWR red
+LED2_A,R4.2; LED2.A,TX orange
+LED3_A,R5.2; LED3.A,RX yellow
+LED4_A,R6.2; LED4.A,ACT green
+NC,U2.9(DCD#); U2.12(DSR#); U2.13(CTS#); U2.14(RI#); USB1.SBU1; USB1.SBU2; SW4.3,Leave unconnected
