@@ -9,11 +9,12 @@ True 3.3 V / 5 V logic, a plug-in ESP-01 socket, automatic reset/boot, and USB o
 
 | | |
 |---|---|
-| USB-UART | **WCH CH343G** (SOP-16), VIO 1.8–5 V, up to 6 Mbaud, native CDC driver on Windows 10/11, macOS and Linux |
+| USB-UART | **WCH CH342F dual UART** (QFN-24), VIO 1.8–5 V, up to 3 Mbaud, two COM ports, native CDC driver |
 | Logic level | **SW3**: 3.3 V or ~4.6 V (5 V rail after Schottky) |
 | Targets | ESP32 / S2 / S3 / C3, ESP8266, ESP-12F, ESP-01/01S, ATmega328P, Pro Mini, LGT8F328P, ATtiny 0/1/2-series, AVR-DA/DB/DD |
-| Power out | 3.3 V (SGM2212, 800 mA) and 5 V (500 mA polyfuse) |
-| Board | 72 × 34 mm, 2-layer, 1.6 mm. All parts on LCSC |
+| Power out | 3.3 V and 5 V through **current-limited TPS2553 switches** (≈0.61 A / ≈0.51 A), POWER-CYCLE button, OVERLOAD LED |
+| Ports | H1 1×11 · **ESP-Prog 2×3 1.27 mm (J3)** · 2×3 2.54 mm pogo/cable (J4) · UART2 (J5) · ESP-01 socket (J2) |
+| Board | 80 × 40 mm, 2-layer, 1.6 mm. All parts on LCSC |
 | Interactive guide | [`docs/index.html`](docs/index.html): BOM, schematic and placement **tick-lists** for EasyEDA |
 
 ---
@@ -33,6 +34,12 @@ True 3.3 V / 5 V logic, a plug-in ESP-01 socket, automatic reset/boot, and USB o
 ---
 
 ## Features
+
+> **V2.1 update (2026-11-13):** CH342F dual UART, ESP-Prog port, current-limited target power with power-cycle button, ESD on all header lines, 5V-IO warning LED and the PROG pogo-pad standard. Current data: [`hardware/`](hardware/) (generated from `tools/design.json`). Some sections below still describe V2.0 details and will be refreshed.
+
+<p align="center"><img src="images/power-switch.svg" width="100%"></p>
+<p align="center"><img src="images/dual-uart.svg" width="100%"></p>
+<p align="center"><img src="images/prog-pad.svg" width="100%"></p>
 
 <p align="center"><img src="images/targets.svg" alt="Supported targets" width="100%"></p>
 
@@ -231,5 +238,7 @@ tools/      gen_svgs.py (regenerates images/) · sch_parts.json (pin-level sourc
 ```
 
 ---
+
+Licensed under **CERN-OHL-P-2.0** (see [LICENSE](LICENSE)).
 
 Designed by **ElectroIoT**: [electroiot.in](https://electroiot.in) · [YouTube](https://www.youtube.com/@ElectroIoT-IN) · [Instagram](https://www.instagram.com/electroiot_in)

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 320" width="980" height="320" role="img">
+<style>
+text{font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif}
+.t{fill:#e6eef8;font-weight:700;font-size:15px}
+.s{fill:#9cb0c6;font-size:12.5px}
+.h{fill:#e6eef8;font-weight:800;font-size:22px}
+.box{fill:#122235;stroke:#25405c;stroke-width:2}
+.flow{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:10 12;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-44}}
+.pulse{animation:pulse 1.6s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<rect width="980" height="320" rx="22" fill="#0b1622"/>
+<text x="40" y="52" class="h">Dual UART (CH342F)</text><text x="40" y="78" class="s">One USB cable, two COM ports with one shared VIO. Flash on UART1 while UART2 shows another device's log.</text><rect class="box" x="40" y="130" width="170" height="150" rx="14"/><text class="t" x="125" y="166" text-anchor="middle">PC</text><rect x="60" y="184" width="130" height="34" rx="8" fill="#0f2a3d" stroke="#fb923c"/><text x="125" y="206" text-anchor="middle" style="fill:#fb923c;font-weight:700;font-size:13px">COM7 · esptool</text><rect x="60" y="228" width="130" height="34" rx="8" fill="#0f2a3d" stroke="#3b82f6"/><text x="125" y="250" text-anchor="middle" style="fill:#3b82f6;font-weight:700;font-size:13px">COM8 · monitor</text><path class="flow" d="M212 205H330" stroke="#22d3ee"/><text x="270" y="196" text-anchor="middle" class="s">USB</text><rect class="box" x="330" y="120" width="180" height="170" rx="16" style="stroke:#2dd4bf"/><text class="t" x="420" y="160" text-anchor="middle">CH342F</text><text class="s" x="420" y="180" text-anchor="middle">VIO 1.8–5 V</text><text x="500" y="214" text-anchor="end" style="fill:#fb923c;font-weight:800;font-size:12px">UART1</text><text x="500" y="262" text-anchor="end" style="fill:#3b82f6;font-weight:800;font-size:12px">UART2</text><path d="M512 210H700" stroke="#fb923c" stroke-width="4"/><circle r="6" fill="#fb923c"><animateMotion dur="1.2s" repeatCount="indefinite" path="M515 210H695"/></circle><path d="M512 258H700" stroke="#3b82f6" stroke-width="4"/><circle r="6" fill="#3b82f6"><animateMotion dur="1.9s" repeatCount="indefinite" path="M695 258H515"/></circle><text x="606" y="200" text-anchor="middle" class="s">TX/RX + DTR/RTS (auto-program)</text><text x="606" y="282" text-anchor="middle" class="s">TX2/RX2 + DTR2 on J5</text><rect class="box" x="700" y="170" width="230" height="62" rx="14"/><text class="t" x="815" y="198" text-anchor="middle">Target being flashed</text><text class="s" x="815" y="218" text-anchor="middle">H1 · J3 · J4 · J2</text><rect class="box" x="700" y="240" width="230" height="44" rx="14"/><circle class="pulse" cx="724" cy="262" r="7" fill="#3b82f6"/><text class="t" x="822" y="268" text-anchor="middle" style="font-size:14px">Gateway / 2nd board log</text>
+</svg>
