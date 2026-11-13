@@ -60,5 +60,5 @@ Universal USB Flasher V2.1 is a USB-C programmer and serial adapter that flashes
 
 ## Attach
 
-- Gerber zip, BOM CSV, pick-and-place CSV, schematic PDF (see [README.md](README.md) for how to export them)
+- Gerber zip, BOM CSV and pick-and-place CSV from [`hardware/fabrication/`](../../hardware/fabrication/), plus the schematic PDF (see [README.md](README.md))
 - Cover: `images/pcb-3d.png`; gallery: `pcb-3d-top.png`, `pcb-3d-bottom.png`, `pcb-2d-top.png`, `pcb-2d-bottom.png`

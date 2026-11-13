@@ -32,7 +32,7 @@ True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, au
 | **2D top** | **2D bottom** |
 | <img src="images/pcb-2d-top.png" alt="2D top"> | <img src="images/pcb-2d-bottom.png" alt="2D bottom"> |
 
-80 × 40 mm, 2 layers, 1.6 mm FR-4. Power tracks 0.5–0.6 mm, signals 0.254 mm, vias 0.3/0.6 mm, GND pour on both sides, DRC 0 errors. Every connector pin is labelled on the top silkscreen, and the bottom silkscreen carries the full pinout. Pinout tables: [`hardware/pinout.md`](hardware/pinout.md). Posting text for OSHWLab / PCBWay: [`docs/publish/`](docs/publish/).
+80 × 40 mm, 2 layers, 1.6 mm FR-4. Power tracks 0.5–0.6 mm, signals 0.254 mm, vias 0.3/0.6 mm, GND pour on both sides, DRC 0 errors. Every connector pin is labelled on the top silkscreen, and the bottom silkscreen carries the full pinout. Pinout tables: [`hardware/pinout.md`](hardware/pinout.md). Gerber, BOM and pick-and-place: [`hardware/fabrication/`](hardware/fabrication/). Posting text for OSHWLab / PCBWay: [`docs/publish/`](docs/publish/).
 
 ---
 

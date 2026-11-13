@@ -17,15 +17,17 @@ Ready-to-paste text for each site, plus a checklist. Nothing here is posted auto
 | `images/pcb-2d-top.png`, `images/pcb-2d-bottom.png` | Gallery / PCB preview |
 | `images/hero.svg`, `images/targets.svg`, `images/how-it-works.svg` | Description images (convert to PNG if the site does not take SVG) |
 
-## Files to export from EasyEDA (PCB1 open)
+## Fabrication files (already in the repo)
 
-1. **Gerber**: Export → PCB Fabrication File (Gerber) → `Gerber_Universal-USB-Flasher-V2.1.zip`
-2. **BOM**: Export → BOM → CSV (every part already has its LCSC number)
-3. **Pick and place**: Export → Pick and Place File → CSV
-4. **Schematic PDF**: open Schematic1 → Export → PDF (all 8 pages)
-5. Optional **3D STEP**: 3D view → Export → 3D File (STEP), for designing a case
+Exported 2026-11-13 into [`hardware/fabrication/`](../../hardware/fabrication/): attach these on OSHWLab / PCBWay.
 
-Put copies in `hardware/fabrication/` so GitHub has them too.
+| File | Attach as |
+|---|---|
+| `Gerber_Universal-USB-Flasher-V2.1.zip` | Gerber (PCBWay: upload this zip) |
+| `BOM_Universal-USB-Flasher-V2.1.csv` | BOM |
+| `PickAndPlace_Universal-USB-Flasher-V2.1.csv` | Pick-and-place / centroid |
+
+Still to export yourself if you want them: **schematic PDF** (Schematic1 → Export → PDF, all 8 pages) and a **3D STEP** (3D view → Export → 3D File). After any PCB change, export the Gerber, BOM and pick-and-place again (EasyEDA: Export menu) and replace the files.
 
 ## Checklist before posting
 
