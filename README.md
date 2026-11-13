@@ -108,7 +108,7 @@ pymcuprog -t uart -u COM7 -d attiny1614 write -f app.hex --erase --verify
 ### 7. ESP-Prog port and PROG pogo pads
 <p align="center"><img src="images/prog-pad.svg" alt="PROG pogo pad standard animation" width="100%"></p>
 
-J3 (1.27 mm shrouded) and J4 (2.54 mm) use Espressif's ESP-Prog **Program interface** order: 1 ESP_EN · 2 VDD · 3 ESP_TXD · 4 GND · 5 ESP_RXD · 6 ESP_IO0. ESP_TXD is the **target's** TX, so it goes to the flasher RXD. VDD is `+3V3_T`. Full pad spec for future boards: [docs/prog-pad-standard.md](docs/prog-pad-standard.md). The matching **pogo jig** (separate small PCB) is in [pogo-jig/](pogo-jig/).
+J3 (1.27 mm shrouded) and J4 (2.54 mm) use Espressif's ESP-Prog **Program interface** order: 1 ESP_EN · 2 VDD · 3 ESP_TXD · 4 GND · 5 ESP_RXD · 6 ESP_IO0. ESP_TXD is the **target's** TX, so it goes to the flasher RXD. VDD is `+3V3_T`. Full pad spec for future boards: [docs/prog-pad-standard.md](docs/prog-pad-standard.md). The matching **pogo jig** (separate small PCB) is in [pogo-jig/](pogo-jig/), with an interactive page at [docs/pogo-jig.html](docs/pogo-jig.html). It works with every ESP chip (ESP8266, ESP32, S2, S3 incl. S3-MINI-1, C2, C3, C5, C6, H2, P4) and UPDI AVRs, on boards that carry the PROG pads.
 
 <p align="center"><img src="images/pogo-jig.svg" alt="PROG pogo jig" width="100%"></p>
 

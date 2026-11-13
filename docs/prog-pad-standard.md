@@ -18,6 +18,23 @@ Same order as Espressif's ESP-Prog **Program interface**, so the same cable/jig 
 
 Pads 1/2 form the first row, 3/4 the second and 5/6 the third. That matches a 2×3 header with pin 1 marked.
 
+## Which pin goes to which pad (per chip)
+
+| Chip | Pad 3 ← TX | Pad 5 → RX | Pad 6 boot pin | Extra strap on target |
+|---|---|---|---|---|
+| ESP8266 | GPIO1 | GPIO3 | GPIO0 | GPIO15 low, GPIO2 high |
+| ESP32 | GPIO1 | GPIO3 | GPIO0 | GPIO2 low/floating |
+| ESP32-S2 / S3 | GPIO43 | GPIO44 | GPIO0 | GPIO46 low/floating |
+| ESP32-C2 | GPIO20 | GPIO19 | GPIO9 | GPIO8 high |
+| ESP32-C3 | GPIO21 | GPIO20 | GPIO9 | GPIO8 high |
+| ESP32-C5 | GPIO11 | GPIO12 | GPIO28 | GPIO27 high |
+| ESP32-C6 | GPIO16 | GPIO17 | GPIO9 | GPIO8 high |
+| ESP32-H2 | GPIO24 | GPIO23 | GPIO9 | GPIO8 high |
+| ESP32-P4 | GPIO37 | GPIO38 | GPIO35 | GPIO36 high |
+| UPDI AVR (variant) | UPDI | – | – | pads 2/3/4 only |
+
+Full compatibility notes: [pogo-jig/README.md](../pogo-jig/README.md#supported-chips) and the [interactive page](pogo-jig.html).
+
 ## Footprint
 | Item | Value |
 |---|---|

@@ -4,7 +4,33 @@
 
 A small "pen" board that flashes any board with the [ElectroIoT PROG pad standard](../docs/prog-pad-standard.md) (6 bare pads, ESP-Prog order, 2.54 mm). No header is soldered on the target. Plug the jig into **J4** of the Universal USB Flasher V2 with a 6-way 2.54 mm cable, press it on the pads, and flash. Auto-program (EN/IO0) works through the jig.
 
+> **Interactive page:** [docs/pogo-jig.html](../docs/pogo-jig.html): supported-chip table, pick-your-chip pad map, BOM, placement and assembly tick-lists.
+
 > **Status: design only.** Netlist, BOM and placement are ready. You draw the PCB in EasyEDA. Not built or tested.
+
+## Supported chips
+
+The jig carries only EN, 3.3 V, TX, RX, GND and one boot pin (pulled low by the flasher's auto-program). So it works with **every chip whose ROM bootloader is entered by holding one pin low during reset over UART**: the whole ESP family, plus UPDI AVRs through a wiring variant.
+
+> The pogo pins press on **pads on your own PCB**, not on a module's edge. An ESP-12F, ESP32-S3-MINI-1 or ESP32-C6-MINI-1 is supported when the board you design around it has the 6 PROG pads wired as below. For a loose module, use the flasher's H1 wires or the ESP-01 socket.
+
+| Chip | Example modules | Pad 3 ← target TX | Pad 5 → target RX | Pad 6 boot pin | Target board must add | Status |
+|---|---|---|---|---|---|---|
+| ESP8266 | ESP-12F · ESP-12E · ESP-07 | GPIO1 | GPIO3 | GPIO0 | GPIO15 10k to GND, GPIO2 10k to 3V3 | ✓ |
+| ESP32 | WROOM-32E · WROVER-E · PICO-D4 | GPIO1 | GPIO3 | GPIO0 | GPIO2 low/floating, GPIO12 low (module default) | ✓ |
+| ESP32-S2 | S2-MINI-1 · S2-WROOM | GPIO43 | GPIO44 | GPIO0 | GPIO46 low/floating | ✓ |
+| ESP32-S3 | S3-WROOM-1 · **S3-MINI-1** · S3-WROOM-2 | GPIO43 | GPIO44 | GPIO0 | GPIO46 low/floating | ✓ |
+| ESP32-C2 | ESP8684-MINI / WROOM | GPIO20 | GPIO19 | GPIO9 | GPIO8 10k to 3V3 | ✓ |
+| ESP32-C3 | C3-MINI-1 · C3-WROOM-02 | GPIO21 | GPIO20 | GPIO9 | GPIO8 10k to 3V3 | ✓ |
+| ESP32-C5 | C5-WROOM-1 | GPIO11 | GPIO12 | GPIO28 | GPIO27 10k to 3V3 | ✓ |
+| ESP32-C6 | **C6-MINI-1** · C6-WROOM-1 | GPIO16 | GPIO17 | GPIO9 | GPIO8 10k to 3V3 | ✓ |
+| ESP32-H2 | H2-MINI-1 | GPIO24 | GPIO23 | GPIO9 | GPIO8 10k to 3V3 | ✓ |
+| ESP32-P4 | P4 boards | GPIO37 | GPIO38 | GPIO35 | GPIO36 10k to 3V3 (own power tree) | ✓ |
+| ATtiny 0/1/2 · AVR-Dx | ATtiny1614 · AVR128DA | UPDI on pad 3 | – | – | Only pads 2/3/4 used, flasher SW4 = UPDI | ◐ variant |
+| ATmega328P / Arduino | Pro Mini | – | – | – | Needs DTR-capacitor reset: use flasher H1 RST | ✗ |
+| STM32 · RP2040 · nRF52 · SAMD · CH32V | – | – | – | – | Different bootloader (BOOT0 high / USB / SWD) | ✗ |
+
+On C2, C3, C6 and H2 the boot pin is **GPIO9**, not GPIO0: wire pad 6 ("IO0") to GPIO9 and pull GPIO8 high (GPIO8 = 0 with GPIO9 = 0 is invalid). Every target also keeps its own EN pull-up + 100 nF–1 µF and a boot-pin pull-up. Sources: Espressif esptool "Boot Mode Selection" docs (boot pins) and ESP-IDF `soc/<chip>/include/soc/uart_pins.h` (UART0 pins), checked 2026-11-13.
 
 ## How it works
 - **P1–P3** are three CHIN-BAN **PG2541-02-002P** pogo strips (2 pins each, 2.54 mm pitch). Their housings are 5.30 × **2.50 mm**, so three strips stack at a 2.54 mm row pitch and form the 2 × 3 PROG grid.
