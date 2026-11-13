@@ -145,5 +145,27 @@ if n != 1:
     print('index.html: DESIGN markers not found'); sys.exit(1)
 open(idx, 'w', encoding='utf-8', newline='\n').write(new)
 
+# --- README tables (between markers)
+rd = os.path.join(ROOT, 'README.md')
+readme = open(rd, encoding='utf-8').read()
+def lc(c):
+    return f'[{c}](https://www.lcsc.com/product-detail/{c}.html)' if c.startswith('C') else c
+rows = ['| Ref | Qty | Part | Package | LCSC | Notes |', '|---|:-:|---|---|---|---|']
+for r, qty, desc, pkg, mpn, mfr, lcsc, stock, price, st, g, note in D['bom']:
+    warn = '⚠️ ' if st == 'warn' else ''
+    rows.append(f'| {r.replace(" ", ", ")} | {qty} | {mpn}: {desc} | {pkg} | {lc(lcsc)} | {warn}{note} |')
+known = sum((x[8] or 0) * x[1] for x in D['bom'])
+rows += ['', f'**{sum(x[1] for x in D["bom"] if x[6].startswith("C"))} parts · {len({x[6] for x in D["bom"] if x[6].startswith("C")})} unique LCSC numbers · ≈${known:.2f} in captured LCSC prices per board** (plus a little for lines without a captured price; no PCB or shipping).']
+pg = ['| Page | Parts | No-Connect flags |', '|---|---|---|']
+for pid, title, sub in D['pages']:
+    pp = [p for p in D['parts'] if p[1] == pid]
+    ncs = [f'{p[0]}.{x[0]} {x[1]}' for p in pp for x in p[5] if x[2] == 'NC']
+    pg.append(f'| {title} | {", ".join(p[0] for p in pp)} | {", ".join(ncs) or "none"} |')
+for tag, body in (('BOM', rows), ('PAGES', pg)):
+    readme, n = re.subn(rf'<!-- {tag}:START -->.*?<!-- {tag}:END -->', lambda m: f'<!-- {tag}:START -->\n' + '\n'.join(body) + f'\n<!-- {tag}:END -->', readme, flags=re.S)
+    if n != 1:
+        print(f'README: {tag} markers not found'); sys.exit(1)
+open(rd, 'w', encoding='utf-8', newline='\n').write(readme)
+
 nc_count = sum(1 for p in D['parts'] for x in p[5] if x[2] == 'NC')
 print(f'OK: {len(D["parts"])} parts, {sum(len(p[5]) for p in D["parts"])} pins, {len(nets)} nets, {nc_count} NC pins, {len(D["bom"])} BOM lines, board {W}x{H} mm')

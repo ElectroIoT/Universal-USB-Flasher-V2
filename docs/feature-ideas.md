@@ -1,37 +1,21 @@
-# Feature ideas (not in the current design)
+# Feature ideas
 
-Ranked by value for effort. None of these are designed or part-checked yet. Look up LCSC stock before adopting one.
+## Done in V2.1 (2026-11-13)
+| Feature | How it is implemented |
+|---|---|
+| ESP-Prog compatible header | J3: 2×3 1.27 mm box header in ESP-Prog PROG order; J4: same pinout at 2.54 mm |
+| Current-limited target power | U4/U5 TPS2553 (≈0.61 A on 3V3, ≈0.51 A on 5V), SW5 POWER-CYCLE, LED6 OVERLOAD from FAULT# |
+| ESD on header pins | U6/U7 USBLC6-4SC6 on TX, RX, DTR, RTS, EN, IO0, TX2, RX2 |
+| 5V-IO warning LED | Q3 MMBT3906 compares VIO with +3V3 and lights LED5 in 5 V mode (no DPDT switch needed) |
+| Dual UART | CH342F replaces CH343G; UART2 on J5, blue LED4 on RX2 |
+| Pogo-pad standard | [prog-pad-standard.md](prog-pad-standard.md); pogo jig plugs into J4 |
 
-## Worth adding in V2.1
+## Still open
+### Pogo jig adapter board
+A small PCB with 6 pogo pins in the PROG pattern, 2 locating pins and a 2×3 2.54 mm female header that plugs into J4.
 
-### 1. ESP-Prog compatible 2×3 header
-Espressif's ESP-Prog uses a 2×3, 2.54 mm "PROG" header carrying VDD, EN, TXD, RXD, IO0 and GND. Many ESP boards (including your own future ones) can carry that 6-pin footprint, and then the flasher plugs in with one ribbon cable, with no loose jumper wires.
-- Cost: one 2×3 header, plus the nets already exist.
-- Check the exact ESP-Prog pin order in Espressif's ESP-Prog docs before drawing it.
+### Enclosure
+A 3D-printed or acrylic sandwich case that protects the bottom side and supports the ESP-01 overhang.
 
-### 2. Current-limited target power switch
-Put a load switch with an adjustable current limit between +3V3/+5V and the header (for example a USB power-distribution switch IC), with a small button to power-cycle the target.
-- Protects the LDO and the target much faster than the PTC.
-- Lets you power-cycle a module without unplugging USB, which is handy for deep-sleep testing.
-
-### 3. ESD protection on the header pins
-The 11 header pins are touched and hot-plugged far more than the USB port. A 4- or 6-line TVS array on TX, RX, EN, IO0, DTR and RTS is cheap insurance.
-
-## Worth considering
-
-### 4. 5 V-IO warning LED
-A red LED that lights only when SW3 is on 5 V. The clean way is a DPDT slide switch (second pole drives the LED). None was in LCSC stock on 2026-11-12, so check again later.
-
-### 5. Dual UART (CH342F)
-A second UART lets you flash one target while logging another device, for example a gateway and a node.
-
-### 6. Standard pogo / Tag-Connect pads
-Pick one pad pattern (Tag-Connect TC2030 or your own 6-pad pogo layout) for all future ElectroIoT boards. Then make a matching pogo cable for this flasher. Production boards then need no programming header at all.
-
-### 7. Enclosure
-A 3D-printed or acrylic sandwich case that protects the bottom side and gives the ESP-01 overhang something to rest on.
-
-## Bigger, separate project
-
-### 8. Stand-alone offline programmer
-An ESP32-S3 with an SD card and a "Flash" button that writes a stored firmware image to targets with no PC. That's useful for small production runs, but it is its own project.
+### Stand-alone offline programmer (separate project)
+An ESP32-S3 with an SD card and a "Flash" button that writes a stored image to targets without a PC, for small production runs.

@@ -319,30 +319,26 @@ save('dual-uart.svg', wrap(980, 320, b, st))
 # ---------------------------------------------------------------- NEW: PROG pogo pad standard
 st = '''
 .jig{animation:jig 5s ease-in-out infinite}
-@keyframes jig{0%,15%{transform:translateY(-40px)}35%,75%{transform:translateY(0)}95%,100%{transform:translateY(-40px)}}
+@keyframes jig{0%,15%{transform:translateY(-28px)}35%,75%{transform:translateY(0)}95%,100%{transform:translateY(-28px)}}
 .ok{animation:ok 5s step-end infinite;opacity:0}
 @keyframes ok{0%{opacity:0}38%{opacity:1}75%{opacity:0}}
 '''
 b = '<text x="40" y="52" class="h">ElectroIoT PROG pad standard (pogo)</text><text x="40" y="78" class="s">6 bare pads in ESP-Prog order at 2.54 mm on every new board. A pogo jig on J4 presses on, and EN/IO0 auto-program does the rest.</text>'
 pins = [('1', 'EN', C['esp']), ('2', 'VDD', C['v33']), ('3', 'TXD', C['tx']), ('4', 'GND', '#64748b'), ('5', 'RXD', C['rx']), ('6', 'IO0', C['esp'])]
-b += f'<rect x="80" y="230" width="360" height="110" rx="10" fill="url(#pg)"/><text x="100" y="330" style="fill:#e5e7eb;font-weight:700;font-size:12px">target board (no header)</text>'
+b += f'<rect x="80" y="236" width="400" height="104" rx="10" fill="url(#pg)"/><text x="96" y="332" style="fill:#e5e7eb;font-weight:700;font-size:12px">target board (no header)</text>'
 b = DEFS + b
 for i, (n, lab, col) in enumerate(pins):
-    r, cc = divmod(i, 2)
-    x, y = 220 + cc * 50, 250 + r * 0  # 2x3 drawn as 3 columns x 2 rows on the board edge view
-for i, (n, lab, col) in enumerate(pins):
     cc, r = divmod(i, 2)
-    x, y = 200 + cc * 50, 258 + r * 40
-    b += f'<circle cx="{x}" cy="{y}" r="14" fill="#d4a34a"/><text x="{x}" y="{y+4}" text-anchor="middle" style="fill:#1f2937;font-weight:800;font-size:12px">{n}</text><text x="{x+20}" y="{y+4}" style="fill:#e5e7eb;font-weight:700;font-size:11px">{lab}</text>'
-jig = f'<rect x="170" y="110" width="180" height="60" rx="10" fill="{CARD}" stroke="{LINE}" stroke-width="2"/><text x="260" y="146" text-anchor="middle" class="t" style="font-size:14px">pogo jig → J4</text>'
+    x, y = 150 + cc * 90, 262 + r * 40
+    b += f'<circle cx="{x}" cy="{y}" r="13" fill="#d4a34a"/><text x="{x}" y="{y+4}" text-anchor="middle" style="fill:#1f2937;font-weight:800;font-size:12px">{n}</text><text x="{x+19}" y="{y+4}" style="fill:#e5e7eb;font-weight:700;font-size:11px">{lab}</text>'
+jig = f'<rect x="110" y="122" width="300" height="52" rx="10" fill="{CARD}" stroke="{LINE}" stroke-width="2"/><text x="260" y="154" text-anchor="middle" class="t" style="font-size:14px">pogo jig → J4</text>'
 for cc in range(3):
-    for r in range(2):
-        x = 200 + cc * 50
-        jig += f'<path d="M{x} 170V{232 + r*40 - 10}" stroke="#cbd5e1" stroke-width="4"/>'
+    x = 150 + cc * 90
+    jig += f'<path d="M{x} 174V247" stroke="#cbd5e1" stroke-width="4"/>'
 b += f'<g class="jig">{jig}</g>'
-b += f'<g class="ok"><text x="260" y="220" text-anchor="middle" style="fill:{C["rx"]};font-weight:800;font-size:13px">contact ✓</text></g>'
+b += f'<g class="ok"><text x="430" y="290" style="fill:{C["rx"]};font-weight:800;font-size:13px">contact ✓</text></g>'
 spec = [('Pitch', '2.54 mm, 2 × 3'), ('Pad', 'Ø 1.5–1.8 mm, no paste'), ('Order', 'ESP-Prog: 1 EN · 2 VDD · 3 TXD · 4 GND · 5 RXD · 6 IO0'), ('Keep-out', '1 mm around pads, no parts'), ('Optional', '2 × Ø 1.0 mm NPTH locating holes'), ('Silk', '"PROG" + pin 1 dot')]
 for i, (k, v) in enumerate(spec):
     y = 130 + i * 34
-    b += f'<text x="500" y="{y}" class="t" style="fill:{ACC};font-size:13px">{k}</text><text x="600" y="{y}" class="s" style="font-size:13px">{v}</text>'
+    b += f'<text x="520" y="{y}" class="t" style="fill:{ACC};font-size:13px">{k}</text><text x="610" y="{y}" class="s" style="font-size:12.5px">{v}</text>'
 save('prog-pad.svg', wrap(980, 360, b, st))
