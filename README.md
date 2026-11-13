@@ -5,7 +5,7 @@
 **One USB-C board to flash ESP32, ESP8266 (ESP-12F, ESP-01), Arduino/ATmega and UPDI AVR chips, with a second UART to watch another device.**
 True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, automatic reset/boot, current-limited target power and ESD on every line.
 
-> **Status: design stage (V2.1).** Netlist, LCSC BOM, 5-page EasyEDA pin list and placement are done and generated from one design file. The schematic and PCB are being drawn in EasyEDA. **Nothing has been built or tested on hardware yet.** This is V2 of [Universal-USB-To-Serial-Flasher](https://github.com/ElectroIoT/Universal-USB-To-Serial-Flasher) (CH340C). See [what V2 fixes](docs/V1-review.md).
+> **Status: design stage (V2.1).** Netlist, LCSC BOM, 8-page EasyEDA pin list and placement are done and generated from one design file. The schematic and PCB are being drawn in EasyEDA. **Nothing has been built or tested on hardware yet.** This is V2 of [Universal-USB-To-Serial-Flasher](https://github.com/ElectroIoT/Universal-USB-To-Serial-Flasher) (CH340C). See [what V2 fixes](docs/V1-review.md).
 
 | | |
 |---|---|
@@ -15,7 +15,8 @@ True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, au
 | Target power | 3.3 V and 5 V through **current-limited TPS2553 switches** (≈0.61 A / ≈0.51 A), **POWER-CYCLE** button, **OVERLOAD** LED |
 | Ports | H1 1×11 · **J3 ESP-Prog 2×3 1.27 mm** · J4 2×3 2.54 mm (pogo / cable) · J5 UART2 · J2 ESP-01 socket |
 | Board | 80 × 40 mm, 2-layer, 1.6 mm. All parts on LCSC |
-| Interactive guide | [`docs/index.html`](docs/index.html): BOM, 5-page schematic and placement **tick-lists** for EasyEDA |
+| Interactive guide | [`docs/index.html`](docs/index.html): BOM, 8-page schematic and placement **tick-lists** for EasyEDA |
+| Wiring diagrams | [`docs/schematic-wiring.html`](docs/schematic-wiring.html): every part drawn like its EasyEDA symbol with the net label for each pin, page by page |
 | Build guide | [`docs/build-guide.html`](docs/build-guide.html): 7 steps from EasyEDA to first flash, LCSC order calculator, soldering order, bring-up test log with pass/fail |
 | Licence | [CERN-OHL-P-2.0](LICENSE) |
 
@@ -239,16 +240,19 @@ Full CSV: [`hardware/BOM_V2_LCSC.csv`](hardware/BOM_V2_LCSC.csv). LCSC numbers w
 
 ## Schematic pages (EasyEDA)
 
-The schematic is split into 5 EasyEDA pages. **Every pin with its pin number, net, connected pins and No-Connect flags** is in [`hardware/schematic-pages.md`](hardware/schematic-pages.md). The interactive tick-list is in [`docs/index.html`](docs/index.html#sch-check).
+The schematic is split into 8 EasyEDA pages (matching the EasyEDA file). Visual per-pin wiring: [`docs/schematic-wiring.html`](docs/schematic-wiring.html). **Every pin with its pin number, net, connected pins and No-Connect flags** is in [`hardware/schematic-pages.md`](hardware/schematic-pages.md). The interactive tick-list is in [`docs/index.html`](docs/index.html#sch-check).
 
 <!-- PAGES:START -->
 | Page | Parts | No-Connect flags |
 |---|---|---|
-| Page 1 · USB + Power | USB1, R1, R2, U3, F1, C1, D1, C5, U1, C6, C7, SW3, Q3, R16, R17, LED5 | USB1.3 SBU2, USB1.9 SBU1 |
-| Page 2 · Target power | U4, R18, C11, C12, U5, R19, C13, C14, R20, SW5, R21, LED6, R3, LED1 | none |
-| Page 3 · USB dual UART | U2, C2, C3, C4, R4, LED2, R5, LED3, R6, LED4 | U2.1 RI0#, U2.9 RST#, U2.10 CTS1#, U2.11 RTS1#, U2.14 DSR1#, U2.16 DCD1#, U2.17 RI1#, U2.18 CTS0#, U2.22 DSR0#, U2.24 DCD0# |
-| Page 4 · Auto-program + control | SJ1, SJ2, R7, R8, Q1, Q2, R9, C9, R10, R11, SW1, SW2, C10, R14, SW4, R15 | SW4.3 throw B (UART) |
-| Page 5 · Connectors + ESD | H1, J2, C8, R12, R13, J3, J4, J5, U6, U7 | none |
+| Page 1 · Power | F1, C1, D1, C5, U1, C6, C7, Q3, R16, R17, LED5, C8 | none |
+| Page 2 · Target Power | U4, R18, C11, C12, U5, R19, C13, C14, R20, SW5, R21, LED6, R3, LED1 | none |
+| Page 3 · USB+ESD | USB1, R1, R2, U3, U6, U7 | USB1.B8 SBU2, USB1.A8 SBU1 |
+| Page 4 · USB-UART | U2, C2, C3, C4, R4, LED2, R5, LED3, R6, LED4 | U2.1 RI0#, U2.9 RST#, U2.10 CTS1#, U2.11 RTS1#, U2.14 DSR1#, U2.16 DCD1#, U2.17 RI1#, U2.18 CTS0#, U2.22 DSR0#, U2.24 DCD0# |
+| Page 5 · Auto-program | SJ1, SJ2, R7, R8, Q1, Q2 | none |
+| Page 6 · Target I/O | R9, C9, R10, R11, C10, R14, R15, R12, R13 | none |
+| Page 7 · LEDs + Switches | SW3, SW1, SW2, SW4 | SW4.3 throw B (UART) |
+| Page 8 · Connectors | H1, J2, J3, J4, J5 | none |
 <!-- PAGES:END -->
 
 GND, +3V3 and +5V use global power symbols. Every other net shared between pages needs a net label with the same name. Cross-check the finished schematic with **Design → Netlist** against [`hardware/netlist.csv`](hardware/netlist.csv).
@@ -297,7 +301,7 @@ Done in V2.1: dual UART, ESP-Prog port, current-limited target power, header ESD
 ## Repository layout
 ```
 images/     animated SVG diagrams used in this README (CSS/SMIL, no JS)
-docs/       index.html design page · build-guide.html (build steps, order calc, test log) · pogo-jig.html · V1 review · feature ideas · PROG pad standard
+docs/       index.html design page · schematic-wiring.html · build-guide.html (build steps, order calc, test log) · pogo-jig.html · V1 review · feature ideas · PROG pad standard
 hardware/   BOM_V2_LCSC.csv · netlist.csv · schematic-pages.md · placement.csv   (generated)
 pogo-jig/   PROG pogo jig board: README · BOM · netlist · placement
 tools/      design.json (single source of truth) · build.py (validate + generate) · gen_svgs.py (images)

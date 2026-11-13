@@ -113,7 +113,7 @@ L = ['# EasyEDA schematic: page-by-page connection list', '',
      f'Generated from `tools/design.json` ({D["version"]}). {len(D["parts"])} parts · {sum(len(p[5]) for p in D["parts"])} pins · {len(nets)} nets.', '',
      'For every part: place the symbol (by LCSC number), then wire each pin to the net shown. Pins marked **NC** get an EasyEDA **No-Connect flag**. '
      'GND, +3V3 and +5V use global power symbols. Every other net that appears on more than one page needs a net label with exactly the same name.', '',
-     '> Check before you trust a pin number: D1 and LED1–LED6 (which symbol pin is K), Q1/Q2/Q3 (SOT-23: 1=B, 2=E, 3=C), U2 (QFN-24 pin 0 = exposed pad), J2 (odd pins top row assumed). R/C/PTC pins are interchangeable.', '',
+     '> Check before you trust a pin number: D1 and LED1–LED6 (which symbol pin is K), Q1/Q2/Q3 (SOT-23: 1=B, 2=E, 3=C), U2 (QFN-24 pin 25 = exposed pad EP), J2 (odd pins top row assumed). R/C/PTC pins are interchangeable.', '',
      'An interactive version with tick boxes is in [docs/index.html](../docs/index.html#sch-check).', '']
 for pid, title, sub in D['pages']:
     pp = [p for p in D['parts'] if p[1] == pid]
