@@ -1,68 +1,68 @@
 # Board 80 x 40 mm, origin top-left, Y down, part centres
 Ref,X_mm,Y_mm,Body_W_mm,Body_H_mm,Block,Label,Note
-USB1,3.4,21,7.4,9,USB + ESD,USB-C,Mouth flush with left edge
-U3,11,21,3,3,USB + ESD,USBLC6,≤ 3 mm from USB1
-R1,11,16,2,1.25,USB + ESD,5.1k,
-R2,11,26,2,1.25,USB + ESD,5.1k,
-F1,10,34.5,3.2,1.6,Power,PTC,
-C1,14.5,34.5,2,1.25,Power,10µ,
-D1,19.5,34.5,3.7,1.6,Power,SS,
-C5,24,34.5,2,1.25,Power,10µ,
-U1,17,6,6.5,7,Power,LDO,"Tab up, big copper + vias"
-C6,23.5,4,2,1.25,Power,22µ,
-C7,23.5,8,2,1.25,Power,100n,
-Q3,63.5,9,2.9,2.4,Power,Q3,
-R16,63.5,12,2,1.25,Power,4.7k,
-LED5,59,8.7,2,1.25,Power,5V!,Silk 5V IO!
-R17,59,11.7,2,1.25,Power,1k,
-U2,22.5,20,5,5,USB-UART,CH342F,"QFN: pin 1 mark, thermal pad + 4 vias to GND"
-C2,21,25.5,2,1.25,USB-UART,100n,At U2 pin 7
-C3,18.5,24,2,1.25,USB-UART,100n,At U2 pin 6
-C4,18.5,21.5,2,1.25,USB-UART,100n,At U2 pin 5
-LED2,47,8.7,2,1.25,USB-UART,TX,
-LED3,51,8.7,2,1.25,USB-UART,RX,
-LED4,55,8.7,2,1.25,USB-UART,RX2,
-R4,47,11.7,2,1.25,USB-UART,2.2k,
-R5,51,11.7,2,1.25,USB-UART,2.2k,
-R6,55,11.7,2,1.25,USB-UART,2.2k,
+USB1,4.7,21.0,7.4,9,USB + ESD,USB-C,Mouth flush with left edge
+U3,11.0,21.0,3,3,USB + ESD,USBLC6,≤ 3 mm from USB1
+R1,11.0,16.0,2,1.25,USB + ESD,5.1k,
+R2,11.0,26.0,2,1.25,USB + ESD,5.1k,
+F1,10.0,34.5,3.2,1.6,Power,PTC,
+C1,15.0,34.5,2,1.25,Power,10µ,
+D1,19.6,34.5,3.7,1.6,Power,SS,
+C5,24.0,34.5,2,1.25,Power,10µ,
+U1,17.2,6.0,6.5,7,Power,LDO,"Tab up, big copper + vias"
+C6,25.0,4.5,2,1.25,Power,22µ,
+C7,25.0,7.5,2,1.25,Power,100n,
+Q3,66.0,9.0,2.9,2.4,Power,Q3,
+R16,66.0,12.4,2,1.25,Power,4.7k,
+LED5,61.4,8.7,2,1.25,Power,5V!,Silk 5V IO!
+R17,61.4,11.2,2,1.25,Power,1k,
+U2,22.5,20.0,5,5,USB-UART,CH342F,"QFN: pin 1 mark, thermal pad + 4 vias to GND"
+C2,21.5,25.0,2,1.25,USB-UART,100n,At U2 pin 7
+C3,17.3,23.0,2,1.25,USB-UART,100n,At U2 pin 6
+C4,17.3,18.5,2,1.25,USB-UART,100n,At U2 pin 5
+LED2,47.3,8.7,2,1.25,USB-UART,TX,
+LED3,52.0,8.7,2,1.25,USB-UART,RX,
+LED4,56.7,8.7,2,1.25,USB-UART,RX2,
+R4,47.3,11.2,2,1.25,USB-UART,2.2k,
+R5,52.0,11.2,2,1.25,USB-UART,2.2k,
+R6,56.7,11.2,2,1.25,USB-UART,2.2k,
 U4,30.5,4.5,3,3,Target power,3V3 SW,Short ILIM trace to R18
-R18,30.5,9,2,1.25,Target power,43k,
-C11,35,3.5,2,1.25,Target power,100n,
-C12,35,6.5,2,1.25,Target power,10µ,
-U5,30,33,3,3,Target power,5V SW,Short ILIM trace to R19
-R19,35,32.5,2,1.25,Target power,51k,
-C13,35,35.5,2,1.25,Target power,100n,
-C14,30,37.3,2,1.25,Target power,10µ,
-SW5,44,3.5,5,3,Target power,PWR CYC,"Edge, silk POWER (hold = off)"
-R20,35,9.5,2,1.25,Target power,100k,
-LED6,43,8.7,2,1.25,Target power,OVLD,Silk OVERLOAD
-R21,43,11.7,2,1.25,Target power,1k,
-LED1,10,4.5,2,1.25,Target power,PWR,
-R3,10,8,2,1.25,Target power,1k,
-Q1,34,16.5,2.9,2.4,Auto-program,Q1,Check pin map
-R7,38,16.5,2,1.25,Auto-program,10k,
-SJ1,42.5,16.5,5.08,2.54,Auto-program,SJ1,"2-pin header, silk AUTO-PROG (cap = ON)"
-Q2,34,20,2.9,2.4,Auto-program,Q2,Check pin map: C = IO0
-R8,38,20,2,1.25,Auto-program,10k,
-SJ2,42.5,20,5.08,2.54,Auto-program,SJ2,"2-pin header, silk AUTO-PROG (cap = ON)"
-R14,47,24.5,2,1.25,Target I/O,10k,
-C10,33,27.5,2,1.25,Target I/O,100n,
-R15,36.5,27.5,2,1.25,Target I/O,4.7k,
-R9,33,24.5,2,1.25,Target I/O,10k,
-C9,36.5,24.5,2,1.25,Target I/O,100n,
-R10,40,24.5,2,1.25,Target I/O,10k,
-R11,43.5,24.5,2,1.25,Target I/O,10k,
-R12,40,27.5,2,1.25,Target I/O,10k,
-R13,43.5,27.5,2,1.25,Target I/O,10k,
+R18,30.5,9.0,2,1.25,Target power,43k,
+C11,35.0,3.5,2,1.25,Target power,100n,
+C12,35.0,6.5,2,1.25,Target power,10µ,
+U5,30.1,33.0,3,3,Target power,5V SW,Short ILIM trace to R19
+R19,34.6,32.5,2,1.25,Target power,51k,
+C13,34.7,35.7,2,1.25,Target power,100n,
+C14,30.1,37.5,2,1.25,Target power,10µ,
+SW5,44.0,3.2,5,3,Target power,PWR CYC,"Edge, silk POWER (hold = off)"
+R20,35.0,9.5,2,1.25,Target power,100k,
+LED6,42.6,8.7,2,1.25,Target power,OVLD,Silk OVERLOAD
+R21,42.6,11.2,2,1.25,Target power,1k,
+LED1,10.0,4.5,2,1.25,Target power,PWR,
+R3,10.0,8.0,2,1.25,Target power,1k,
+Q1,34.0,16.5,2.9,2.4,Auto-program,Q1,Check pin map
+R7,38.0,16.5,2,1.25,Auto-program,10k,
+SJ1,43.0,16.5,5.08,2.54,Auto-program,SJ1,"2-pin header, silk AUTO-PROG (cap = ON)"
+Q2,34.0,20.0,2.9,2.4,Auto-program,Q2,Check pin map: C = IO0
+R8,38.0,20.0,2,1.25,Auto-program,10k,
+SJ2,43.0,20.0,5.08,2.54,Auto-program,SJ2,"2-pin header, silk AUTO-PROG (cap = ON)"
+R14,41.9,25.5,2,1.25,Target I/O,10k,
+C10,44.5,25.5,2,1.25,Target I/O,100n,
+R15,47.1,25.5,2,1.25,Target I/O,4.7k,
+R9,31.5,25.5,2,1.25,Target I/O,10k,
+C9,34.1,25.5,2,1.25,Target I/O,100n,
+R10,36.7,25.5,2,1.25,Target I/O,10k,
+R11,39.3,25.5,2,1.25,Target I/O,10k,
+R12,49.7,25.5,2,1.25,Target I/O,10k,
+R13,52.3,25.5,2,1.25,Target I/O,10k,
 U6,63.5,18.5,3,3,USB + ESD,ESD,Close to H1 pins 4-7
 U7,63.5,25.5,3,3,USB + ESD,ESD,Close to H1 pins 9-10 and J5
-SW1,50.5,3.5,5,3,LEDs + switches,RESET,"Edge, silk RESET"
-SW2,57,3.5,5,3,LEDs + switches,BOOT,"Edge, silk BOOT"
-SW3,65,3.5,7,3,LEDs + switches,3V3|5V,"Edge, silk ""IO 3V3 | 5V"""
-SW4,73.5,3.5,7,3,LEDs + switches,UART|UPDI,"Edge, silk ""UART | UPDI"""
-C8,49,36.5,2,1.25,Power,22µ,Next to J2 VCC
+SW1,50.5,3.2,5,3,LEDs + switches,RESET,"Edge, silk RESET"
+SW2,57.0,3.2,5,3,LEDs + switches,BOOT,"Edge, silk BOOT"
+SW3,65.0,3.7,7,3,LEDs + switches,3V3|5V,"Edge, silk ""IO 3V3 | 5V"""
+SW4,74.0,3.7,7,3,LEDs + switches,UART|UPDI,"Edge, silk ""UART | UPDI"""
+C8,48.7,36.5,2,1.25,Power,22µ,Next to J2 VCC
 J2,55.5,36.5,10.2,5.1,Connectors,ESP-01,"Bottom edge, module overhangs"
-J3,43,36.5,6.5,5.2,Connectors,ESP-Prog,Key notch toward board edge
-J4,64.5,36.5,7.6,5.1,Connectors,PROG 2.54,
-J5,74.5,37.8,10.2,2.6,Connectors,UART2,Silk GND · TX2 · RX2 · DTR2
-H1,77.5,21,2.6,28,Connectors,H1,"Right edge, pin 1 (3V3) at top"
+J3,42.2,36.5,6.5,5.2,Connectors,ESP-Prog,Key notch toward board edge
+J4,65.4,36.5,7.6,5.1,Connectors,PROG 2.54,
+J5,74.8,37.8,10.2,2.6,Connectors,UART2,Silk GND · TX2 · RX2 · DTR2
+H1,77.5,21.0,2.6,28,Connectors,H1,"Right edge, pin 1 (3V3) at top"
