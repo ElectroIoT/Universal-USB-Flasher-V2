@@ -278,14 +278,13 @@ ASBUILT = [
     ("Sheet 5 Auto-program", "Q1, Q2, R7, R8 - SJ1 / SJ2 still to add"), ("Sheet 6 Target I/O", "R9-R15, C9, C10"), ("Sheet 7 LEDs + Switches", "SW1-SW4"), ("Sheet 8 Connectors", "H1, J2, J3, J4, J5"),
 ]
 CHECKS = [
-    "<b>Sheet 1: C5 is wired across D1</b> (VBUS_F to +5V). Move it: C5 between +5V and GND.",
-    "<b>Sheet 1: net label \"V IO\"</b> has a space - rename to <b>VIO</b>.",
-    "<b>Sheet 2: LED1 is reversed</b> (bar faces U4 OUT). Flip it: triangle towards U4 OUT / +3V3_T, bar towards R3 / GND.",
-    "<b>Sheet 2: U4 pin 6 OUT has no label</b> - add <b>+3V3_T</b>.",
-    "<b>Sheet 2: U5 pin 3 EN has no label</b> - add <b>TPWR_EN</b> (U4's enable is floating without it).",
-    "<b>Sheet 2: U5 pin 4 /FAULT has no label</b> - add <b>FAULT_N</b>.",
-    "<b>Sheets 1-2: \"+3v3\"</b> (small v): use one spelling everywhere, <b>+3V3</b>.",
-    "<b>Sheet 4:</b> rename U8 to <b>U2</b>. <b>Sheet 5:</b> add SJ1 / SJ2 (2-pin headers C492401). <b>Sheet 7:</b> SW3 / SW4 pin 4 to GND.",
+    "<b>Sheet 1: no +5V label</b> on the D1 cathode / C5 / U1 pin 3 VIN node. Add <b>+5V</b> there, otherwise U5, LED6, U6/U7 and SW3 pin 3 get no 5 V.",
+    "<b>Sheet 1: \"V IO\"</b> still has a space - rename to <b>VIO</b> (Q3 emitter is not joined to VIO on sheets 4 and 7).",
+    "<b>Sheet 2: U4 pin 6 OUT has no label</b> - add <b>+3V3_T</b> (C8, H1, J2-J4 and R9-R13 have no 3.3 V without it).",
+    "<b>Sheets 1-2: \"+3v3\"</b> (small v) but sheet 7 SW3 uses <b>+3V3</b> - rename the sheet 1-2 labels to <b>+3V3</b>.",
+    "<b>Sheet 5: SJ2 pin 1 is labelled DTR_N</b> - it must be <b>RTS_N</b> (both jumpers on DTR_N breaks auto-program).",
+    "<b>Sheet 7: SW3 pin 4 and SW4 pin 4</b> have No-Connect flags - remove the flags, connect pin 4 to <b>GND</b> (mounting tab).",
+    "<b>Sheet 2:</b> the red OVERLOAD LED next to R21 has no designator - name it <b>LED6</b>.",
 ]
 
 
@@ -295,7 +294,7 @@ def page_wiring():
     o.append('<section class="card" style="--c:#1e3a8a"><h2>System wiring (connection map)</h2>' + map_body() + '</section>')
     o.append('<section class="card" style="--c:#dc2626"><h2>External wiring (what you connect by hand)</h2><div class="scroll"><table><thead><tr><th>Connection</th><th>How</th></tr></thead><tbody>'
              + "".join(f"<tr><td><b>{a}</b></td><td>{b}</td></tr>" for a, b in EXTERNAL) + '</tbody></table></div></section>')
-    o.append('<section class="card" style="--c:#0f766e"><h2>Your EasyEDA schematic (read 2026-11-13)</h2><p class="mut">All 64 real parts are placed on 8 sheets with the right values and LCSC parts. Sheets 1 and 2 are wired; this is what is on each sheet:</p>'
+    o.append('<section class="card" style="--c:#0f766e"><h2>Your EasyEDA schematic (read 2026-11-13)</h2><p class="mut">All 64 real parts are placed on 8 sheets with the right values and LCSC parts. All 8 sheets are wired (PDF read 2026-11-13, 3rd version); this is what is on each sheet:</p>'
              '<div class="scroll"><table><thead><tr><th>Sheet</th><th>Parts</th></tr></thead><tbody>' + "".join(f"<tr><td><b>{a}</b></td><td>{b}</td></tr>" for a, b in ASBUILT) + '</tbody></table></div>'
              '<div class="warn"><b>Checks found in your schematic:</b><ol style="margin:6px 0 0 18px;padding:0">' + "".join(f"<li>{c}</li>" for c in CHECKS) + '</ol></div></section>')
     o.append('<div class="bar"><progress id="pg" value="0" max="1" style="width:240px"></progress><span id="pt" class="mut"></span><button class="ghost" id="rs">Clear ticks</button></div><p class="mut">Pin-to-net per section: each box is a part; the flag on a pin is the net name - put the same net label in EasyEDA and the pins join. Hover a wire to highlight its net, click to mark it wired (saved in this browser).</p>')
