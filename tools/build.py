@@ -178,4 +178,4 @@ print(f'OK: {len(D["parts"])} parts, {sum(len(p[5]) for p in D["parts"])} pins, 
 
 # --- wiring-by-section page (LED-dimmer style)
 import subprocess
-subprocess.run([sys.executable, '-I', os.path.join(ROOT, 'tools', 'gen_wiring_sections.py')], check=True)
+subprocess.run([sys.executable, '-I', os.path.join(ROOT, 'tools', 'gen_docs.py')], check=True)
