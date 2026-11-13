@@ -1114,9 +1114,9 @@
 [
 "SJ1",
 "P5",
-"Solder jumper (bridged)",
-"SolderJumper-2_Bridged",
-"-",
+"2-pin header + jumper cap (AUTO-PROG, cap = ON)",
+"HDR-TH_2P-P2.54-V-M",
+"C492401",
 [
 [
 "1",
@@ -1133,9 +1133,9 @@
 [
 "SJ2",
 "P5",
-"Solder jumper (bridged)",
-"SolderJumper-2_Bridged",
-"-",
+"2-pin header + jumper cap (AUTO-PROG, cap = ON)",
+"HDR-TH_2P-P2.54-V-M",
+"C492401",
 [
 [
 "1",
@@ -2243,16 +2243,16 @@ null,
 [
 "SJ1 SJ2",
 2,
-"Solder jumper, bridged by default",
-"PCB pads",
-"—",
-"—",
-"—",
-"",
+"2-pin male header 2.54 mm: auto-program enable (fit cap = ON)",
+"THT",
+"PZ254V-11-02P",
+"XFCN",
+"C492401",
+"786,200",
 null,
-"info",
+"ok",
 "ap",
-"PCB feature, not a part"
+"Silk: AUTO-PROG (cap = ON)"
 ],
 [
 "R9 R10 R11 R12 R13 R14",
@@ -2769,8 +2769,8 @@ null,
 "SJ1",
 46,
 17,
-2.4,
-1.6,
+5.08,
+2.54,
 "ap",
 "SJ1"
 ],
@@ -2796,8 +2796,8 @@ null,
 "SJ2",
 46,
 21.5,
-2.4,
-1.6,
+5.08,
+2.54,
 "ap",
 "SJ2"
 ],
@@ -3016,6 +3016,24 @@ null,
 "J3": "Key notch toward board edge",
 "J5": "Silk GND · TX2 · RX2 · DTR2",
 "LED5": "Silk 5V IO!",
-"LED6": "Silk OVERLOAD"
-}
+"LED6": "Silk OVERLOAD",
+"SJ1": "2-pin header, silk AUTO-PROG (cap = ON)",
+"SJ2": "2-pin header, silk AUTO-PROG (cap = ON)"
+},
+"bom_extra": [
+[
+"CAP1 CAP2",
+2,
+"Jumper cap 2.54 mm for SJ1/SJ2 (fit both = auto-program on)",
+"2.54 mm",
+"2.54 (open-top)",
+"BOOMELE",
+"C5305",
+"762,800",
+0.0095,
+"ok",
+"ap",
+"Not a schematic part: order with the headers"
+]
+]
 }

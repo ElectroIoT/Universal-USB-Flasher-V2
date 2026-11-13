@@ -5,7 +5,7 @@ V1 is the CH340C board in [Universal-USB-To-Serial-Flasher](https://github.com/E
 | # | V1 issue | Effect | V2 fix |
 |---|---|---|---|
 | 1 | Q2 (IO0 transistor) drawn with **collector on DTR and emitter on IO0** | The NPN runs reverse-active at very low gain, so auto-boot is unreliable | Q2: C = IO0, B = RTS# via 10k, E = DTR# |
-| 2 | "SJ_DTR / SJ_RTS" are 2-pin headers (PZ254V-11-02P), not solder jumpers | Auto-program does nothing until jumper caps are fitted, but the README says "closed by default" | Real solder jumpers, bridged by default |
+| 2 | "SJ_DTR / SJ_RTS" are 2-pin headers (PZ254V-11-02P), not solder jumpers | Auto-program does nothing until jumper caps are fitted, but the README says "closed by default" | 2-pin headers kept (C492401), but jumper caps (C5305) are in the BOM and fitted, silk "AUTO-PROG (cap = ON)" |
 | 3 | Header pin labelled "RST" is raw RTS | There's no correct Arduino reset; connecting it to RESET can hold the AVR in reset | RST pin = DTR# through 100 nF + 10k pull-up |
 | 4 | CH340C runs at 3.3 V | A 5 V Arduino TX drives 5 V into a 3.3 V input | CH342F with VIO + 3.3/5 V switch + 5V-IO warning LED |
 | 5 | No fuse | A short on the 5V pin goes straight back to the PC's USB port | 500 mA polyfuse + current-limited TPS2553 target switches |

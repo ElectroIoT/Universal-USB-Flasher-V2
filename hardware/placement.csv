@@ -41,10 +41,10 @@ LED1,15.5,12,2,1.25,Target power,PWR,
 R3,15.5,14.5,2,1.25,Target power,1k,
 Q1,38,17,2.9,2.4,Auto-program,Q1,Check pin map
 R7,42,17,2,1.25,Auto-program,10k,
-SJ1,46,17,2.4,1.6,Auto-program,SJ1,
+SJ1,46,17,5.08,2.54,Auto-program,SJ1,"2-pin header, silk AUTO-PROG (cap = ON)"
 Q2,38,21.5,2.9,2.4,Auto-program,Q2,Check pin map: C = IO0
 R8,42,21.5,2,1.25,Auto-program,10k,
-SJ2,46,21.5,2.4,1.6,Auto-program,SJ2,
+SJ2,46,21.5,5.08,2.54,Auto-program,SJ2,"2-pin header, silk AUTO-PROG (cap = ON)"
 R14,50,17,2,1.25,Target I/O,10k,
 C10,54,17,2,1.25,Target I/O,100n,
 R15,58,17,2,1.25,Target I/O,4.7k,

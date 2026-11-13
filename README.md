@@ -51,7 +51,7 @@ True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, au
 - 🧩 **Bare ESP-12F / WROOM support.** EN and IO0 pull-ups, plus an IO15 pin with a 10k pull-down.
 - ♾️ **Arduino auto-reset pin.** RST = DTR# through 100 nF, with a 10k pull-up.
 - 🔧 **UPDI mode (SW4).** TX→4.7k→RX turns the RX pin into a SerialUPDI programmer.
-- 🔧 **SJ1/SJ2 solder jumpers**, bridged by default. Cut them to turn UART1 into a plain USB-UART.
+- 🔧 **SJ1/SJ2 auto-program jumpers**: 2-pin headers (C492401) with jumper caps (C5305) fitted. Pull the caps to turn UART1 into a plain USB-UART.
 - 💡 **6 LEDs.** Target PWR, TX, RX, UART2 RX, 5V IO, OVERLOAD.
 - 🎨 **Colour-coded silkscreen**, kept from V1.
 
@@ -219,7 +219,7 @@ Full CSV: [`hardware/BOM_V2_LCSC.csv`](hardware/BOM_V2_LCSC.csv). LCSC numbers w
 | R3, R21 | 2 | RC0805FR-071KL: 1k: PWR / OVERLOAD LEDs | 0805 | [C95781](https://www.lcsc.com/product-detail/C95781.html) |  |
 | Q1, Q2 | 2 | MMBT3904LT1G: NPN auto-program transistors | SOT-23 | [C81464](https://www.lcsc.com/product-detail/C81464.html) | B=1 E=2 C=3 |
 | R7, R8 | 2 | RC0805FR-0710KL: 10k: Q1/Q2 base resistors | 0805 | [C84376](https://www.lcsc.com/product-detail/C84376.html) |  |
-| SJ1, SJ2 | 2 | —: Solder jumper, bridged by default | PCB pads | — | PCB feature, not a part |
+| SJ1, SJ2 | 2 | PZ254V-11-02P: 2-pin male header 2.54 mm: auto-program enable (fit cap = ON) | THT | [C492401](https://www.lcsc.com/product-detail/C492401.html) | Silk: AUTO-PROG (cap = ON) |
 | R9, R10, R11, R12, R13, R14 | 6 | RC0805FR-0710KL: 10k: EN/IO0 pull-ups, IO15 pull-down, ESP-01 RST/GPIO2, Arduino RST | 0805 | [C84376](https://www.lcsc.com/product-detail/C84376.html) |  |
 | C9, C10 | 2 | CC0805KRX7R9BB104: 100 nF: EN filter, Arduino auto-reset | 0805 | [C49678](https://www.lcsc.com/product-detail/C49678.html) |  |
 | R15 | 1 | 0805W8F4701T5E: 4.7k: UPDI series resistor | 0805 | [C17673](https://www.lcsc.com/product-detail/C17673.html) |  |
@@ -230,8 +230,9 @@ Full CSV: [`hardware/BOM_V2_LCSC.csv`](hardware/BOM_V2_LCSC.csv). LCSC numbers w
 | J3 | 1 | HX JN1.27-2x3P ZZ H4.9: 2×3 1.27 mm IDC box header (ESP-Prog PROG) | THT | [C42372545](https://www.lcsc.com/product-detail/C42372545.html) | ⚠️ Check datasheet: shrouded + keyed |
 | J4 | 1 | 2.54-2*3P: 2×3 2.54 mm male header (PROG pogo jig / 2.54 cable) | THT | [C65114](https://www.lcsc.com/product-detail/C65114.html) |  |
 | J5 | 1 | PZ254V-11-04P: 1×4 male header 2.54 mm (UART2) | THT | [C2691448](https://www.lcsc.com/product-detail/C2691448.html) |  |
+| CAP1, CAP2 | 2 | 2.54 (open-top): Jumper cap 2.54 mm for SJ1/SJ2 (fit both = auto-program on) | 2.54 mm | [C5305](https://www.lcsc.com/product-detail/C5305.html) | Not a schematic part: order with the headers |
 
-**64 parts · 33 unique LCSC numbers · ≈$5.33 in captured LCSC prices per board** (plus a little for lines without a captured price; no PCB or shipping).
+**68 parts · 35 unique LCSC numbers · ≈$5.34 in captured LCSC prices per board** (plus a little for lines without a captured price; no PCB or shipping).
 <!-- BOM:END -->
 
 > **U2 CH342F is QFN-24 (0.5 mm pitch):** order it JLCPCB-assembled, or use hot air and paste. **J3:** confirm in the datasheet that C42372545 is shrouded and keyed.

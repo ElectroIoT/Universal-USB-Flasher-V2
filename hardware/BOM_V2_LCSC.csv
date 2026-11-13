@@ -31,7 +31,7 @@ LED6,1,Red LED: OVERLOAD (FAULT#),0805,NCD0805R1,NATIONSTAR,C84256,"171,800",0.0
 R3 R21,2,1k: PWR / OVERLOAD LEDs,0805,RC0805FR-071KL,YAGEO,C95781,not rechecked,,Target power,
 Q1 Q2,2,NPN auto-program transistors,SOT-23,MMBT3904LT1G,onsemi,C81464,"1,362,700",,Auto-program,B=1 E=2 C=3
 R7 R8,2,10k: Q1/Q2 base resistors,0805,RC0805FR-0710KL,YAGEO,C84376,not rechecked,,Auto-program,
-SJ1 SJ2,2,"Solder jumper, bridged by default",PCB pads,—,—,—,not rechecked,,Auto-program,"PCB feature, not a part"
+SJ1 SJ2,2,2-pin male header 2.54 mm: auto-program enable (fit cap = ON),THT,PZ254V-11-02P,XFCN,C492401,"786,200",,Auto-program,Silk: AUTO-PROG (cap = ON)
 R9 R10 R11 R12 R13 R14,6,"10k: EN/IO0 pull-ups, IO15 pull-down, ESP-01 RST/GPIO2, Arduino RST",0805,RC0805FR-0710KL,YAGEO,C84376,not rechecked,,Target I/O,
 C9 C10,2,"100 nF: EN filter, Arduino auto-reset",0805,CC0805KRX7R9BB104,YAGEO,C49678,not rechecked,,Target I/O,
 R15,1,4.7k: UPDI series resistor,0805,0805W8F4701T5E,UNI-ROYAL,C17673,"1,051,500",0.003,Target I/O,
@@ -42,3 +42,4 @@ J2,1,2×4 female header 2.54 mm (ESP-01),THT,PM254-2-04-Z-8.5,HCTL,C2897405,"6,1
 J3,1,2×3 1.27 mm IDC box header (ESP-Prog PROG),THT,HX JN1.27-2x3P ZZ H4.9,hanxia,C42372545,"2,945",0.153,Connectors,Check datasheet: shrouded + keyed
 J4,1,2×3 2.54 mm male header (PROG pogo jig / 2.54 cable),THT,2.54-2*3P,BOOMELE,C65114,"44,550",0.044,Connectors,
 J5,1,1×4 male header 2.54 mm (UART2),THT,PZ254V-11-04P,XFCN,C2691448,"807,020",0.026,Connectors,
+CAP1 CAP2,2,Jumper cap 2.54 mm for SJ1/SJ2 (fit both = auto-program on),2.54 mm,2.54 (open-top),BOOMELE,C5305,"762,800",0.0095,Auto-program,Not a schematic part: order with the headers

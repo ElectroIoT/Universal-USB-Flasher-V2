@@ -479,18 +479,18 @@ _SJ1/SJ2, Q1/Q2, base resistors_
 **Net labels on this page:** `DTR_N`, `EN`, `IO0`, `RTS_N`  
 **No-Connect flags:** none
 
-### SJ1: Solder jumper (bridged)
+### SJ1: 2-pin header + jumper cap (AUTO-PROG, cap = ON)
 
-Footprint `SolderJumper-2_Bridged` · LCSC -
+Footprint `HDR-TH_2P-P2.54-V-M` · LCSC C492401
 
 | ✓ | Pin | Name | Net | Also on this net |
 |---|---|---|---|---|
 | ☐ | 1 | 1 | `DTR_N` | U2.23 (P4), C10.1 (P6), H1.6 (P8), U6.4 (P3) |
 | ☐ | 2 | 2 | `DTR_AP` | R7.1, Q2.2 |
 
-### SJ2: Solder jumper (bridged)
+### SJ2: 2-pin header + jumper cap (AUTO-PROG, cap = ON)
 
-Footprint `SolderJumper-2_Bridged` · LCSC -
+Footprint `HDR-TH_2P-P2.54-V-M` · LCSC C492401
 
 | ✓ | Pin | Name | Net | Also on this net |
 |---|---|---|---|---|

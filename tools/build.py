@@ -81,6 +81,9 @@ if errors:
         print('  -', e)
     sys.exit(1)
 
+# --- BOM extras (not schematic parts, e.g. jumper caps) are added after validation
+D['bom'] = D['bom'] + D.get('bom_extra', [])
+
 # --- netlist.csv
 with open(os.path.join(HW, 'netlist.csv'), 'w', encoding='utf-8', newline='\n') as f:
     f.write('Net,Connections (Ref.pin),Pages\n')
