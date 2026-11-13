@@ -5,7 +5,7 @@
 **One USB-C board to flash ESP32, ESP8266 (ESP-12F, ESP-01), Arduino/ATmega and UPDI AVR chips, with a second UART to watch another device.**
 True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, automatic reset/boot, current-limited target power and ESD on every line.
 
-> **Status: design stage (V2.1).** Netlist, LCSC BOM, 8-page EasyEDA pin list and placement are done and generated from one design file. The schematic and PCB are being drawn in EasyEDA. **Nothing has been built or tested on hardware yet.** This is V2 of [Universal-USB-To-Serial-Flasher](https://github.com/ElectroIoT/Universal-USB-To-Serial-Flasher) (CH340C). See [what V2 fixes](docs/V1-review.md).
+> **Status: PCB designed (V2.1), not built yet.** Schematic (8 EasyEDA pages) and 2-layer PCB are finished: routed, DRC 0 errors, pin labels on both silkscreens. **Nothing has been built or tested on hardware yet.** This is V2 of [Universal-USB-To-Serial-Flasher](https://github.com/ElectroIoT/Universal-USB-To-Serial-Flasher) (CH340C). See [what V2 fixes](docs/V1-review.md).
 
 | | |
 |---|---|
@@ -22,7 +22,22 @@ True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, au
 
 ---
 
+## PCB
+
+<p align="center"><img src="images/pcb-3d.png" alt="3D view of the PCB" width="100%"></p>
+
+| 3D top | 3D bottom |
+|---|---|
+| <img src="images/pcb-3d-top.png" alt="3D top"> | <img src="images/pcb-3d-bottom.png" alt="3D bottom"> |
+| **2D top** | **2D bottom** |
+| <img src="images/pcb-2d-top.png" alt="2D top"> | <img src="images/pcb-2d-bottom.png" alt="2D bottom"> |
+
+80 × 40 mm, 2 layers, 1.6 mm FR-4. Power tracks 0.5–0.6 mm, signals 0.254 mm, vias 0.3/0.6 mm, GND pour on both sides, DRC 0 errors. Every connector pin is labelled on the top silkscreen, and the bottom silkscreen carries the full pinout. Pinout tables: [`hardware/pinout.md`](hardware/pinout.md). Posting text for OSHWLab / PCBWay: [`docs/publish/`](docs/publish/).
+
+---
+
 ## Contents
+- [PCB](#pcb)
 - [Features](#features)
 - [How it works](#how-it-works)
 - [Pinout](#pinout)
