@@ -175,3 +175,7 @@ open(rd, 'w', encoding='utf-8', newline='\n').write(readme)
 
 nc_count = sum(1 for p in D['parts'] for x in p[5] if x[2] == 'NC')
 print(f'OK: {len(D["parts"])} parts, {sum(len(p[5]) for p in D["parts"])} pins, {len(nets)} nets, {nc_count} NC pins, {len(D["bom"])} BOM lines, board {W}x{H} mm')
+
+# --- wiring-by-section page (LED-dimmer style)
+import subprocess
+subprocess.run([sys.executable, '-I', os.path.join(ROOT, 'tools', 'gen_wiring_sections.py')], check=True)

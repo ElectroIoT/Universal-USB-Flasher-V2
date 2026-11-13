@@ -16,7 +16,7 @@ True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, au
 | Ports | H1 1×11 · **J3 ESP-Prog 2×3 1.27 mm** · J4 2×3 2.54 mm (pogo / cable) · J5 UART2 · J2 ESP-01 socket |
 | Board | 80 × 40 mm, 2-layer, 1.6 mm. All parts on LCSC |
 | Interactive guide | [`docs/index.html`](docs/index.html): BOM, 8-page schematic and placement **tick-lists** for EasyEDA |
-| Wiring diagrams | [`docs/schematic-wiring.html`](docs/schematic-wiring.html): every part drawn like its EasyEDA symbol with the net label for each pin, page by page |
+| Wiring by section | [`docs/wiring-by-section.html`](docs/wiring-by-section.html): one connection diagram per section (part boxes, coloured net lanes, power symbols), grouped by the 8 EasyEDA pages; symbol view in [`docs/schematic-wiring.html`](docs/schematic-wiring.html) |
 | Build guide | [`docs/build-guide.html`](docs/build-guide.html): 7 steps from EasyEDA to first flash, LCSC order calculator, soldering order, bring-up test log with pass/fail |
 | Licence | [CERN-OHL-P-2.0](LICENSE) |
 
@@ -241,7 +241,7 @@ Full CSV: [`hardware/BOM_V2_LCSC.csv`](hardware/BOM_V2_LCSC.csv). LCSC numbers w
 
 ## Schematic pages (EasyEDA)
 
-The schematic is split into 8 EasyEDA pages (matching the EasyEDA file). Visual per-pin wiring: [`docs/schematic-wiring.html`](docs/schematic-wiring.html). **Every pin with its pin number, net, connected pins and No-Connect flags** is in [`hardware/schematic-pages.md`](hardware/schematic-pages.md). The interactive tick-list is in [`docs/index.html`](docs/index.html#sch-check).
+The schematic is split into 8 EasyEDA pages (matching the EasyEDA file). Connection diagrams: [`docs/wiring-by-section.html`](docs/wiring-by-section.html). **Every pin with its pin number, net, connected pins and No-Connect flags** is in [`hardware/schematic-pages.md`](hardware/schematic-pages.md). The interactive tick-list is in [`docs/index.html`](docs/index.html#sch-check).
 
 <!-- PAGES:START -->
 | Page | Parts | No-Connect flags |
