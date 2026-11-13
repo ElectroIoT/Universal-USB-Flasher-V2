@@ -12,7 +12,7 @@ Exported from EasyEDA Pro on 2026-11-13 (PCB1, DRC 0 errors). **Not built or tes
 
 2 layers · 80 × 40 mm · 1.6 mm FR-4 · 1 oz copper · min track/space 6/6 mil · min hole 0.3 mm · any mask colour (renders use blue) · white silkscreen · HASL lead-free, or ENIG for the 0.5 mm-pitch QFN (U2).
 
-The zip also contains the jig-free `FlyingProbeTesting.json` and EasyEDA's `How-to-order-PCB.txt`; fabs ignore them.
+The zip also holds EasyEDA's flying-probe test data (`FlyingProbeTesting.json`) and `How-to-order-PCB.txt`. Fabs that don't use them ignore them.
 
 ## Assembly notes
 
