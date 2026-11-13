@@ -7,6 +7,7 @@ Exported from EasyEDA Pro on 2026-11-13 (PCB1, DRC 0 errors). **Not built or tes
 | `Gerber_Universal-USB-Flasher-V2.1.zip` | Gerber + drill files. Upload this zip as-is to JLCPCB, PCBWay or any other fab |
 | `BOM_Universal-USB-Flasher-V2.1.csv` | Bill of materials, 34 lines / 66 parts, every line has an LCSC part number (UTF-16, tab-separated: EasyEDA format, opens in Excel) |
 | `PickAndPlace_Universal-USB-Flasher-V2.1.csv` | Pick-and-place (centroid) for SMT assembly, all parts on the top side |
+| `3D_Universal-USB-Flasher-V2.1-STEP.zip` | 3D model (STEP, board + all parts), zipped 48 MB → 9 MB. Open in FreeCAD / Fusion / KiCad to design a case |
 
 ## Board order settings
 
