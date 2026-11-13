@@ -136,14 +136,17 @@ for pid, title, sub in D['pages']:
         L.append('')
 open(os.path.join(HW, 'schematic-pages.md'), 'w', encoding='utf-8', newline='\n').write('\n'.join(L))
 
-# --- inject into docs/index.html
-idx = os.path.join(ROOT, 'docs', 'index.html')
-html = open(idx, encoding='utf-8').read()
+# --- inject into every docs/*.html that has DESIGN markers
+import glob
 blob = '/*DESIGN-START*/\nconst DESIGN=' + json.dumps(D, ensure_ascii=False, separators=(',', ':')) + ';\n/*DESIGN-END*/'
-new, n = re.subn(r'/\*DESIGN-START\*/.*?/\*DESIGN-END\*/', lambda m: blob, html, flags=re.S)
-if n != 1:
-    print('index.html: DESIGN markers not found'); sys.exit(1)
-open(idx, 'w', encoding='utf-8', newline='\n').write(new)
+pages = 0
+for idx in sorted(glob.glob(os.path.join(ROOT, 'docs', '*.html'))):
+    html = open(idx, encoding='utf-8').read()
+    new, n = re.subn(r'/\*DESIGN-START\*/.*?/\*DESIGN-END\*/', lambda m: blob, html, flags=re.S)
+    if n:
+        open(idx, 'w', encoding='utf-8', newline='\n').write(new); pages += 1
+if pages < 2:
+    print('docs: expected DESIGN markers in index.html and build-guide.html'); sys.exit(1)
 
 # --- README tables (between markers)
 rd = os.path.join(ROOT, 'README.md')

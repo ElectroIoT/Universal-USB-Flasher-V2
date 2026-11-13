@@ -16,6 +16,7 @@ True 3.3 V / 5 V logic, an ESP-Prog compatible port, a plug-in ESP-01 socket, au
 | Ports | H1 1×11 · **J3 ESP-Prog 2×3 1.27 mm** · J4 2×3 2.54 mm (pogo / cable) · J5 UART2 · J2 ESP-01 socket |
 | Board | 80 × 40 mm, 2-layer, 1.6 mm. All parts on LCSC |
 | Interactive guide | [`docs/index.html`](docs/index.html): BOM, 5-page schematic and placement **tick-lists** for EasyEDA |
+| Build guide | [`docs/build-guide.html`](docs/build-guide.html): 7 steps from EasyEDA to first flash, LCSC order calculator, soldering order, bring-up test log with pass/fail |
 | Licence | [CERN-OHL-P-2.0](LICENSE) |
 
 ---
@@ -296,7 +297,7 @@ Done in V2.1: dual UART, ESP-Prog port, current-limited target power, header ESD
 ## Repository layout
 ```
 images/     animated SVG diagrams used in this README (CSS/SMIL, no JS)
-docs/       index.html interactive design page + tick-lists · V1 review · feature ideas · PROG pad standard
+docs/       index.html design page · build-guide.html (build steps, order calc, test log) · pogo-jig.html · V1 review · feature ideas · PROG pad standard
 hardware/   BOM_V2_LCSC.csv · netlist.csv · schematic-pages.md · placement.csv   (generated)
 pogo-jig/   PROG pogo jig board: README · BOM · netlist · placement
 tools/      design.json (single source of truth) · build.py (validate + generate) · gen_svgs.py (images)

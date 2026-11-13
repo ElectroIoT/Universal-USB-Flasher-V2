@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build the Flasher</title>
+<meta name="description" content="Step-by-step build guide for the Universal USB Flasher V2.1: EasyEDA schematic and layout checklists, JLCPCB order settings, LCSC order calculator, soldering order and a bring-up test log with pass/fail.">
+<style>
+:root{
+  --bg:#f3f6fa;--card:#ffffff;--ink:#0f1b2b;--mute:#5a6b80;--line:#dce4ee;--soft:#eef3f9;
+  --a:#0d9488;--b:#2563eb;--hero1:#04121f;--hero2:#063a3a;--hero3:#0d9488;
+  --n3v3:#dc2626;--n5v:#9333ea;--nvio:#db2777;--ngnd:#334155;--ntx:#ea580c;--nrx:#16a34a;--nctl:#2563eb;--nesp:#ca8a04;--nusb:#0891b2;--nnc:#94a3b8;
+  --sym:#0f1b2b;--pcb:#0b5d3b;--pcb2:#0a4f33;--pad:#d4a34a;--silk:#f8fafc;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#07111c;--card:#0e1b2a;--ink:#e6eef8;--mute:#9cb0c6;--line:#1e3246;--soft:#122335;
+  --a:#2dd4bf;--b:#60a5fa;
+  --n3v3:#f87171;--n5v:#c084fc;--nvio:#f472b6;--ngnd:#94a3b8;--ntx:#fb923c;--nrx:#4ade80;--nctl:#60a5fa;--nesp:#facc15;--nusb:#22d3ee;--nnc:#64748b;
+  --sym:#e6eef8;
+}}
+:root[data-theme="dark"]{
+  --bg:#07111c;--card:#0e1b2a;--ink:#e6eef8;--mute:#9cb0c6;--line:#1e3246;--soft:#122335;
+  --a:#2dd4bf;--b:#60a5fa;
+  --n3v3:#f87171;--n5v:#c084fc;--nvio:#f472b6;--ngnd:#94a3b8;--ntx:#fb923c;--nrx:#4ade80;--nctl:#60a5fa;--nesp:#facc15;--nusb:#22d3ee;--nnc:#64748b;
+  --sym:#e6eef8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--b)}
+code,.mono{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:.92em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* hero */
+header.hero{position:relative;overflow:hidden;color:#fff;padding:46px 0 86px;
+  background:radial-gradient(1200px 500px at 85% -10%,#14b8a655,transparent 60%),linear-gradient(135deg,var(--hero1) 0%,var(--hero2) 55%,#0b6e66 100%)}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:64px;background:var(--bg);clip-path:ellipse(75% 100% at 50% 100%)}
+.traces{position:absolute;inset:0;opacity:.16}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}}
+.kicker{display:inline-block;background:#ffffff1f;border:1px solid #ffffff40;border-radius:99px;padding:4px 14px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(32px,5.6vw,56px);line-height:1.05;margin:14px 0 10px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,#5eead4,#a7f3d0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:clamp(16px,2.2vw,20px);opacity:.92;margin:0 0 18px;max-width:34em}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{background:#ffffff1a;border:1px solid #ffffff38;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-block;padding:10px 18px;border-radius:12px;font-weight:700;text-decoration:none;background:#fff;color:#063a3a}
+.btn.o{background:transparent;color:#fff;border:2px solid #ffffff80}
+.hero svg.board{width:100%;height:auto;filter:drop-shadow(0 18px 34px rgba(0,0,0,.45))}
+
+/* nav */
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:none}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--mute);font-weight:600;font-size:14px;padding:6px 12px;border-radius:99px}
+nav.toc a:hover{background:var(--soft);color:var(--ink)}
+
+section{padding:44px 0 4px;scroll-margin-top:56px}
+h2{font-size:clamp(24px,3.4vw,32px);margin:0 0 6px;letter-spacing:-.01em}
+h2 small{font-size:.5em;color:var(--a);font-weight:800;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:4px}
+.lead{color:var(--mute);margin:0 0 22px;max-width:50em}
+h3{margin:0 0 6px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(8,40,70,.05)}
+.card p{margin:0;color:var(--mute);font-size:15px}
+.ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:var(--soft);margin-bottom:10px}
+.fix{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start}
+.fix .num{grid-row:span 2;width:30px;height:30px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.fix .was{color:var(--mute);font-size:14.5px}
+.fix .now{font-size:15px}
+.fix .now b{color:var(--a)}
+
+.figure{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;overflow-x:auto}
+.figure svg{display:block;width:100%;height:auto;min-width:640px}
+.figcap{color:var(--mute);font-size:14px;margin:10px 4px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:auto}
+th,td{padding:9px 12px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+th{background:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);border-top:0;position:sticky;top:0}
+td.ref{font-weight:700;white-space:nowrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.p-ok{background:#16a34a22;color:#15803d}.p-warn{background:#f59e0b26;color:#b45309}.p-info{background:#2563eb1f;color:#1d4ed8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .p-ok{color:#4ade80}:root:not([data-theme="light"]) .p-warn{color:#fbbf24}:root:not([data-theme="light"]) .p-info{color:#93c5fd}}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;font-weight:600;font-size:13.5px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#fff}
+.bomtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bomtools input{flex:1;min-width:200px;max-width:320px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-size:26px;letter-spacing:-.02em}
+.stat span{color:var(--mute);font-size:13px}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--mute);margin:10px 4px 0}
+.pins{display:flex;gap:6px;flex-wrap:wrap}
+.pinbox{flex:1;min-width:84px;border-radius:12px;padding:10px 8px;text-align:center;color:#fff;font-weight:800;font-size:14px}
+.pinbox small{display:block;font-weight:600;opacity:.85;font-size:11.5px}
+.warn{border-left:4px solid #f59e0b;background:#f59e0b14;padding:12px 14px;border-radius:10px;margin:14px 0;font-size:15px}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
+.step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px 18px}
+.step:before{counter-increment:s;content:counter(s);position:absolute;top:-13px;left:16px;width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.step p{margin:0;color:var(--mute);font-size:14.5px}
+.ck{width:18px;height:18px;accent-color:var(--a);cursor:pointer;vertical-align:-3px}
+tr.done td{opacity:.55}tr.done td:first-child,tr.done td.tick{opacity:1}
+td.tick{width:38px;text-align:center}
+.prog{display:flex;align-items:center;gap:12px;margin:0 0 12px;flex-wrap:wrap}
+.bar{flex:1;min-width:160px;height:10px;border-radius:99px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),#22c55e);width:0;transition:width .25s}
+.prog b{font-size:14px;white-space:nowrap}
+.tbtn{border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:10px;padding:6px 12px;font:600 13.5px system-ui;cursor:pointer}
+.tbtn:hover{color:var(--ink)}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.ptab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 14px;cursor:pointer;text-align:left;font:inherit;min-width:170px}
+.ptab small{display:block;color:var(--mute);font-size:12.5px}
+.ptab[aria-pressed="true"]{border-color:var(--a);box-shadow:0 0 0 2px color-mix(in srgb,var(--a) 35%,transparent)}
+.ptab .pp{font-weight:800;color:var(--a);font-size:12.5px}
+.net{display:inline-block;padding:1px 8px;border-radius:7px;font:700 12.5px ui-monospace,Consolas,monospace;color:#fff;white-space:nowrap}
+.ncflag{white-space:nowrap;display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:7px;font:800 12px system-ui;background:#64748b26;color:var(--mute);border:1px dashed var(--nnc)}
+.ncflag:before{content:"\2715";color:#dc2626;font-weight:900}
+.partline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--soft);border-top:1px solid var(--line);padding:9px 12px;font-size:14px}
+.partline b{font-size:15px}
+.partline .mute{color:var(--mute);font-size:13px}
+.labels{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+
+/* svg helpers */
+.s-sym{stroke:var(--sym);fill:none;stroke-width:2}
+.s-fill{fill:var(--card);stroke:var(--sym);stroke-width:2}
+.s-txt{fill:var(--ink);font:600 13px system-ui,Segoe UI,sans-serif}
+.s-sm{fill:var(--mute);font:500 11.5px system-ui,Segoe UI,sans-serif}
+.s-ref{fill:var(--a);font:800 13px system-ui,Segoe UI,sans-serif}
+.w{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.j{stroke:none}
+.blk{fill:var(--card);stroke:var(--line);stroke-width:2}
+.blkt{fill:var(--ink);font:800 15px system-ui,Segoe UI,sans-serif}
+.blks{fill:var(--mute);font:500 12px system-ui,Segoe UI,sans-serif}
+</style>
+</head>
+<body>
+<style>
+.stepper{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:22px}
+@media(max-width:820px){.stepper{grid-template-columns:repeat(4,1fr)}}
+.stp{background:#ffffff14;border:1px solid #ffffff30;border-radius:12px;padding:8px 10px;text-decoration:none;color:#fff}
+.stp b{display:block;font-size:12px;opacity:.8}.stp span{font-weight:800;font-size:13.5px}
+.stp i{display:block;height:5px;border-radius:9px;background:#ffffff22;margin-top:6px;overflow:hidden}.stp i u{display:block;height:100%;background:#5eead4;width:0}
+.num{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.meas{width:84px;padding:5px 7px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 14px ui-monospace,Consolas,monospace}
+.res{font-weight:800;font-size:12.5px;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pass{background:#16a34a22;color:#15803d}.fail{background:#dc262622;color:#b91c1c}.na{color:var(--mute)}
+.boardsel{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+.linkcard{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.big{font-size:28px;font-weight:800;letter-spacing:-.02em}
+textarea.notes{width:100%;min-height:70px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:14px system-ui;padding:8px}
+</style>
+<header class="hero">
+  <div class="wrap" style="display:block">
+    <span class="kicker">ElectroIoT · Universal USB Flasher V2.1 · build guide</span>
+    <h1>Build the <span>Programmer</span></h1>
+    <p class="tagline">From EasyEDA to a flashing board in 7 steps. Every step has tick boxes; the parts list scales to the number of boards you build; the bring-up log records your measurements and marks pass/fail. Progress is saved in this browser.</p>
+    <div class="stepper" id="stepper"></div>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#s1">1 Schematic</a><a href="#s2">2 PCB layout</a><a href="#s3">3 Order PCB</a><a href="#s4">4 Order parts</a><a href="#s5">5 Solder</a><a href="#s6">6 Bring-up</a><a href="#s7">7 First flash</a><a href="index.html">Design page ↗</a><a href="pogo-jig.html">Pogo jig ↗</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="s1">
+  <h2><small>Step 1</small>Draw the schematic in EasyEDA</h2>
+  <p class="lead">5 pages, every pin listed with its net and No-Connect flags. The detailed pin-by-pin checklist lives on the design page; its progress shows here.</p>
+  <div class="card linkcard"><div><div class="big" id="schProg">–</div><p>symbols + pins ticked on the design page checklist</p></div><a class="btn" style="background:var(--a);color:#fff" href="index.html#sch-check">Open schematic checklist →</a></div>
+  <div class="tbl" style="margin-top:12px"><table id="t1"></table></div>
+</section>
+
+<section id="s2">
+  <h2><small>Step 2</small>Lay out the PCB</h2>
+  <p class="lead">80 × 40 mm, 2 layers. Footprint coordinates and the board map are on the design page; tick the layout rules here.</p>
+  <div class="card linkcard"><div><div class="big" id="plProg">–</div><p>footprints placed (design page placement table)</p></div><a class="btn" style="background:var(--a);color:#fff" href="index.html#placement">Open placement map →</a></div>
+  <div class="tbl" style="margin-top:12px"><table id="t2"></table></div>
+</section>
+
+<section id="s3">
+  <h2><small>Step 3</small>Order the PCB (JLCPCB)</h2>
+  <p class="lead">Export from EasyEDA (<i>Fabrication → PCB Fabrication File (Gerber)</i>) and order. Suggested settings:</p>
+  <div class="two">
+    <div class="tbl"><table>
+      <tr><th>Setting</th><th>Value</th></tr>
+      <tr><td class="ref">Size</td><td>80 × 40 mm (check after export)</td></tr>
+      <tr><td class="ref">Layers</td><td>2</td></tr>
+      <tr><td class="ref">Thickness</td><td>1.6 mm</td></tr>
+      <tr><td class="ref">Copper</td><td>1 oz outer</td></tr>
+      <tr><td class="ref">Finish</td><td>ENIG recommended (flat pads for the QFN-24); HASL lead-free works with care</td></tr>
+      <tr><td class="ref">Min hole / track</td><td>0.3 mm via drill, 0.2 mm track (standard capability)</td></tr>
+      <tr><td class="ref">Mask colour</td><td>any; the colour-coded silkscreen reads best on black or dark green</td></tr>
+      <tr><td class="ref">Quantity</td><td>5 (minimum; spares are useful for the first bring-up)</td></tr>
+    </table></div>
+    <div class="card"><h3>Assembly decision</h3><p><b>U2 CH342F is QFN-24 at 0.5 mm pitch.</b> Two options:</p><p style="margin-top:8px">① <b>JLC SMT assembly</b> of the top-side SMD parts. Check C2841530, C55266 and C111212 in the JLC parts library (extended parts carry a small fee). Solder the THT headers yourself.</p><p style="margin-top:8px">② <b>Hand build</b>: hot-air station + paste for U2 (do it first), iron for everything else. Order a stencil if you have one board to try.</p></div>
+  </div>
+  <div class="tbl" style="margin-top:12px"><table id="t3"></table></div>
+</section>
+
+<section id="s4">
+  <h2><small>Step 4</small>Order the parts (LCSC)</h2>
+  <p class="lead">Set how many boards you build. Quantities add spares (0805 passives +5 per line, other parts +1), and LCSC may round some lines up to its own minimum. Tick each line as you add it to the cart.</p>
+  <div class="boardsel"><b>Boards:</b> <input class="num" id="nBoards" type="number" min="1" max="50" value="2"> <label><input type="checkbox" id="spares" checked> add spares</label> <button class="tbtn" id="csvBtn">Download LCSC BOM CSV</button> <button class="tbtn" id="ordReset">Reset ticks</button></div>
+  <div class="stats" id="ordStats"></div>
+  <div class="tbl" style="max-height:620px"><table id="ordTable"></table></div>
+  <div class="warn">Lines marked "price not captured" are cheap passives or V1 parts; the total is a lower bound. Not on LCSC: nothing for the flasher itself (SJ1/SJ2 are copper pads). The pogo jig has its own list on the <a href="pogo-jig.html#bom">jig page</a>.</div>
+</section>
+
+<section id="s5">
+  <h2><small>Step 5</small>Solder (per board)</h2>
+  <p class="lead">Order matters: the hardest part first, the tall THT parts last. Pick the board you are working on; each board keeps its own ticks.</p>
+  <div class="boardsel" id="bs5"></div>
+  <div class="tbl"><table id="t5"></table></div>
+</section>
+
+<section id="s6">
+  <h2><small>Step 6</small>Bring-up tests and log (per board)</h2>
+  <p class="lead">Type each measurement; the page checks it against the expected range. Do the <b>no-power</b> rows before plugging into USB. Use a USB power meter or a current-limited supply for the first power-up.</p>
+  <div class="boardsel" id="bs6"></div>
+  <div class="stats" id="testStats"></div>
+  <div class="tbl"><table id="t6"></table></div>
+  <h3 style="margin-top:16px">Functional checks</h3>
+  <div class="tbl"><table id="t6b"></table></div>
+  <h3 style="margin-top:16px">Notes for this board</h3>
+  <textarea class="notes" id="notes" placeholder="Rework, odd readings, part substitutions…"></textarea>
+  <p style="margin-top:8px"><button class="tbtn" id="logBtn">Download test log (CSV)</button> <button class="tbtn" id="testReset">Clear this board's log</button></p>
+</section>
+
+<section id="s7">
+  <h2><small>Step 7</small>First flash</h2>
+  <p class="lead">Two COM ports appear (CH342 dual serial). UART1 = H1 / J3 / J4 / ESP-01 socket; UART2 = J5.</p>
+  <div class="tbl"><table id="t7"></table></div>
+  <div class="warn" style="margin-top:12px">Commands: <code>esptool.py --port COMx chip_id</code> · <code>esptool.py --port COMx --baud 921600 write_flash 0x0 firmware.bin</code> · UPDI: <code>pymcuprog -t uart -u COMx -d attiny1614 ping</code>. If an ESP refuses, hold BOOT, tap RESET, release BOOT.</div>
+</section>
+</main>
+
+<footer><div class="wrap">Universal USB Flasher V2.1 build guide · <b>ElectroIoT</b> · <a href="https://github.com/ElectroIoT/Universal-USB-Flasher-V2">GitHub</a> · CERN-OHL-P-2.0<br>Expected values come from the design (TPS2553 limits from TI's formula, rails from the part datasheets). Nothing has been built yet: update the ranges after the first board.</div></footer>
+
+<script>
+/*DESIGN-START*/
+const DESIGN={"version":"V2.1 (design)","board":{"w":80,"h":40,"holes":[[3.5,3.5],[3.5,36.5]]},"groups":{"pwr":["Power","#dc2626"],"tgt":["Target power","#f97316"],"usb":["USB + ESD","#0891b2"],"uart":["USB-UART","#0d9488"],"ap":["Auto-program","#2563eb"],"io":["Target I/O","#ca8a04"],"ui":["LEDs + switches","#9333ea"],"con":["Connectors","#64748b"]},"pages":[["P1","Page 1 · USB + Power","USB-C, ESD, fuse, LDO, IO switch, 5V-IO LED"],["P2","Page 2 · Target power","TPS2553 switches, power-cycle button, PWR + OVERLOAD LEDs"],["P3","Page 3 · USB dual UART","CH342F, decoupling, TX/RX/RX2 LEDs"],["P4","Page 4 · Auto-program + control","Q1/Q2, SJ1/SJ2, pull-ups, buttons, UPDI, Arduino RST"],["P5","Page 5 · Connectors + ESD","H1, ESP-01, ESP-Prog 1.27/2.54, UART2, header ESD"]],"parts":[["USB1","P1","USB-C 16P","USB-C-SMD_TYPE-C-16PIN-2MD(073)","C2765186",[["1","GND","GND"],["2","VBUS","VBUS"],["3","SBU2","NC"],["4","CC1","CC1"],["5","DN2","USB_DM"],["6","DP1","USB_DP"],["7","DN1","USB_DM"],["8","DP2","USB_DP"],["9","SBU1","NC"],["10","CC2","CC2"],["11","VBUS","VBUS"],["12","GND","GND"],["13","SHELL","GND"],["14","SHELL","GND"]]],["R1","P1","5.1k","R0805","C27834",[["1","1","CC1"],["2","2","GND"]]],["R2","P1","5.1k","R0805","C27834",[["1","1","CC2"],["2","2","GND"]]],["U3","P1","USBLC6-2SC6","SOT-23-6","C7519",[["1","I/O1","USB_DP"],["2","GND","GND"],["3","I/O2","USB_DM"],["4","I/O2","USB_DM"],["5","VBUS","VBUS"],["6","I/O1","USB_DP"]]],["F1","P1","PTC 500 mA","F1206","C2680506",[["1","1","VBUS"],["2","2","VBUS_F"]]],["C1","P1","10 µF","C0805","C15850",[["1","1","VBUS_F"],["2","2","GND"]]],["D1","P1","1N5819HW","SOD-123","C82544",[["1","K (band)","+5V"],["2","A","VBUS_F"]]],["C5","P1","10 µF","C0805","C15850",[["1","1","+5V"],["2","2","GND"]]],["U1","P1","SGM2212-3.3","SOT-223-3","C3294699",[["1","GND","GND"],["2","VOUT","+3V3"],["3","VIN","+5V"],["4","VOUT (tab)","+3V3"]]],["C6","P1","22 µF","C0805","C45783",[["1","1","+3V3"],["2","2","GND"]]],["C7","P1","100 nF","C0805","C49678",[["1","1","+3V3"],["2","2","GND"]]],["SW3","P1","MSK12C02 (IO 3V3|5V)","SW-SMD_MSK12C02","C431540",[["1","throw A","+3V3"],["2","common","VIO"],["3","throw B","+5V"]]],["Q3","P1","MMBT3906 (5V-IO detect)","SOT-23-3","C53444",[["1","B","Q3_B"],["2","E","VIO"],["3","C","Q3_C"]]],["R16","P1","4.7k (Q3 base)","R0805","C17673",[["1","1","+3V3"],["2","2","Q3_B"]]],["R17","P1","1k (5V-IO LED)","R0805","C95781",[["1","1","Q3_C"],["2","2","LED5_A"]]],["LED5","P1","Red (5V IO warning)","LED0805","C84256",[["2","A","LED5_A"],["1","K","GND"]]],["U4","P2","TPS2553 (3V3 target switch)","SOT-23-6","C55266",[["1","IN","+3V3"],["2","GND","GND"],["3","EN","TPWR_EN"],["4","FAULT#","FAULT_N"],["5","ILIM","ILIM3"],["6","OUT","+3V3_T"]]],["R18","P2","43k 1% (≈0.61 A limit)","R0805","C17695",[["1","1","ILIM3"],["2","2","GND"]]],["C11","P2","100 nF (U4 IN)","C0805","C49678",[["1","1","+3V3"],["2","2","GND"]]],["C12","P2","10 µF (+3V3_T)","C0805","C15850",[["1","1","+3V3_T"],["2","2","GND"]]],["U5","P2","TPS2553 (5V target switch)","SOT-23-6","C55266",[["1","IN","+5V"],["2","GND","GND"],["3","EN","TPWR_EN"],["4","FAULT#","FAULT_N"],["5","ILIM","ILIM5"],["6","OUT","+5V_T"]]],["R19","P2","51k 1% (≈0.51 A limit)","R0805","C17737",[["1","1","ILIM5"],["2","2","GND"]]],["C13","P2","100 nF (U5 IN)","C0805","C49678",[["1","1","+5V"],["2","2","GND"]]],["C14","P2","10 µF (+5V_T)","C0805","C15850",[["1","1","+5V_T"],["2","2","GND"]]],["R20","P2","100k (EN pull-up)","R0805","C96346",[["1","1","+3V3"],["2","2","TPWR_EN"]]],["SW5","P2","POWER-CYCLE (hold = off)","SW-SMD_L3.9-W3.0-P4.45","C720477",[["1","1","TPWR_EN"],["2","2","GND"]]],["R21","P2","1k (OVERLOAD LED)","R0805","C95781",[["1","1","+5V"],["2","2","LED6_A"]]],["LED6","P2","Red (OVERLOAD)","LED0805","C84256",[["2","A","LED6_A"],["1","K","FAULT_N"]]],["R3","P2","1k (PWR LED)","R0805","C95781",[["1","1","+3V3_T"],["2","2","LED1_A"]]],["LED1","P2","Green (target PWR)","LED0805","C84260",[["2","A","LED1_A"],["1","K","GND"]]],["U2","P3","CH342F dual UART","QFN-24_L4.0-W4.0-P0.50","C2841530",[["0","EP (GND)","GND"],["1","RI0#","NC"],["2","GND","GND"],["3","UD+","USB_DP"],["4","UD-","USB_DM"],["5","VIO","VIO"],["6","V3","V3"],["7","VDD5","VBUS_F"],["8","VBUS","VBUS_F"],["9","RST#","NC"],["10","CTS1#","NC"],["11","RTS1#","NC"],["12","RXD1","RX2"],["13","TXD1","TX2"],["14","DSR1#","NC"],["15","DTR1#","DTR2_N"],["16","DCD1#","NC"],["17","RI1#","NC"],["18","CTS0#","NC"],["19","RTS0#","RTS_N"],["20","RXD0","RXD"],["21","TXD0","TXD"],["22","DSR0#","NC"],["23","DTR0#","DTR_N"],["24","DCD0#","NC"]]],["C2","P3","100 nF (VDD5)","C0805","C49678",[["1","1","VBUS_F"],["2","2","GND"]]],["C3","P3","100 nF (V3)","C0805","C49678",[["1","1","V3"],["2","2","GND"]]],["C4","P3","100 nF (VIO)","C0805","C49678",[["1","1","VIO"],["2","2","GND"]]],["R4","P3","2.2k","R0805","C17520",[["1","1","VIO"],["2","2","LED2_A"]]],["LED2","P3","Orange (TX)","LED0805","C84262",[["2","A","LED2_A"],["1","K","TXD"]]],["R5","P3","2.2k","R0805","C17520",[["1","1","VIO"],["2","2","LED3_A"]]],["LED3","P3","Yellow (RX)","LED0805","C965814",[["2","A","LED3_A"],["1","K","RXD"]]],["R6","P3","2.2k","R0805","C17520",[["1","1","VIO"],["2","2","LED4_A"]]],["LED4","P3","Blue (UART2 RX)","LED0805","C965817",[["2","A","LED4_A"],["1","K","RX2"]]],["SJ1","P4","Solder jumper (bridged)","SolderJumper-2_Bridged","-",[["1","1","DTR_N"],["2","2","DTR_AP"]]],["SJ2","P4","Solder jumper (bridged)","SolderJumper-2_Bridged","-",[["1","1","RTS_N"],["2","2","RTS_AP"]]],["R7","P4","10k","R0805","C84376",[["1","1","DTR_AP"],["2","2","Q1_B"]]],["R8","P4","10k","R0805","C84376",[["1","1","RTS_AP"],["2","2","Q2_B"]]],["Q1","P4","MMBT3904 (EN)","SOT-23-3","C81464",[["1","B","Q1_B"],["2","E","RTS_AP"],["3","C","EN"]]],["Q2","P4","MMBT3904 (IO0)","SOT-23-3","C81464",[["1","B","Q2_B"],["2","E","DTR_AP"],["3","C","IO0"]]],["R9","P4","10k (EN pull-up)","R0805","C84376",[["1","1","+3V3_T"],["2","2","EN"]]],["C9","P4","100 nF (EN)","C0805","C49678",[["1","1","EN"],["2","2","GND"]]],["R10","P4","10k (IO0 pull-up)","R0805","C84376",[["1","1","+3V3_T"],["2","2","IO0"]]],["R11","P4","10k (IO15 pull-down)","R0805","C84376",[["1","1","IO15"],["2","2","GND"]]],["SW1","P4","RESET","SW-SMD_L3.9-W3.0-P4.45","C720477",[["1","1","EN"],["2","2","GND"]]],["SW2","P4","BOOT","SW-SMD_L3.9-W3.0-P4.45","C720477",[["1","1","IO0"],["2","2","GND"]]],["C10","P4","100 nF (Arduino reset)","C0805","C49678",[["1","1","DTR_N"],["2","2","RST"]]],["R14","P4","10k (RST pull-up)","R0805","C84376",[["1","1","VIO"],["2","2","RST"]]],["SW4","P4","MSK12C02 (UART|UPDI)","SW-SMD_MSK12C02","C431540",[["1","throw A (UPDI)","TXD"],["2","common","UPDI_R"],["3","throw B (UART)","NC"]]],["R15","P4","4.7k (UPDI)","R0805","C17673",[["1","1","UPDI_R"],["2","2","RXD"]]],["H1","P5","1x11 male header","HDR-TH_11P-P2.54-V-M","C2840011",[["1","3V3","+3V3_T"],["2","5V","+5V_T"],["3","GND","GND"],["4","TX","TXD"],["5","RX/UPDI","RXD"],["6","DTR","DTR_N"],["7","RTS","RTS_N"],["8","RST","RST"],["9","EN","EN"],["10","IO0","IO0"],["11","IO15","IO15"]]],["J2","P5","2x4 female (ESP-01)","HDR-TH_8P-P2.54-V-F-R2-C4","C2897405",[["1","GND","GND"],["2","TXD (ESP out)","RXD"],["3","GPIO2","ESP01_IO2"],["4","CH_PD","EN"],["5","GPIO0","IO0"],["6","RST","ESP01_RST"],["7","RXD (ESP in)","TXD"],["8","VCC","+3V3_T"]]],["C8","P5","22 µF (ESP-01 bulk)","C0805","C45783",[["1","1","+3V3_T"],["2","2","GND"]]],["R12","P5","10k (ESP-01 RST)","R0805","C84376",[["1","1","+3V3_T"],["2","2","ESP01_RST"]]],["R13","P5","10k (ESP-01 GPIO2)","R0805","C84376",[["1","1","+3V3_T"],["2","2","ESP01_IO2"]]],["J3","P5","ESP-Prog PROG 2x3 1.27 mm box header","IDC-TH_6P-P1.27-2x3","C42372545",[["1","ESP_EN","EN"],["2","VDD","+3V3_T"],["3","ESP_TXD","RXD"],["4","GND","GND"],["5","ESP_RXD","TXD"],["6","ESP_IO0","IO0"]]],["J4","P5","PROG 2x3 2.54 mm (pogo / 2.54 cable)","HDR-TH_6P-P2.54-V-M-R2-C3","C65114",[["1","ESP_EN","EN"],["2","VDD","+3V3_T"],["3","ESP_TXD","RXD"],["4","GND","GND"],["5","ESP_RXD","TXD"],["6","ESP_IO0","IO0"]]],["J5","P5","UART2 1x4 header","HDR-TH_4P-P2.54-V-M","C2691448",[["1","GND","GND"],["2","TX2","TX2"],["3","RX2","RX2"],["4","DTR2","DTR2_N"]]],["U6","P5","USBLC6-4SC6 (header ESD A)","SOT-23-6","C111212",[["1","I/O1","TXD"],["2","GND","GND"],["3","I/O2","RXD"],["4","I/O3","DTR_N"],["5","VBUS","+5V"],["6","I/O4","RTS_N"]]],["U7","P5","USBLC6-4SC6 (header ESD B)","SOT-23-6","C111212",[["1","I/O1","EN"],["2","GND","GND"],["3","I/O2","IO0"],["4","I/O3","TX2"],["5","VBUS","+5V"],["6","I/O4","RX2"]]]],"bom":[["U2",1,"USB dual-UART bridge with VIO (1.8–5 V I/O)","QFN-24 4×4","CH342F","WCH","C2841530","5,692",2.16,"ok","uart","QFN 0.5 mm: JLC assembly or hot air"],["C2 C3 C4",3,"100 nF X7R: VDD5, V3, VIO decoupling","0805","CC0805KRX7R9BB104","YAGEO","C49678","",null,"v1","uart",""],["R4 R5 R6",3,"2.2k: TX / RX / RX2 LEDs","0805","0805W8F2201T5E","UNI-ROYAL","C17520","2,263,800",0.005,"ok","uart",""],["LED2",1,"Orange LED: TX","0805","NCD0805O1","NATIONSTAR","C84262","",null,"v1","uart",""],["LED3",1,"Yellow LED: RX","0805","XL-2012UYC","XINGLIGHT","C965814","",null,"v1","uart",""],["LED4",1,"Blue LED: UART2 RX","0805","XL-2012UBC","XINGLIGHT","C965817","760,100",0.008,"ok","uart",""],["USB1",1,"USB-C 16-pin receptacle","SMD","TYPE-C 16PIN 2MD(073)","SHOU HAN","C2765186","1,057,160",null,"ok","usb",""],["U3",1,"ESD array D+/D−/VBUS","SOT-23-6","USBLC6-2SC6","ST","C7519","44,990",0.157,"ok","usb",""],["U6 U7",2,"4-line ESD array: header TX/RX/DTR/RTS/EN/IO0/TX2/RX2","SOT-23-6","USBLC6-4SC6","ST","C111212","13,395",0.247,"ok","usb",""],["R1 R2",2,"5.1k 1%: USB-C CC pull-downs","0805","0805W8F5101T5E","UNI-ROYAL","C27834","",null,"v1","usb",""],["F1",1,"PTC fuse 500 mA hold / 1 A trip, 16 V","1206","JK-nSMD050-16","Jinrui","C2680506","30,620",0.024,"ok","pwr",""],["D1",1,"Schottky 40 V 1 A back-feed diode","SOD-123","1N5819HW-7-F","Diodes Inc","C82544","358,260",null,"ok","pwr",""],["U1",1,"3.3 V 800 mA LDO","SOT-223","SGM2212-3.3XKC3G/TR","SGMICRO","C3294699","5,002",0.57,"ok","pwr",""],["C1 C5",2,"10 µF 25 V X5R: VBUS / LDO in","0805","CL21A106KAYNNNE","Samsung","C15850","",null,"v1","pwr",""],["C6 C8",2,"22 µF 25 V X5R: LDO out / ESP-01 bulk","0805","CL21A226MAQNNNE","Samsung","C45783","615,400",0.107,"ok","pwr",""],["C7",1,"100 nF X7R: LDO out","0805","CC0805KRX7R9BB104","YAGEO","C49678","",null,"v1","pwr",""],["Q3",1,"PNP: lights 5V-IO LED when VIO > 3V3","SOT-23","MMBT3906LT1G","onsemi","C53444","836,550",0.018,"ok","pwr","B=1 E=2 C=3"],["R16",1,"4.7k: Q3 base","0805","0805W8F4701T5E","UNI-ROYAL","C17673","1,051,500",0.003,"ok","pwr",""],["R17",1,"1k: 5V-IO LED","0805","RC0805FR-071KL","YAGEO","C95781","",null,"v1","pwr",""],["LED5",1,"Red LED: 5V IO warning","0805","NCD0805R1","NATIONSTAR","C84256","171,800",0.012,"ok","pwr",""],["U4 U5",2,"Current-limited power switch with FAULT# (3V3_T, 5V_T)","SOT-23-6","TPS2553DBVR","TI","C55266","53,771",0.54,"ok","tgt","Pinout 1 IN 2 GND 3 EN 4 FAULT# 5 ILIM 6 OUT"],["R18",1,"43k 1%: U4 ILIM (≈0.61 A)","0805","0805W8F4302T5E","UNI-ROYAL","C17695","27,600",0.003,"ok","tgt",""],["R19",1,"51k 1%: U5 ILIM (≈0.51 A)","0805","0805W8F5102T5E","UNI-ROYAL","C17737","202,600",0.0064,"ok","tgt",""],["R20",1,"100k: TPWR_EN pull-up","0805","RC0805FR-07100KL","YAGEO","C96346","",null,"v1","tgt",""],["C11 C13",2,"100 nF: switch inputs","0805","CC0805KRX7R9BB104","YAGEO","C49678","",null,"v1","tgt",""],["C12 C14",2,"10 µF: switched outputs","0805","CL21A106KAYNNNE","Samsung","C15850","",null,"v1","tgt",""],["SW5",1,"Tactile switch: POWER-CYCLE","SMD 3.9×3.0","TS-1088-AR02016","XUNPU","C720477","679,440",null,"ok","tgt",""],["LED1",1,"Green LED: target PWR","0805","NCD0805G1","NATIONSTAR","C84260","",null,"v1","tgt",""],["LED6",1,"Red LED: OVERLOAD (FAULT#)","0805","NCD0805R1","NATIONSTAR","C84256","171,800",0.012,"ok","tgt",""],["R3 R21",2,"1k: PWR / OVERLOAD LEDs","0805","RC0805FR-071KL","YAGEO","C95781","",null,"v1","tgt",""],["Q1 Q2",2,"NPN auto-program transistors","SOT-23","MMBT3904LT1G","onsemi","C81464","1,362,700",null,"ok","ap","B=1 E=2 C=3"],["R7 R8",2,"10k: Q1/Q2 base resistors","0805","RC0805FR-0710KL","YAGEO","C84376","",null,"v1","ap",""],["SJ1 SJ2",2,"Solder jumper, bridged by default","PCB pads","—","—","—","",null,"info","ap","PCB feature, not a part"],["R9 R10 R11 R12 R13 R14",6,"10k: EN/IO0 pull-ups, IO15 pull-down, ESP-01 RST/GPIO2, Arduino RST","0805","RC0805FR-0710KL","YAGEO","C84376","",null,"v1","io",""],["C9 C10",2,"100 nF: EN filter, Arduino auto-reset","0805","CC0805KRX7R9BB104","YAGEO","C49678","",null,"v1","io",""],["R15",1,"4.7k: UPDI series resistor","0805","0805W8F4701T5E","UNI-ROYAL","C17673","1,051,500",0.003,"ok","io",""],["SW1 SW2",2,"Tactile switch RESET / BOOT","SMD 3.9×3.0","TS-1088-AR02016","XUNPU","C720477","679,440",null,"ok","ui",""],["SW3 SW4",2,"SPDT slide: IO 3V3/5V · UART/UPDI","SMD","MSK12C02","SHOU HAN","C431540","164,660",0.052,"ok","ui",""],["H1",1,"1×11 male header 2.54 mm","THT","PZ254V-11-11P","XFCN","C2840011","16,430",0.073,"ok","con",""],["J2",1,"2×4 female header 2.54 mm (ESP-01)","THT","PM254-2-04-Z-8.5","HCTL","C2897405","6,120",0.146,"ok","con",""],["J3",1,"2×3 1.27 mm IDC box header (ESP-Prog PROG)","THT","HX JN1.27-2x3P ZZ H4.9","hanxia","C42372545","2,945",0.153,"warn","con","Check datasheet: shrouded + keyed"],["J4",1,"2×3 2.54 mm male header (PROG pogo jig / 2.54 cable)","THT","2.54-2*3P","BOOMELE","C65114","44,550",0.044,"ok","con",""],["J5",1,"1×4 male header 2.54 mm (UART2)","THT","PZ254V-11-04P","XFCN","C2691448","807,020",0.026,"ok","con",""]],"placement":[["USB1",3.4,20,7.4,9,"usb","USB-C"],["U3",12,20,3,3,"usb","USBLC6"],["R1",11,14,2,1.25,"usb","5.1k"],["R2",11,26,2,1.25,"usb","5.1k"],["F1",11,35,3.2,1.6,"pwr","PTC"],["C1",16,35,2,1.25,"pwr","10µ"],["D1",21,35,3.7,1.6,"pwr","SS"],["C5",26,35,2,1.25,"pwr","10µ"],["U1",20,7.5,6.5,7,"pwr","LDO"],["C6",25.5,4,2,1.25,"pwr","22µ"],["C7",25.5,8,2,1.25,"pwr","100n"],["Q3",58,9.5,2.9,2.4,"pwr","Q3"],["R16",58,12.5,2,1.25,"pwr","4.7k"],["LED5",61.5,9.5,2,1.25,"pwr","5V!"],["R17",61.5,12.5,2,1.25,"pwr","1k"],["U2",26,19,5,5,"uart","CH342F"],["C2",30.5,19,2,1.25,"uart","100n"],["C3",27,23.5,2,1.25,"uart","100n"],["C4",23.5,23.5,2,1.25,"uart","100n"],["LED2",47,9.5,2,1.25,"uart","TX"],["LED3",50.5,9.5,2,1.25,"uart","RX"],["LED4",54,9.5,2,1.25,"uart","RX2"],["R4",47,12.5,2,1.25,"uart","2.2k"],["R5",50.5,12.5,2,1.25,"uart","2.2k"],["R6",54,12.5,2,1.25,"uart","2.2k"],["U4",32,7,3,3,"tgt","3V3 SW"],["R18",32,11,2,1.25,"tgt","43k"],["C11",29,4,2,1.25,"tgt","100n"],["C12",35.5,4,2,1.25,"tgt","10µ"],["U5",32,31,3,3,"tgt","5V SW"],["R19",32,27.5,2,1.25,"tgt","51k"],["C13",30,35,2,1.25,"tgt","100n"],["C14",35.5,31,2,1.25,"tgt","10µ"],["SW5",41,3.5,5,3,"tgt","PWR CYC"],["R20",37.5,8,2,1.25,"tgt","100k"],["LED6",41,9.5,2,1.25,"tgt","OVLD"],["R21",41,12.5,2,1.25,"tgt","1k"],["LED1",15.5,12,2,1.25,"tgt","PWR"],["R3",15.5,14.5,2,1.25,"tgt","1k"],["Q1",38,17,2.9,2.4,"ap","Q1"],["R7",42,17,2,1.25,"ap","10k"],["SJ1",46,17,2.4,1.6,"ap","SJ1"],["Q2",38,21.5,2.9,2.4,"ap","Q2"],["R8",42,21.5,2,1.25,"ap","10k"],["SJ2",46,21.5,2.4,1.6,"ap","SJ2"],["R14",50,17,2,1.25,"io","10k"],["C10",54,17,2,1.25,"io","100n"],["R15",58,17,2,1.25,"io","4.7k"],["R9",38,27,2,1.25,"io","10k"],["C9",42,27,2,1.25,"io","100n"],["R10",46,27,2,1.25,"io","10k"],["R11",50,27,2,1.25,"io","10k"],["R12",54,27,2,1.25,"io","10k"],["R13",58,27,2,1.25,"io","10k"],["U6",64,19,3,3,"usb","ESD"],["U7",64,24.5,3,3,"usb","ESD"],["SW1",47.5,3.5,5,3,"ui","RESET"],["SW2",54,3.5,5,3,"ui","BOOT"],["SW3",61.5,3.5,7,3,"ui","3V3|5V"],["SW4",70.5,3.5,7,3,"ui","UART|UPDI"],["C8",44.5,36.5,2,1.25,"pwr","22µ"],["J2",52,36.5,10.2,5.1,"con","ESP-01"],["J3",38,36.5,6.5,5.2,"con","ESP-Prog"],["J4",63.5,36.5,7.6,5.1,"con","PROG 2.54"],["J5",74,37.8,10.2,2.6,"con","UART2"],["H1",77.5,21,2.6,28,"con","H1"]],"notes":{"USB1":"Mouth flush with left edge","U3":"≤ 3 mm from USB1","U1":"Tab up, big copper + vias","U2":"QFN: pin 1 mark, thermal pad + 4 vias to GND","C2":"At U2 pin 7","C3":"At U2 pin 6","C4":"At U2 pin 5","J2":"Bottom edge, module overhangs","H1":"Right edge, pin 1 (3V3) at top","SW3":"Edge, silk \"IO 3V3 | 5V\"","SW4":"Edge, silk \"UART | UPDI\"","SW1":"Edge, silk RESET","SW2":"Edge, silk BOOT","SW5":"Edge, silk POWER (hold = off)","Q1":"Check pin map","Q2":"Check pin map: C = IO0","C8":"Next to J2 VCC","U4":"Short ILIM trace to R18","U5":"Short ILIM trace to R19","U6":"Close to H1 pins 4-7","U7":"Close to H1 pins 9-10 and J5","J3":"Key notch toward board edge","J5":"Silk GND · TX2 · RX2 · DTR2","LED5":"Silk 5V IO!","LED6":"Silk OVERLOAD"}};
+/*DESIGN-END*/
+const TK='uusbf-build';let T={};try{T=JSON.parse(localStorage.getItem(TK)||'{}')||{}}catch(e){T={}}
+const save=()=>{try{localStorage.setItem(TK,JSON.stringify(T))}catch(e){}};
+let DT={};try{DT=JSON.parse(localStorage.getItem('uusbf-v2-ticks')||'{}')||{}}catch(e){}
+const ck=(k,l)=>`<input type="checkbox" class="ck" data-k="${k}" ${T[k]?'checked':''} aria-label="${l}">`;
+let board=+(T.board||1);
+const STEP={};
+
+function tickTable(id,key,rows,head='Step'){
+  const el=document.getElementById(id);
+  const draw=()=>{el.innerHTML=`<tr><th>Done</th><th>${head}</th><th>Detail</th></tr>`+rows.map((r,i)=>{const k=key+':'+i;return `<tr class="${T[k]?'done':''}"><td class="tick">${ck(k,r[0])}</td><td class="ref" style="white-space:normal">${r[0]}</td><td>${r[1]||''}</td></tr>`}).join('');STEP[key]=[rows.filter((r,i)=>T[key+':'+i]).length,rows.length];stepper()};
+  el.addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;if(c.checked)T[c.dataset.k]=1;else delete T[c.dataset.k];save();draw()});
+  draw();
+}
+
+/* step 1 + 2 progress from the design page */
+(function(){
+  let t=0,d=0;(DESIGN.parts||[]).forEach(p=>{t++;if(DT['sym:'+p[0]])d++;p[5].forEach(pin=>{t++;if(DT['pin:'+p[0]+'.'+pin[0]])d++})});
+  document.getElementById('schProg').textContent=`${d} / ${t}`;
+  const pl=(DESIGN.placement||[]);const pd=pl.filter(p=>DT['pl:'+p[0]]).length;
+  document.getElementById('plProg').textContent=`${pd} / ${pl.length}`;
+  STEP.sch=[d,t];STEP.pl=[pd,pl.length];
+})();
+tickTable('t1','s1',[
+ ['Create project + 5 schematic pages','P1 USB + Power · P2 Target power · P3 USB dual UART · P4 Auto-program + control · P5 Connectors + ESD'],
+ ['Place every symbol by LCSC number','So footprints come with the part (EasyEDA library search by C-number)'],
+ ['Wire all pins, add net labels for cross-page nets','GND, +3V3, +5V as global power symbols'],
+ ['Add No-Connect flags','13 pins: USB1.3/9, U2.1/9/10/11/14/16/17/18/22/24, SW4.3'],
+ ['Check D1, LED1–6 cathode pin, Q1–Q3 pin map (B=1 E=2 C=3)','Polarity mistakes here are the most common rework'],
+ ['Run ERC, then compare Design → Netlist with hardware/netlist.csv','43 nets'],
+]);
+tickTable('t2','s2',[
+ ['Board outline 80 × 40 mm, 2 mounting holes','Holes at (3.5, 3.5) and (3.5, 36.5)'],
+ ['Place footprints from the placement table','USB1 mouth on the left edge; H1 on the right edge; ESP-01 overhang at the bottom'],
+ ['USB D+/D− short, side by side, over solid GND, no vias','U3 within 3 mm of USB1'],
+ ['Decoupling close: C2/C3/C4 ≤ 2 mm from U2 pins 7/6/5','QFN exposed pad to GND with 4 vias'],
+ ['R18/R19 right at U4/U5 ILIM pins','Short traces = accurate current limit'],
+ ['U6/U7 between header pins and the rest','Signal passes the ESD pad on its way to H1/J5'],
+ ['Power traces ≥ 0.5 mm (VBUS, +5V, +3V3, +3V3_T, +5V_T)','SOT-223 tab on ≥ 1 cm² copper + vias'],
+ ['GND pour both layers, stitching vias','Remove islands'],
+ ['Silkscreen: colour-coded H1 labels, SW labels, "5V IO!", "OVERLOAD", J5 pin names, J3 key, pin-1 dots',''],
+ ['Test pads on the bottom','VBUS_F, +5V, +3V3, +3V3_T, +5V_T, VIO, GND, TXD, RXD, TX2, RX2, DTR#, RTS#'],
+ ['DRC clean, then 3D view check','Switch/LED/header orientation'],
+]);
+tickTable('t3','s3',[
+ ['Export Gerber + drill from EasyEDA','Check the outline and drill preview'],
+ ['If JLC assembly: export BOM + pick-and-place (CPL)','Confirm U2 pin-1 rotation in the JLC preview'],
+ ['Upload, set the options above, order',''],
+ ['Optional: stencil for paste + hot air',''],
+]);
+
+/* step 4 order calculator */
+function orderQty(r,n,sp){const base=r[1]*n;if(!sp)return base;const passive=/^(R|C)\d/.test(r[0])&&r[3]==='0805';return base+(passive?5:1)}
+function orderLines(){const m={};(DESIGN.bom||[]).filter(r=>r[6]&&r[6].startsWith('C')).forEach(r=>{const g=m[r[6]]||(m[r[6]]={lcsc:r[6],mpn:r[4],desc:[],refs:[],per:0,price:r[8],rows:[]});g.desc.push(r[2]);g.refs.push(r[0]);g.per+=r[1];g.rows.push(r);if(g.price==null&&r[8]!=null)g.price=r[8]});return Object.values(m)}
+function groupQty(g,n,sp){const passive=g.rows.every(r=>/^(R|C)\d/.test(r[0])&&r[3]==='0805');return g.per*n+(sp?(passive?5:1):0)}
+function renderOrder(){
+  const n=Math.max(1,Math.min(50,+document.getElementById('nBoards').value||1));const sp=document.getElementById('spares').checked;
+  const lines=orderLines();
+  let tot=0,unk=0,h='<tr><th>Added</th><th>LCSC</th><th>Part</th><th>Refs</th><th>Per board</th><th>Order qty</th><th>Unit $</th><th>Line $</th></tr>';
+  h+=lines.map(g=>{const q=groupQty(g,n,sp);const lp=g.price!=null?q*g.price:null;if(lp!=null)tot+=lp;else unk++;const k='ord:'+g.lcsc;
+    return `<tr class="${T[k]?'done':''}"><td class="tick">${ck(k,g.lcsc+' in cart')}</td><td class="mono"><a href="https://www.lcsc.com/product-detail/${g.lcsc}.html" target="_blank" rel="noopener">${g.lcsc}</a></td><td>${g.mpn}<br><small style="color:var(--mute)">${g.desc.join(' · ')}</small></td><td>${g.refs.join(' ')}</td><td>${g.per}</td><td><b>${q}</b></td><td>${g.price!=null?g.price:'<small style="color:var(--mute)">not captured</small>'}</td><td>${lp!=null?lp.toFixed(2):'–'}</td></tr>`}).join('');
+  document.getElementById('ordTable').innerHTML=h;
+  const done=lines.filter(g=>T['ord:'+g.lcsc]).length;STEP.ord=[done,lines.length];
+  document.getElementById('ordStats').innerHTML=[[n,'boards'],[lines.length,'order lines'],['$'+tot.toFixed(2)+'+','captured prices ('+unk+' lines not priced)'],[done+' / '+lines.length,'lines in cart']].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
+  T.n=n;T.sp=sp;save();stepper();
+}
+(function(){
+  if(T.n)document.getElementById('nBoards').value=T.n;if(T.sp===false)document.getElementById('spares').checked=false;
+  ['input','change'].forEach(ev=>{document.getElementById('nBoards').addEventListener(ev,renderOrder);document.getElementById('spares').addEventListener(ev,renderOrder)});
+  document.getElementById('ordTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;if(c.checked)T[c.dataset.k]=1;else delete T[c.dataset.k];save();renderOrder()});
+  document.getElementById('ordReset').addEventListener('click',()=>{if(confirm('Clear order ticks?')){Object.keys(T).filter(k=>k.startsWith('ord:')).forEach(k=>delete T[k]);save();renderOrder()}});
+  document.getElementById('csvBtn').addEventListener('click',()=>{const n=+document.getElementById('nBoards').value||1,sp=document.getElementById('spares').checked;
+    const rows=[['Comment','Designator','LCSC Part #','Quantity','Manufacturer Part']].concat(orderLines().map(g=>[g.desc.join(' / '),g.refs.join(' '),g.lcsc,groupQty(g,n,sp),g.mpn]));
+    const csv=rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`flasher-v2-lcsc-${n}boards.csv`;a.click();});
+  renderOrder();
+})();
+
+/* board selector */
+function boardSel(id,cb){const el=document.getElementById(id);const draw=()=>{el.innerHTML='<b>Board:</b> '+[1,2,3,4,5].map(i=>`<button class="chip" data-b="${i}" aria-pressed="${i===board}">#${i}</button>`).join('')+' <span class="na">each board keeps its own ticks and readings</span>'};
+  el.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;board=+b.dataset.b;T.board=board;save();document.querySelectorAll('[data-sel]').forEach(x=>x._draw());renderAll()});
+  el._draw=draw;el.dataset.sel=1;draw();}
+
+/* step 5 solder */
+const SOLDER=[
+ ['Inspect the bare PCB','Shorts between +5V / +3V3 / GND with a meter (should be open)'],
+ ['U2 CH342F (QFN-24) first','Paste + hot air; pin 1 dot; check for bridges with a loupe; pad 0 to GND'],
+ ['USB1 USB-C','Shell tabs + signal pins; check D+/D− not bridged'],
+ ['U3, U6, U7 (SOT-23-6 ESD arrays)','Pin 1 orientation'],
+ ['U1 LDO (SOT-223), D1, F1','D1 band = +5V side (K)'],
+ ['U4, U5 TPS2553 (SOT-23-6)','Pin 1 = IN'],
+ ['Q1, Q2 (MMBT3904), Q3 (MMBT3906)','Q3 is the PNP: don\'t mix them up'],
+ ['All 0805 resistors','R18 = 43k, R19 = 51k (current limits)'],
+ ['All 0805 capacitors','22 µF at C6/C8, 10 µF at C1/C5/C12/C14'],
+ ['LEDs 1–6','Cathode marks; LED4 blue, LED5/6 red, LED1 green'],
+ ['SW1, SW2, SW5 tact switches; SW3, SW4 slide switches',''],
+ ['THT: H1, J2, J3 (key toward edge), J4, J5',''],
+ ['Wash flux, inspect under light',''],
+];
+function renderSolder(){const key='b'+board+':sol';const el=document.getElementById('t5');
+  el.innerHTML='<tr><th>Done</th><th>#</th><th>Step</th><th>Check</th></tr>'+SOLDER.map((r,i)=>{const k=key+':'+i;return `<tr class="${T[k]?'done':''}"><td class="tick">${ck(k,r[0])}</td><td class="ref">${i+1}</td><td>${r[0]}</td><td>${r[1]}</td></tr>`}).join('');
+  STEP.sol=[SOLDER.filter((r,i)=>T[key+':'+i]).length,SOLDER.length];}
+document.getElementById('t5').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;if(c.checked)T[c.dataset.k]=1;else delete T[c.dataset.k];save();renderSolder();stepper()});
+
+/* step 6 tests: id, phase, what, how, min, max, unit */
+const TESTS=[
+ ['r1','No power','VBUS ↔ GND resistance','meter, USB unplugged',100,null,'Ω'],
+ ['r2','No power','+5V ↔ GND resistance','',100,null,'Ω'],
+ ['r3','No power','+3V3 ↔ GND resistance','',100,null,'Ω'],
+ ['r4','No power','+3V3_T / +5V_T ↔ GND resistance','',100,null,'Ω'],
+ ['i0','Power','USB current at plug-in, no target','USB meter',5,80,'mA'],
+ ['v1','Power','VBUS_F','test pad',4.75,5.25,'V'],
+ ['v2','Power','+5V (after D1)','',4.45,4.85,'V'],
+ ['v3','Power','+3V3 (LDO out)','',3.25,3.35,'V'],
+ ['v4','Power','+3V3_T (SW5 released)','',3.20,3.35,'V'],
+ ['v5','Power','+5V_T (SW5 released)','',4.40,4.85,'V'],
+ ['v6','Power','VIO with SW3 = 3V3','',3.20,3.35,'V'],
+ ['v7','Power','VIO with SW3 = 5V','',4.45,4.85,'V'],
+ ['v8','Power','TX idle level, SW3 = 5V','H1 pin 4',4.30,4.85,'V'],
+ ['v9','Power','+3V3_T while holding SW5','',0,0.3,'V'],
+ ['c1','Load','+3V3_T current limit (short / 3.3 Ω load)','≈0.61 A typ',0.55,0.67,'A'],
+ ['c2','Load','+5V_T current limit','≈0.51 A typ',0.46,0.57,'A'],
+];
+const FUNC=[
+ ['Two COM ports enumerate','Windows Device Manager: 2 × USB serial (CH342)'],
+ ['PWR LED on; OFF while SW5 held',''],
+ ['5V IO LED: off at SW3 = 3V3, on at SW3 = 5V',''],
+ ['OVERLOAD LED lights during the current-limit test',''],
+ ['UART1 loopback (H1 TX↔RX) at 115200 and 2 Mbaud; TX/RX LEDs blink',''],
+ ['UART2 loopback (J5 TX2↔RX2); blue LED blinks',''],
+ ['Auto-program waveform: EN pulses low, IO0 low while EN rises','scope or LED on EN/IO0 during esptool chip_id'],
+ ['SJ1/SJ2 cut test (optional): auto-program stops',''],
+];
+function judge(t,v){if(v===''||v==null||isNaN(+v))return ['–','na'];v=+v;if(t[4]!=null&&v<t[4])return ['FAIL','fail'];if(t[5]!=null&&v>t[5])return ['FAIL','fail'];return ['PASS','pass']}
+function renderTests(){const key='b'+board+':t:';
+  let pass=0,fail=0;
+  document.getElementById('t6').innerHTML='<tr><th>Phase</th><th>Measure</th><th>How</th><th>Expected</th><th>Reading</th><th>Result</th></tr>'+TESTS.map(t=>{const v=T[key+t[0]]??'';const [r,c]=judge(t,v);if(c==='pass')pass++;if(c==='fail')fail++;
+    const exp=t[5]==null?`≥ ${t[4]} ${t[6]}`:`${t[4]} – ${t[5]} ${t[6]}`;
+    return `<tr><td>${t[1]}</td><td class="ref" style="white-space:normal">${t[2]}</td><td><small>${t[3]}</small></td><td class="mono">${exp}</td><td><input class="meas" data-t="${t[0]}" value="${v}" inputmode="decimal" aria-label="${t[2]} reading"> ${t[6]}</td><td><span class="res ${c}">${r}</span></td></tr>`}).join('');
+  const fk='b'+board+':f:';
+  document.getElementById('t6b').innerHTML='<tr><th>Done</th><th>Check</th><th>How</th></tr>'+FUNC.map((f,i)=>`<tr class="${T[fk+i]?'done':''}"><td class="tick">${ck(fk+i,f[0])}</td><td>${f[0]}</td><td><small>${f[1]}</small></td></tr>`).join('');
+  const fd=FUNC.filter((f,i)=>T[fk+i]).length;
+  document.getElementById('testStats').innerHTML=[['#'+board,'board'],[pass+' / '+TESTS.length,'readings pass'],[fail,'fail'],[fd+' / '+FUNC.length,'functional checks']].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
+  document.getElementById('notes').value=T['b'+board+':notes']||'';
+  STEP.test=[pass+fd,TESTS.length+FUNC.length];
+}
+document.getElementById('t6').addEventListener('change',e=>{const i=e.target.closest('.meas');if(!i)return;const k='b'+board+':t:'+i.dataset.t;if(i.value==='')delete T[k];else T[k]=i.value.replace(',','.');save();renderTests();stepper()});
+document.getElementById('t6b').addEventListener('change',e=>{const c=e.target.closest('.ck');if(!c)return;if(c.checked)T[c.dataset.k]=1;else delete T[c.dataset.k];save();renderTests();stepper()});
+document.getElementById('notes').addEventListener('input',e=>{T['b'+board+':notes']=e.target.value;save()});
+document.getElementById('testReset').addEventListener('click',()=>{if(confirm('Clear board #'+board+' readings and checks?')){Object.keys(T).filter(k=>k.startsWith('b'+board+':t:')||k.startsWith('b'+board+':f:')).forEach(k=>delete T[k]);save();renderTests();stepper()}});
+document.getElementById('logBtn').addEventListener('click',()=>{const key='b'+board+':t:';const rows=[['Board','Test','Expected min','Expected max','Unit','Reading','Result']].concat(TESTS.map(t=>{const v=T[key+t[0]]??'';return ['#'+board,t[2],t[4]??'',t[5]??'',t[6],v,judge(t,v)[0]]}));
+  FUNC.forEach((f,i)=>rows.push(['#'+board,f[0],'','','',T['b'+board+':f:'+i]?'done':'','']));rows.push(['#'+board,'Notes','','','',(T['b'+board+':notes']||'').replace(/\n/g,' '),'']);
+  const csv=rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`flasher-v2-board${board}-bringup.csv`;a.click()});
+
+/* step 7 */
+tickTable('t7','s7',[
+ ['ESP32 DevKit via H1 (or its own USB)','esptool chip_id, then write_flash'],
+ ['Board with ESP-Prog header via J3 cable',''],
+ ['Bare ESP-12F via H1 (+ IO15 pin)',''],
+ ['ESP-01 in J2 (SW3 = 3V3!)',''],
+ ['Arduino Pro Mini 5 V via H1 RST (SW3 = 5V)','Arduino IDE upload'],
+ ['ATtiny1614 via UPDI (SW4 = UPDI)','megaTinyCore SerialUPDI or pymcuprog'],
+ ['Second device log on UART2 (J5)','serial monitor on the second COM port'],
+],'Target');
+
+function renderAll(){renderSolder();renderTests();stepper()}
+function stepper(){
+  const S=[['s1','Schematic',STEP.sch&&STEP.s1?[STEP.sch[0]+STEP.s1[0],STEP.sch[1]+STEP.s1[1]]:STEP.s1],['s2','PCB layout',STEP.pl&&STEP.s2?[STEP.pl[0]+STEP.s2[0],STEP.pl[1]+STEP.s2[1]]:STEP.s2],['s3','Order PCB',STEP.s3],['s4','Order parts',STEP.ord],['s5','Solder #'+board,STEP.sol],['s6','Bring-up #'+board,STEP.test],['s7','First flash',STEP.s7]];
+  const el=document.getElementById('stepper');if(!el)return;
+  el.innerHTML=S.map((s,i)=>{const p=s[2]?[s[2][0],s[2][1]]:[0,0];const pct=p[1]?Math.round(100*p[0]/p[1]):0;return `<a class="stp" href="#${s[0]}"><b>Step ${i+1} · ${pct}%</b><span>${s[1]}</span><i><u style="width:${pct}%"></u></i></a>`}).join('');
+}
+boardSel('bs5');boardSel('bs6');renderAll();
+</script>
+</body>
+</html>
