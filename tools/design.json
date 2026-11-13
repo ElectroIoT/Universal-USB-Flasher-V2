@@ -85,7 +85,7 @@
 ["R12","P5","10k (ESP-01 RST)","R0805","C84376",[["1","1","+3V3_T"],["2","2","ESP01_RST"]]],
 ["R13","P5","10k (ESP-01 GPIO2)","R0805","C84376",[["1","1","+3V3_T"],["2","2","ESP01_IO2"]]],
 ["J3","P5","ESP-Prog PROG 2x3 1.27 mm box header","IDC-TH_6P-P1.27-2x3","C42372545",[["1","ESP_EN","EN"],["2","VDD","+3V3_T"],["3","ESP_TXD","RXD"],["4","GND","GND"],["5","ESP_RXD","TXD"],["6","ESP_IO0","IO0"]]],
-["J4","P5","PROG 2x3 2.54 mm (pogo / 2.54 cable)","HDR-TH_6P-P2.54-V-M-R2-C3","C56153599",[["1","ESP_EN","EN"],["2","VDD","+3V3_T"],["3","ESP_TXD","RXD"],["4","GND","GND"],["5","ESP_RXD","TXD"],["6","ESP_IO0","IO0"]]],
+["J4","P5","PROG 2x3 2.54 mm (pogo / 2.54 cable)","HDR-TH_6P-P2.54-V-M-R2-C3","C65114",[["1","ESP_EN","EN"],["2","VDD","+3V3_T"],["3","ESP_TXD","RXD"],["4","GND","GND"],["5","ESP_RXD","TXD"],["6","ESP_IO0","IO0"]]],
 ["J5","P5","UART2 1x4 header","HDR-TH_4P-P2.54-V-M","C2691448",[["1","GND","GND"],["2","TX2","TX2"],["3","RX2","RX2"],["4","DTR2","DTR2_N"]]],
 ["U6","P5","USBLC6-4SC6 (header ESD A)","SOT-23-6","C111212",[["1","I/O1","TXD"],["2","GND","GND"],["3","I/O2","RXD"],["4","I/O3","DTR_N"],["5","VBUS","+5V"],["6","I/O4","RTS_N"]]],
 ["U7","P5","USBLC6-4SC6 (header ESD B)","SOT-23-6","C111212",[["1","I/O1","EN"],["2","GND","GND"],["3","I/O2","IO0"],["4","I/O3","TX2"],["5","VBUS","+5V"],["6","I/O4","RX2"]]]
@@ -132,7 +132,7 @@
 ["H1",1,"1×11 male header 2.54 mm","THT","PZ254V-11-11P","XFCN","C2840011","16,430",0.073,"ok","con",""],
 ["J2",1,"2×4 female header 2.54 mm (ESP-01)","THT","PM254-2-04-Z-8.5","HCTL","C2897405","6,120",0.146,"ok","con",""],
 ["J3",1,"2×3 1.27 mm IDC box header (ESP-Prog PROG)","THT","HX JN1.27-2x3P ZZ H4.9","hanxia","C42372545","2,945",0.153,"warn","con","Check datasheet: shrouded + keyed"],
-["J4",1,"2×3 2.54 mm male header (PROG pogo / 2.54 cable)","THT","PZ254V-12-06P-T","XFCN","C56153599","1,000",0.024,"warn","con","Low stock line; any 2×3 2.54 male fits"],
+["J4",1,"2×3 2.54 mm male header (PROG pogo jig / 2.54 cable)","THT","2.54-2*3P","BOOMELE","C65114","44,550",0.044,"ok","con",""],
 ["J5",1,"1×4 male header 2.54 mm (UART2)","THT","PZ254V-11-04P","XFCN","C2691448","807,020",0.026,"ok","con",""]
 ],
 "placement": [

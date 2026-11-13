@@ -1,0 +1,8 @@
+Net,Connections (Ref.pin),PROG pad
+EN,J1.1; P1.1,1
+VDD,J1.2; P1.2; R1.1,2
+ESP_TXD,J1.3; P2.1,3
+GND,J1.4; P2.2; LED1.K,4
+ESP_RXD,J1.5; P3.1,5
+IO0,J1.6; P3.2,6
+LED1_A,R1.2; LED1.A,-

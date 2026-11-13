@@ -1,0 +1,10 @@
+# Pogo jig board 20 x 47 mm, origin top-left, Y down, top view. Outline polygon: (0,0) (20,0) (20,28) (16,34) (16,47) (4,47) (4,34) (0,28)
+Ref,Side,X_mm,Y_mm,Rotation,Note
+J1,Top,10,6,0,"Pin 1 at (8.73, 3.46); pins 1/2 first row, 3/4 second, 5/6 third (same as PROG pads)"
+LED1,Top,10,16,90,Silk VDD
+R1,Top,10,19,90,
+P1,Bottom,10,36.92,0,"Pin 1 (EN) at (8.73, 36.92), pin 2 (VDD) at (11.27, 36.92)"
+P2,Bottom,10,39.46,0,"Pin 1 (ESP_TXD) at (8.73, 39.46), pin 2 (GND) at (11.27, 39.46)"
+P3,Bottom,10,42.00,0,"Pin 1 (ESP_RXD) at (8.73, 42.00), pin 2 (IO0) at (11.27, 42.00)"
+G1,Both,8.73,34.38,-,"Guide hole Ø1.0 mm plated, 2.54 mm above pad 1"
+G2,Both,11.27,44.54,-,"Guide hole Ø1.0 mm plated, 2.54 mm below pad 6"

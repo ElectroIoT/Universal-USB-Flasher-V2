@@ -342,3 +342,64 @@ for i, (k, v) in enumerate(spec):
     y = 130 + i * 34
     b += f'<text x="520" y="{y}" class="t" style="fill:{ACC};font-size:13px">{k}</text><text x="610" y="{y}" class="s" style="font-size:12.5px">{v}</text>'
 save('prog-pad.svg', wrap(980, 360, b, st))
+
+# ---------------------------------------------------------------- NEW: pogo jig (top view to scale + pressing side view)
+st = '''
+.press{animation:press 4.5s ease-in-out infinite}
+@keyframes press{0%,15%{transform:translateY(-34px)}35%,75%{transform:translateY(0)}95%,100%{transform:translateY(-34px)}}
+.plg{animation:plg 4.5s ease-in-out infinite}
+@keyframes plg{0%,20%{transform:translateY(0)}35%,75%{transform:translateY(-7px)}90%,100%{transform:translateY(0)}}
+.vdd{animation:vdd 4.5s step-end infinite;opacity:.2}
+@keyframes vdd{0%{opacity:.2}36%{opacity:1}76%{opacity:.2}}
+'''
+k = 7.2; ox, oy = 60, 110
+def P(x, y): return f'{ox + x * k:.1f},{oy + y * k:.1f}'
+outline = [(0, 0), (20, 0), (20, 28), (16, 34), (16, 47), (4, 47), (4, 34), (0, 28)]
+b = DEFS + '<text x="40" y="52" class="h">PROG pogo jig</text><text x="40" y="78" class="s">20 × 47 mm pen board: cable header on top, three 2-pin pogo strips at the tip form the 2 × 3 PROG grid. Plug into the flasher\'s J4.</text>'
+b += f'<polygon points="{" ".join(P(x, y) for x, y in outline)}" fill="url(#pg)" stroke="#2bd48f66" stroke-width="2"/>'
+# J1 header
+b += f'<rect x="{ox+6.5*k:.1f}" y="{oy+1.9*k:.1f}" width="{7*k:.1f}" height="{8.2*k:.1f}" rx="3" fill="#111827"/>'
+labs = ['EN', 'VDD', 'TXD', 'GND', 'RXD', 'IO0']
+cols = [C['esp'], C['v33'], C['tx'], '#94a3b8', C['rx'], C['esp']]
+for i in range(6):
+    r, c = divmod(i, 2)
+    x, y = 8.73 + c * 2.54, 3.46 + r * 2.54
+    b += f'<rect x="{ox+x*k-5:.1f}" y="{oy+y*k-5:.1f}" width="10" height="10" fill="#f4c542"/>'
+b += f'<circle cx="{ox+6*k:.1f}" cy="{oy+3.46*k:.1f}" r="3" fill="#fff"/><text x="{ox+10*k:.1f}" y="{oy+12.4*k:.1f}" text-anchor="middle" style="fill:#e5e7eb;font-weight:800;font-size:12px">J1 → flasher J4</text>'
+# LED + R
+b += f'<g class="vdd"><circle cx="{ox+10*k:.1f}" cy="{oy+16*k:.1f}" r="12" fill="#22c55e" opacity=".45"/></g><rect x="{ox+9.4*k:.1f}" y="{oy+15*k:.1f}" width="{1.25*k:.1f}" height="{2*k:.1f}" rx="2" fill="#22c55e"/>'
+b += f'<rect x="{ox+9.4*k:.1f}" y="{oy+18*k:.1f}" width="{1.25*k:.1f}" height="{2*k:.1f}" fill="#3b2f22"/><text x="{ox+12*k:.1f}" y="{oy+17*k:.1f}" style="fill:#e5e7eb;font-weight:700;font-size:11px">VDD</text>'
+b += f'<text x="{ox+10*k:.1f}" y="{oy+25*k:.1f}" text-anchor="middle" style="fill:#e5e7eb;font-weight:800;font-size:12px;letter-spacing:1px">PROG JIG</text>'
+# pogo strips (bottom side, drawn dashed) + pins
+for r in range(3):
+    y = 36.92 + r * 2.54
+    b += f'<rect x="{ox+(10-2.65)*k:.1f}" y="{oy+(y-1.25)*k:.1f}" width="{5.3*k:.1f}" height="{2.5*k:.1f}" rx="2" fill="#1f2937" stroke="#64748b" stroke-dasharray="3 2"/>'
+    for c in range(2):
+        i = r * 2 + c
+        x = 8.73 + c * 2.54
+        b += f'<circle cx="{ox+x*k:.1f}" cy="{oy+y*k:.1f}" r="5.5" fill="#d4a34a"/><text x="{ox+x*k:.1f}" y="{oy+y*k+3.5:.1f}" text-anchor="middle" style="fill:#111;font-weight:800;font-size:8px">{i+1}</text>'
+        tx = ox + (x - 3.2 if c == 0 else x + 3.2) * k
+        b += f'<text x="{tx:.1f}" y="{oy+y*k+4:.1f}" text-anchor="{"end" if c == 0 else "start"}" style="fill:{cols[i]};font-weight:800;font-size:10.5px">{labs[i]}</text>'
+for gx, gy in [(8.73, 34.38), (11.27, 44.54)]:
+    b += f'<circle cx="{ox+gx*k:.1f}" cy="{oy+gy*k:.1f}" r="3.6" fill="#02150d" stroke="#d4a34a" stroke-width="1.5"/>'
+b += f'<text x="{ox+10*k:.1f}" y="{oy+49.6*k:.1f}" text-anchor="middle" class="s">top view, to scale · ○ guide holes</text>'
+# side view
+sx = 420
+b += f'<text x="{sx}" y="104" class="t">Side view: press, flash, lift</text>'
+b += f'<rect x="{sx}" y="380" width="460" height="22" rx="4" fill="url(#pg)"/><text x="{sx+10}" y="420" class="s">target board with 6 PROG pads (no header)</text>'
+for i in range(3):
+    b += f'<rect x="{sx+150+i*60}" y="374" width="34" height="6" rx="2" fill="#d4a34a"/>'
+jig = f'<rect x="{sx+110}" y="200" width="250" height="16" rx="3" fill="url(#pg)"/>'
+jig += f'<rect x="{sx+200}" y="168" width="70" height="32" rx="3" fill="#111827"/>'
+jig += f'<path d="M{sx+235} 168C{sx+235} 140 {sx+330} 140 {sx+420} 150" stroke="{LINE}" stroke-width="8" fill="none"/>'
+for i in range(3):
+    x = sx + 167 + i * 60
+    jig += f'<rect x="{x-14}" y="216" width="28" height="18" rx="2" fill="#1f2937"/><rect x="{x-6}" y="234" width="12" height="94" fill="#cbd5e1"/>'
+    jig += f'<g class="plg"><rect x="{x-4}" y="328" width="8" height="18" fill="#e5e7eb"/><path d="M{x-4} 346L{x} 352L{x+4} 346Z" fill="#e5e7eb"/></g>'
+for gx in (sx + 128, sx + 342):
+    jig += f'<rect x="{gx-3}" y="216" width="6" height="146" fill="#94a3b8"/>'
+jig += f'<g class="vdd"><circle cx="{sx+300}" cy="196" r="9" fill="#22c55e"/></g>'
+b += f'<g class="press">{jig}</g>'
+b += f'<text x="{sx+390}" y="290" class="s">pogo strips</text><text x="{sx+390}" y="306" class="s">PG2541-02-002P</text><text x="{sx+390}" y="322" class="s">1.0 mm travel</text>'
+b += f'<text x="{sx}" y="460" class="s">Guide pins find the Ø1.0 mm holes first, then the pogo tips touch the pads.</text>'
+save('pogo-jig.svg', wrap(980, 520, b, st))

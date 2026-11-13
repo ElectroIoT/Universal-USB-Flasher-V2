@@ -8,12 +8,10 @@
 | ESD on header pins | U6/U7 USBLC6-4SC6 on TX, RX, DTR, RTS, EN, IO0, TX2, RX2 |
 | 5V-IO warning LED | Q3 MMBT3906 compares VIO with +3V3 and lights LED5 in 5 V mode (no DPDT switch needed) |
 | Dual UART | CH342F replaces CH343G; UART2 on J5, blue LED4 on RX2 |
-| Pogo-pad standard | [prog-pad-standard.md](prog-pad-standard.md); pogo jig plugs into J4 |
+| Pogo-pad standard | [prog-pad-standard.md](prog-pad-standard.md) |
+| Pogo jig board | [pogo-jig/](../pogo-jig/): 3 × PG2541-02-002P strips, J1 2×3 cable header, VDD LED, guide holes |
 
 ## Still open
-### Pogo jig adapter board
-A small PCB with 6 pogo pins in the PROG pattern, 2 locating pins and a 2×3 2.54 mm female header that plugs into J4.
-
 ### Enclosure
 A 3D-printed or acrylic sandwich case that protects the bottom side and supports the ESP-01 overhang.
 

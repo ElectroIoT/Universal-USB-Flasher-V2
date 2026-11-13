@@ -676,7 +676,7 @@ Footprint `IDC-TH_6P-P1.27-2x3` · LCSC C42372545
 
 ### J4: PROG 2x3 2.54 mm (pogo / 2.54 cable)
 
-Footprint `HDR-TH_6P-P2.54-V-M-R2-C3` · LCSC C56153599
+Footprint `HDR-TH_6P-P2.54-V-M-R2-C3` · LCSC C65114
 
 | ✓ | Pin | Name | Net | Also on this net |
 |---|---|---|---|---|

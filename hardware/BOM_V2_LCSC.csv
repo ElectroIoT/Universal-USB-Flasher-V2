@@ -40,5 +40,5 @@ SW3 SW4,2,SPDT slide: IO 3V3/5V · UART/UPDI,SMD,MSK12C02,SHOU HAN,C431540,"164,
 H1,1,1×11 male header 2.54 mm,THT,PZ254V-11-11P,XFCN,C2840011,"16,430",0.073,Connectors,
 J2,1,2×4 female header 2.54 mm (ESP-01),THT,PM254-2-04-Z-8.5,HCTL,C2897405,"6,120",0.146,Connectors,
 J3,1,2×3 1.27 mm IDC box header (ESP-Prog PROG),THT,HX JN1.27-2x3P ZZ H4.9,hanxia,C42372545,"2,945",0.153,Connectors,Check datasheet: shrouded + keyed
-J4,1,2×3 2.54 mm male header (PROG pogo / 2.54 cable),THT,PZ254V-12-06P-T,XFCN,C56153599,"1,000",0.024,Connectors,Low stock line; any 2×3 2.54 male fits
+J4,1,2×3 2.54 mm male header (PROG pogo jig / 2.54 cable),THT,2.54-2*3P,BOOMELE,C65114,"44,550",0.044,Connectors,
 J5,1,1×4 male header 2.54 mm (UART2),THT,PZ254V-11-04P,XFCN,C2691448,"807,020",0.026,Connectors,

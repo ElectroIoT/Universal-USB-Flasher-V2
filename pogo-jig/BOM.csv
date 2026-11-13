@@ -1,0 +1,7 @@
+Ref,Qty,Description,Package,MPN,Manufacturer,LCSC Part #,Stock (2026-11-13),Unit price (USD),Notes
+P1 P2 P3,3,"Pogo pin strip 2P, 2.54 mm pitch, 13.7 mm, housing 5.30 x 2.50 mm, plunger Ø0.90",THT (bottom side),PG2541-02-002P,CHIN-BAN,C49451500,200,0.47,"Low stock (enough for ~66 jigs); 1 A, 120 g at 1.0 mm travel"
+J1,1,2x3 male pin header 2.54 mm (cable to flasher J4),THT (top side),2.54-2*3P,BOOMELE,C65114,"44,550",0.044,
+LED1,1,Green LED: VDD present,0805,NCD0805G1,NATIONSTAR,C84260,not rechecked,,From flasher BOM
+R1,1,1k 1%: LED1,0805,RC0805FR-071KL,YAGEO,C95781,not rechecked,,From flasher BOM
+G1 G2,2,"Guide pin Ø1.0 x 16 mm steel dowel (optional, generic), set 12.8 mm below the board",press-fit,-,-,-,-,,"Not on LCSC; fits the PROG standard Ø1.0 mm locating holes"
+CBL,1,"6-way 2.54 mm female-female IDC ribbon or Dupont cable, 10-20 cm",-,-,-,-,-,,"Generic; pin 1 to pin 1"

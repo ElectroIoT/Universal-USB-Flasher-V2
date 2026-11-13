@@ -26,7 +26,7 @@ Pads 1/2 form the first row, 3/4 the second and 5/6 the third. That matches a 2�
 | Keep-out | 1 mm around the pad group: no parts, no silk |
 | Locating holes (optional) | 2 × Ø 1.0 mm NPTH, centred 2.54 mm beyond pads 1 and 6 along the long axis |
 | Silk | "PROG" label and a dot at pad 1 |
-| Pogo pins | P75-series (Ø 1.0 mm tip) or similar, spring force ≥ 75 g |
+| Pogo pins | Jig uses 3 × CHIN-BAN PG2541-02-002P strips (LCSC C49451500, plunger Ø0.90 mm, 120 g) |
 
 ## Rules for the target board
 - Keep EN and IO0 pull-ups on the target. The flasher also has 10k pull-ups on +3V3_T, so the two in parallel are fine.
@@ -35,4 +35,4 @@ Pads 1/2 form the first row, 3/4 the second and 5/6 the third. That matches a 2�
 - ESP8266 targets still need GPIO15 low and GPIO2 high at boot, done on the target board.
 
 ## Jig
-A pogo jig is a small board with 6 pogo pins in this pattern and a 2×3 2.54 mm female header that plugs into J4. It is on the roadmap as its own PCB.
+The matching pogo jig board (design, netlist, BOM, placement) is in [pogo-jig/](../pogo-jig/).

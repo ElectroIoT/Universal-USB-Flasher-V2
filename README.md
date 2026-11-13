@@ -108,7 +108,9 @@ pymcuprog -t uart -u COM7 -d attiny1614 write -f app.hex --erase --verify
 ### 7. ESP-Prog port and PROG pogo pads
 <p align="center"><img src="images/prog-pad.svg" alt="PROG pogo pad standard animation" width="100%"></p>
 
-J3 (1.27 mm shrouded) and J4 (2.54 mm) use Espressif's ESP-Prog **Program interface** order: 1 ESP_EN · 2 VDD · 3 ESP_TXD · 4 GND · 5 ESP_RXD · 6 ESP_IO0. ESP_TXD is the **target's** TX, so it goes to the flasher RXD. VDD is `+3V3_T`. Full pad spec for future boards: [docs/prog-pad-standard.md](docs/prog-pad-standard.md).
+J3 (1.27 mm shrouded) and J4 (2.54 mm) use Espressif's ESP-Prog **Program interface** order: 1 ESP_EN · 2 VDD · 3 ESP_TXD · 4 GND · 5 ESP_RXD · 6 ESP_IO0. ESP_TXD is the **target's** TX, so it goes to the flasher RXD. VDD is `+3V3_T`. Full pad spec for future boards: [docs/prog-pad-standard.md](docs/prog-pad-standard.md). The matching **pogo jig** (separate small PCB) is in [pogo-jig/](pogo-jig/).
+
+<p align="center"><img src="images/pogo-jig.svg" alt="PROG pogo jig" width="100%"></p>
 
 ### 8. Arduino reset
 `DTR0#` → C10 100 nF → `RST`, with R14 10k to VIO. The falling edge of DTR when the IDE opens the port gives the classic Arduino auto-reset, even on a bare ATmega328P.
@@ -224,13 +226,13 @@ Full CSV: [`hardware/BOM_V2_LCSC.csv`](hardware/BOM_V2_LCSC.csv). LCSC numbers w
 | H1 | 1 | PZ254V-11-11P: 1×11 male header 2.54 mm | THT | [C2840011](https://www.lcsc.com/product-detail/C2840011.html) |  |
 | J2 | 1 | PM254-2-04-Z-8.5: 2×4 female header 2.54 mm (ESP-01) | THT | [C2897405](https://www.lcsc.com/product-detail/C2897405.html) |  |
 | J3 | 1 | HX JN1.27-2x3P ZZ H4.9: 2×3 1.27 mm IDC box header (ESP-Prog PROG) | THT | [C42372545](https://www.lcsc.com/product-detail/C42372545.html) | ⚠️ Check datasheet: shrouded + keyed |
-| J4 | 1 | PZ254V-12-06P-T: 2×3 2.54 mm male header (PROG pogo / 2.54 cable) | THT | [C56153599](https://www.lcsc.com/product-detail/C56153599.html) | ⚠️ Low stock line; any 2×3 2.54 male fits |
+| J4 | 1 | 2.54-2*3P: 2×3 2.54 mm male header (PROG pogo jig / 2.54 cable) | THT | [C65114](https://www.lcsc.com/product-detail/C65114.html) |  |
 | J5 | 1 | PZ254V-11-04P: 1×4 male header 2.54 mm (UART2) | THT | [C2691448](https://www.lcsc.com/product-detail/C2691448.html) |  |
 
-**64 parts · 33 unique LCSC numbers · ≈$5.31 in captured LCSC prices per board** (plus a little for lines without a captured price; no PCB or shipping).
+**64 parts · 33 unique LCSC numbers · ≈$5.33 in captured LCSC prices per board** (plus a little for lines without a captured price; no PCB or shipping).
 <!-- BOM:END -->
 
-> **U2 CH342F is QFN-24 (0.5 mm pitch):** order it JLCPCB-assembled, or use hot air and paste. **J3:** confirm in the datasheet that C42372545 is shrouded and keyed. **J4:** that LCSC line has only ~1,000 in stock; any 2×3 2.54 mm male header fits.
+> **U2 CH342F is QFN-24 (0.5 mm pitch):** order it JLCPCB-assembled, or use hot air and paste. **J3:** confirm in the datasheet that C42372545 is shrouded and keyed.
 
 ---
 
@@ -282,11 +284,10 @@ Starting coordinates for every footprint are in [`hardware/placement.csv`](hardw
 
 ## Roadmap
 
-Done in V2.1: dual UART, ESP-Prog port, current-limited target power, header ESD, 5V-IO LED, PROG pogo-pad standard. Still open (details in [`docs/feature-ideas.md`](docs/feature-ideas.md)):
+Done in V2.1: dual UART, ESP-Prog port, current-limited target power, header ESD, 5V-IO LED, PROG pogo-pad standard, and the [pogo jig board](pogo-jig/) (design). Still open (details in [`docs/feature-ideas.md`](docs/feature-ideas.md)):
 
 | Idea | Why |
 |---|---|
-| **Pogo jig adapter board** | Small PCB with 6 pogo pins in the PROG pattern that plugs into J4 |
 | **3D-printed case** | Protects the bottom of the board and the ESP-01 overhang |
 | **Stand-alone offline programmer** | ESP32-S3 + SD card + button for small production runs (separate project) |
 
@@ -297,6 +298,7 @@ Done in V2.1: dual UART, ESP-Prog port, current-limited target power, header ESD
 images/     animated SVG diagrams used in this README (CSS/SMIL, no JS)
 docs/       index.html interactive design page + tick-lists · V1 review · feature ideas · PROG pad standard
 hardware/   BOM_V2_LCSC.csv · netlist.csv · schematic-pages.md · placement.csv   (generated)
+pogo-jig/   PROG pogo jig board: README · BOM · netlist · placement
 tools/      design.json (single source of truth) · build.py (validate + generate) · gen_svgs.py (images)
 ```
 
