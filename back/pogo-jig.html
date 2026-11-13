@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PROG Pogo Jig</title>
+<meta name="description" content="PROG pogo jig for the Universal USB Flasher V2: supported chips (ESP8266, ESP32, S2, S3, C2, C3, C5, C6, H2, P4, UPDI AVR), pad wiring, LCSC BOM, board placement and assembly checklists.">
+<style>
+:root{
+  --bg:#f3f6fa;--card:#ffffff;--ink:#0f1b2b;--mute:#5a6b80;--line:#dce4ee;--soft:#eef3f9;
+  --a:#0d9488;--b:#2563eb;--hero1:#04121f;--hero2:#063a3a;--hero3:#0d9488;
+  --n3v3:#dc2626;--n5v:#9333ea;--nvio:#db2777;--ngnd:#334155;--ntx:#ea580c;--nrx:#16a34a;--nctl:#2563eb;--nesp:#ca8a04;--nusb:#0891b2;--nnc:#94a3b8;
+  --sym:#0f1b2b;--pcb:#0b5d3b;--pcb2:#0a4f33;--pad:#d4a34a;--silk:#f8fafc;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#07111c;--card:#0e1b2a;--ink:#e6eef8;--mute:#9cb0c6;--line:#1e3246;--soft:#122335;
+  --a:#2dd4bf;--b:#60a5fa;
+  --n3v3:#f87171;--n5v:#c084fc;--nvio:#f472b6;--ngnd:#94a3b8;--ntx:#fb923c;--nrx:#4ade80;--nctl:#60a5fa;--nesp:#facc15;--nusb:#22d3ee;--nnc:#64748b;
+  --sym:#e6eef8;
+}}
+:root[data-theme="dark"]{
+  --bg:#07111c;--card:#0e1b2a;--ink:#e6eef8;--mute:#9cb0c6;--line:#1e3246;--soft:#122335;
+  --a:#2dd4bf;--b:#60a5fa;
+  --n3v3:#f87171;--n5v:#c084fc;--nvio:#f472b6;--ngnd:#94a3b8;--ntx:#fb923c;--nrx:#4ade80;--nctl:#60a5fa;--nesp:#facc15;--nusb:#22d3ee;--nnc:#64748b;
+  --sym:#e6eef8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--b)}
+code,.mono{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:.92em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+
+/* hero */
+header.hero{position:relative;overflow:hidden;color:#fff;padding:46px 0 86px;
+  background:radial-gradient(1200px 500px at 85% -10%,#14b8a655,transparent 60%),linear-gradient(135deg,var(--hero1) 0%,var(--hero2) 55%,#0b6e66 100%)}
+.hero:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:64px;background:var(--bg);clip-path:ellipse(75% 100% at 50% 100%)}
+.traces{position:absolute;inset:0;opacity:.16}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}}
+.kicker{display:inline-block;background:#ffffff1f;border:1px solid #ffffff40;border-radius:99px;padding:4px 14px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(32px,5.6vw,56px);line-height:1.05;margin:14px 0 10px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,#5eead4,#a7f3d0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:clamp(16px,2.2vw,20px);opacity:.92;margin:0 0 18px;max-width:34em}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{background:#ffffff1a;border:1px solid #ffffff38;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-block;padding:10px 18px;border-radius:12px;font-weight:700;text-decoration:none;background:#fff;color:#063a3a}
+.btn.o{background:transparent;color:#fff;border:2px solid #ffffff80}
+.hero svg.board{width:100%;height:auto;filter:drop-shadow(0 18px 34px rgba(0,0,0,.45))}
+
+/* nav */
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:none}
+nav.toc a{white-space:nowrap;text-decoration:none;color:var(--mute);font-weight:600;font-size:14px;padding:6px 12px;border-radius:99px}
+nav.toc a:hover{background:var(--soft);color:var(--ink)}
+
+section{padding:44px 0 4px;scroll-margin-top:56px}
+h2{font-size:clamp(24px,3.4vw,32px);margin:0 0 6px;letter-spacing:-.01em}
+h2 small{font-size:.5em;color:var(--a);font-weight:800;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:4px}
+.lead{color:var(--mute);margin:0 0 22px;max-width:50em}
+h3{margin:0 0 6px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(8,40,70,.05)}
+.card p{margin:0;color:var(--mute);font-size:15px}
+.ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:var(--soft);margin-bottom:10px}
+.fix{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start}
+.fix .num{grid-row:span 2;width:30px;height:30px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.fix .was{color:var(--mute);font-size:14.5px}
+.fix .now{font-size:15px}
+.fix .now b{color:var(--a)}
+
+.figure{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;overflow-x:auto}
+.figure svg{display:block;width:100%;height:auto;min-width:640px}
+.figcap{color:var(--mute);font-size:14px;margin:10px 4px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:auto}
+th,td{padding:9px 12px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+th{background:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);border-top:0;position:sticky;top:0}
+td.ref{font-weight:700;white-space:nowrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.p-ok{background:#16a34a22;color:#15803d}.p-warn{background:#f59e0b26;color:#b45309}.p-info{background:#2563eb1f;color:#1d4ed8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .p-ok{color:#4ade80}:root:not([data-theme="light"]) .p-warn{color:#fbbf24}:root:not([data-theme="light"]) .p-info{color:#93c5fd}}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 12px;font-weight:600;font-size:13.5px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--a);border-color:var(--a);color:#fff}
+.bomtools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.bomtools input{flex:1;min-width:200px;max-width:320px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.stat b{display:block;font-size:26px;letter-spacing:-.02em}
+.stat span{color:var(--mute);font-size:13px}
+
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--mute);margin:10px 4px 0}
+.pins{display:flex;gap:6px;flex-wrap:wrap}
+.pinbox{flex:1;min-width:84px;border-radius:12px;padding:10px 8px;text-align:center;color:#fff;font-weight:800;font-size:14px}
+.pinbox small{display:block;font-weight:600;opacity:.85;font-size:11.5px}
+.warn{border-left:4px solid #f59e0b;background:#f59e0b14;padding:12px 14px;border-radius:10px;margin:14px 0;font-size:15px}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
+.step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px 18px}
+.step:before{counter-increment:s;content:counter(s);position:absolute;top:-13px;left:16px;width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.step p{margin:0;color:var(--mute);font-size:14.5px}
+.ck{width:18px;height:18px;accent-color:var(--a);cursor:pointer;vertical-align:-3px}
+tr.done td{opacity:.55}tr.done td:first-child,tr.done td.tick{opacity:1}
+td.tick{width:38px;text-align:center}
+.prog{display:flex;align-items:center;gap:12px;margin:0 0 12px;flex-wrap:wrap}
+.bar{flex:1;min-width:160px;height:10px;border-radius:99px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a),#22c55e);width:0;transition:width .25s}
+.prog b{font-size:14px;white-space:nowrap}
+.tbtn{border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:10px;padding:6px 12px;font:600 13.5px system-ui;cursor:pointer}
+.tbtn:hover{color:var(--ink)}
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.ptab{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:10px 14px;cursor:pointer;text-align:left;font:inherit;min-width:170px}
+.ptab small{display:block;color:var(--mute);font-size:12.5px}
+.ptab[aria-pressed="true"]{border-color:var(--a);box-shadow:0 0 0 2px color-mix(in srgb,var(--a) 35%,transparent)}
+.ptab .pp{font-weight:800;color:var(--a);font-size:12.5px}
+.net{display:inline-block;padding:1px 8px;border-radius:7px;font:700 12.5px ui-monospace,Consolas,monospace;color:#fff;white-space:nowrap}
+.ncflag{white-space:nowrap;display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:7px;font:800 12px system-ui;background:#64748b26;color:var(--mute);border:1px dashed var(--nnc)}
+.ncflag:before{content:"\2715";color:#dc2626;font-weight:900}
+.partline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:var(--soft);border-top:1px solid var(--line);padding:9px 12px;font-size:14px}
+.partline b{font-size:15px}
+.partline .mute{color:var(--mute);font-size:13px}
+.labels{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+footer{margin-top:50px;padding:28px 0 40px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+
+/* svg helpers */
+.s-sym{stroke:var(--sym);fill:none;stroke-width:2}
+.s-fill{fill:var(--card);stroke:var(--sym);stroke-width:2}
+.s-txt{fill:var(--ink);font:600 13px system-ui,Segoe UI,sans-serif}
+.s-sm{fill:var(--mute);font:500 11.5px system-ui,Segoe UI,sans-serif}
+.s-ref{fill:var(--a);font:800 13px system-ui,Segoe UI,sans-serif}
+.w{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.j{stroke:none}
+.blk{fill:var(--card);stroke:var(--line);stroke-width:2}
+.blkt{fill:var(--ink);font:800 15px system-ui,Segoe UI,sans-serif}
+.blks{fill:var(--mute);font:500 12px system-ui,Segoe UI,sans-serif}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="kicker">ElectroIoT · Open hardware · accessory</span>
+      <h1>PROG <span>Pogo Jig</span></h1>
+      <p class="tagline">Flash any board that carries the 6 ElectroIoT PROG pads. No header is soldered on the target: press, flash, lift. It plugs into the Universal USB Flasher V2 (J4).</p>
+      <div class="badges"><span class="badge">20 × 47 mm pen board</span><span class="badge">3 × PG2541 pogo strips</span><span class="badge">ESP-Prog pin order</span><span class="badge">Auto-program</span><span class="badge">VDD LED</span><span class="badge">≈ $1.50 parts</span></div>
+      <div class="cta"><a class="btn" href="#chips">Supported chips</a><a class="btn o" href="#bom">BOM</a><a class="btn o" href="#board">Board</a><a class="btn o" href="index.html">Flasher V2 page</a></div>
+    </div>
+    <img src="../images/pogo-jig.svg" alt="Pogo jig top view and pressing animation" style="width:100%;height:auto;border-radius:18px">
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#chips">Supported chips</a><a href="#wire">Pad wiring</a><a href="#how">How it works</a><a href="#bom">BOM</a><a href="#board">Board + placement</a><a href="#build">Assembly</a><a href="#use">Use</a><a href="build-guide.html">Build the flasher ↗</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="chips">
+  <h2><small>Compatibility</small>Which boards does it support?</h2>
+  <p class="lead">The jig only carries six signals: <b>EN, 3.3 V VDD, TX, RX, GND</b> and one <b>boot pin</b>, which is pulled low by the flasher's auto-program circuit. So it supports every chip whose ROM bootloader is entered by <b>holding one pin low during reset over UART</b>. That covers <b>the whole ESP family</b>, plus UPDI AVRs through a small wiring variant.</p>
+  <div class="warn"><b>Important:</b> the pogo pins press on <b>pads on your own PCB</b>, not on a module's castellated edge. An ESP-12F, ESP32-S3-MINI-1 or ESP32-C6-MINI-1 is supported when the board you design around it has the 6 PROG pads wired as below. For a loose module with no carrier board, use the flasher's H1 wires or the ESP-01 socket.</div>
+  <div class="stats" id="chipStats"></div>
+  <div class="tbl"><table id="chipTable"></table></div>
+  <p class="figcap">Boot pins come from Espressif's esptool "Boot Mode Selection" docs. UART0 pins come from ESP-IDF <code>soc/&lt;chip&gt;/include/soc/uart_pins.h</code>. Both checked 2026-11-13.</p>
+</section>
+
+<section id="wire">
+  <h2><small>For your target board</small>Pad wiring: pick your chip</h2>
+  <p class="lead">Choose the chip on your board. The map shows what each of the 6 PROG pads must connect to, and which extra strapping resistors the target board needs. Pad 3 is the <b>target's TX</b> and pad 5 is the <b>target's RX</b>.</p>
+  <div class="chips" id="chipPick"></div>
+  <div class="two">
+    <div class="figure"><svg id="padMap" viewBox="0 0 460 330" role="img" aria-label="PROG pad wiring for the selected chip" style="min-width:380px"></svg></div>
+    <div class="card" id="padNotes"></div>
+  </div>
+</section>
+
+<section id="how">
+  <h2><small>Inside</small>How it works</h2>
+  <p class="lead">J1 and the pogo tips carry the same 6 signals in the same order, so the cable from the flasher is straight: pin 1 to pin 1.</p>
+  <div class="grid">
+    <div class="card"><div class="ico">📍</div><h3>3 pogo strips = 2 × 3 grid</h3><p>CHIN-BAN PG2541-02-002P strips have 2 pins at 2.54 mm and a 2.50 mm wide housing. Three stacked rows give the PROG grid with about 0.04 mm to spare.</p></div>
+    <div class="card"><div class="ico">🔁</div><h3>Auto-program through the tip</h3><p>Pad 1 (EN) and pad 6 (boot pin) are driven by the flasher's Q1/Q2, so esptool resets the chip into its bootloader by itself.</p></div>
+    <div class="card"><div class="ico">🔋</div><h3>Current-limited 3.3 V</h3><p>VDD is the flasher's switched +3V3_T (≈0.6 A limit). Hold POWER on the flasher to power-cycle the target. The jig's green LED shows VDD at the tip.</p></div>
+    <div class="card"><div class="ico">🎯</div><h3>Guide pins</h3><p>Optional Ø1.0 mm dowels drop into the PROG standard's locating holes first, so the pogo tips land square on the pads.</p></div>
+  </div>
+  <div class="tbl" style="margin-top:14px"><table>
+    <tr><th>J1 pin</th><th>Signal</th><th>Pogo pin</th><th>PROG pad</th><th>Flasher J4 net</th></tr>
+    <tr><td class="ref">1</td><td>ESP_EN</td><td>P1.1</td><td>1</td><td class="mono">EN</td></tr>
+    <tr><td class="ref">2</td><td>VDD</td><td>P1.2</td><td>2</td><td class="mono">+3V3_T</td></tr>
+    <tr><td class="ref">3</td><td>ESP_TXD (target TX)</td><td>P2.1</td><td>3</td><td class="mono">RXD</td></tr>
+    <tr><td class="ref">4</td><td>GND</td><td>P2.2</td><td>4</td><td class="mono">GND</td></tr>
+    <tr><td class="ref">5</td><td>ESP_RXD (target RX)</td><td>P3.1</td><td>5</td><td class="mono">TXD</td></tr>
+    <tr><td class="ref">6</td><td>ESP_IO0 (boot pin)</td><td>P3.2</td><td>6</td><td class="mono">IO0</td></tr>
+  </table></div>
+</section>
+
+<section id="bom">
+  <h2><small>Parts</small>Bill of materials</h2>
+  <p class="lead">Tick each line once it is added to your EasyEDA design. Ticks are saved in this browser only. CSV: <a href="../pogo-jig/BOM.csv">pogo-jig/BOM.csv</a>.</p>
+  <div class="prog"><b id="bomProg">0 / 0</b><div class="bar"><i id="bomBar"></i></div><button class="tbtn" id="bomReset">Reset BOM ticks</button></div>
+  <div class="tbl"><table id="bomTable"></table></div>
+  <div class="warn"><b>Pogo stock:</b> LCSC had 200 PG2541-02-002P on 2026-11-13 (3 per jig, so ≈ 66 jigs). The dowel pins and the 6-way cable are generic parts, not on LCSC.</div>
+</section>
+
+<section id="board">
+  <h2><small>PCB</small>Board design and footprint placement</h2>
+  <p class="lead">20 × 47 mm, 1.6 mm thick (the pogo tails are only 1.7 mm long). Coordinates are a <b>top view</b>, origin top-left, in mm. Pogo strips go on the <b>bottom</b> side: EasyEDA mirrors bottom footprints, so check that each pin 1 still lands on the coordinate below. Tick each footprint once placed. Placed parts turn green on the map.</p>
+  <div class="two">
+    <div class="figure" style="background:#0b1a14"><svg id="jigMap" viewBox="-8 -6 36 60" role="img" aria-label="Pogo jig footprint placement" style="min-width:300px;max-height:680px"></svg></div>
+    <div>
+      <div class="prog"><b id="plProg">0 / 0</b><div class="bar"><i id="plBar"></i></div><button class="tbtn" id="plReset">Reset placement ticks</button></div>
+      <div class="tbl"><table id="plTable"></table></div>
+      <div class="card" style="margin-top:12px"><h3>Holes and outline</h3><p>Outline polygon: (0,0) (20,0) (20,28) (16,34) (16,47) (4,47) (4,34) (0,28). Pogo tail holes: Ø1.0 mm drill, Ø1.6 mm pad. Guide holes: Ø1.0 mm plated at (8.73, 34.38) and (11.27, 44.54). Traces: 0.3 mm is plenty (≤ 0.6 A).</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="build">
+  <h2><small>Bring-up</small>Assembly checklist</h2>
+  <p class="lead">Tick as you go.</p>
+  <div class="tbl"><table id="buildTable"></table></div>
+</section>
+
+<section id="use">
+  <h2><small>Flashing</small>Use</h2>
+  <div class="steps">
+    <div class="step"><h3>Set the flasher</h3><p>SW3 = <b>3V3</b>, SW4 = <b>UART</b>. For UPDI targets, SW4 = <b>UPDI</b>.</p></div>
+    <div class="step"><h3>Connect</h3><p>6-way 2.54 mm cable from the flasher's <b>J4</b> to the jig's <b>J1</b>, pin 1 to pin 1. J4 isn't keyed, so match the pin-1 marks.</p></div>
+    <div class="step"><h3>Press</h3><p>Guide pins into the locating holes, pogo tips onto the pads (pad 1 = pin-1 dot). The green LED lights.</p></div>
+    <div class="step"><h3>Flash</h3><p><code>esptool.py --port COM7 write_flash 0x0 firmware.bin</code>. Auto-program handles reset and boot.</p></div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">PROG Pogo Jig by <b>ElectroIoT</b> · part of <a href="https://github.com/ElectroIoT/Universal-USB-Flasher-V2">Universal USB Flasher V2</a> · <a href="../docs/prog-pad-standard.md">PROG pad standard</a> · CERN-OHL-P-2.0<br>Design only: draw the PCB in EasyEDA. Not built or tested yet.</div></footer>
+
+<script>
+const TK='pogojig-ticks';let TICK={};try{TICK=JSON.parse(localStorage.getItem(TK)||'{}')||{}}catch(e){TICK={}}
+const save=()=>{try{localStorage.setItem(TK,JSON.stringify(TICK))}catch(e){}};
+const setTick=(k,v)=>{if(v)TICK[k]=1;else delete TICK[k];save()};
+const prog=(id,d,t)=>{document.getElementById(id).textContent=`${d} / ${t} done`;document.getElementById(id.replace('Prog','Bar')).style.width=(t?100*d/t:0)+'%'};
+const ck=(k,label)=>`<input type="checkbox" class="ck" data-k="${k}" ${TICK[k]?'checked':''} aria-label="${label}">`;
+
+/* ---------- chips ---------- */
+// name, modules, TX, RX, boot pin, extra target straps, status (ok|var|no), note
+const CHIPS=[
+ ['ESP8266','ESP-12F · ESP-12E · ESP-07 · ESP-01','GPIO1','GPIO3','GPIO0','GPIO15 10k to GND, GPIO2 10k to 3V3 (never straight to VCC), EN 10k to 3V3','ok',''],
+ ['ESP32','WROOM-32E · WROVER-E · PICO-D4','GPIO1','GPIO3','GPIO0','GPIO2 low or floating, GPIO12 (MTDI) low for 3.3 V flash (module default)','ok',''],
+ ['ESP32-S2','S2-MINI-1 · S2-WROOM','GPIO43','GPIO44','GPIO0','GPIO46 low or floating','ok','Native USB also available'],
+ ['ESP32-S3','S3-WROOM-1 · S3-MINI-1 · S3-WROOM-2','GPIO43','GPIO44','GPIO0','GPIO46 low or floating','ok','Native USB also available'],
+ ['ESP32-C2','ESP8684-MINI · ESP8684-WROOM','GPIO20','GPIO19','GPIO9','GPIO8 10k to 3V3 (8=0 + 9=0 is invalid)','ok',''],
+ ['ESP32-C3','C3-MINI-1 · C3-WROOM-02','GPIO21','GPIO20','GPIO9','GPIO8 10k to 3V3','ok','Native USB also available'],
+ ['ESP32-C5','C5-WROOM-1','GPIO11','GPIO12','GPIO28','GPIO27 10k to 3V3','ok','Newer chip: check your module datasheet'],
+ ['ESP32-C6','C6-MINI-1 · C6-WROOM-1','GPIO16','GPIO17','GPIO9','GPIO8 10k to 3V3','ok','Native USB also available'],
+ ['ESP32-H2','H2-MINI-1 · H2-WROOM','GPIO24','GPIO23','GPIO9','GPIO8 10k to 3V3','ok','Native USB also available'],
+ ['ESP32-P4','P4 boards','GPIO37','GPIO38','GPIO35','GPIO36 10k to 3V3','ok','Needs its own power tree; VDD pad is only 3.3 V ≈0.6 A'],
+ ['ATtiny 0/1/2 · AVR-Dx','ATtiny1614 · ATtiny3216 · AVR128DA','UPDI → pad 3','–','–','Only pads 2 (VDD), 3 (UPDI) and 4 (GND) used; set flasher SW4 = UPDI','var','UPDI variant: target UPDI pin on pad 3'],
+ ['ATmega328P / Arduino','Pro Mini · Nano chip','–','–','–','Needs DTR-through-capacitor reset, which the PROG pads don\'t carry','no','Use the flasher H1 RST pin'],
+ ['STM32 (UART bootloader)','F0/F1/F4…','–','–','–','BOOT0 must be HIGH (opposite polarity)','no','Use SWD (ST-Link)'],
+ ['RP2040 / RP2350','Pico · custom','–','–','–','No UART ROM bootloader (USB/SWD only)','no','Use USB BOOTSEL or SWD'],
+ ['nRF52 · SAMD · CH32V','–','–','–','–','SWD / own debug interface','no','Use their programmer'],
+];
+const ST={ok:['✓ Supported','p-ok'],var:['◐ Variant','p-warn'],no:['✗ Not via jig','p-info']};
+(function(){
+  const n={ok:0,var:0,no:0};CHIPS.forEach(c=>n[c[6]]++);
+  document.getElementById('chipStats').innerHTML=[[n.ok,'ESP chips supported'],[n.var,'UPDI variant'],[n.no,'use another programmer'],['6','signals on the tip']].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
+  let h='<tr><th>Chip</th><th>Example modules</th><th>Pad 3 ← TX</th><th>Pad 5 → RX</th><th>Pad 6 boot pin</th><th>Target board must add</th><th>Status</th></tr>';
+  h+=CHIPS.map(c=>`<tr><td class="ref">${c[0]}</td><td>${c[1]}</td><td class="mono">${c[2]}</td><td class="mono">${c[3]}</td><td class="mono">${c[4]}</td><td>${c[5]}${c[7]?`<br><small style="color:var(--mute)">${c[7]}</small>`:''}</td><td><span class="pill ${ST[c[6]][1]}">${ST[c[6]][0]}</span></td></tr>`).join('');
+  document.getElementById('chipTable').innerHTML=h;
+})();
+
+/* ---------- pad map ---------- */
+let pick=3;
+function renderPad(){
+  const c=CHIPS[pick];
+  const box=document.getElementById('chipPick');
+  box.innerHTML=CHIPS.map((x,i)=>x[6]==='no'?'':`<button class="chip" data-i="${i}" aria-pressed="${i===pick}">${x[0]}</button>`).join('');
+  const updi=c[6]==='var';
+  const pads=[[1,'EN',updi?'–':'EN / CHIP_PU','--nesp'],[2,'VDD','3V3','--n3v3'],[3,'ESP_TXD',updi?'UPDI':c[2],'--ntx'],[4,'GND','GND','--ngnd'],[5,'ESP_RXD',updi?'–':c[3],'--nrx'],[6,'IO0',updi?'–':c[4],'--nesp']];
+  let s=`<text x="230" y="26" text-anchor="middle" style="fill:var(--ink);font:800 16px system-ui">${c[0]}: PROG pads (target top view)</text>`;
+  s+=`<rect x="172" y="50" width="116" height="230" rx="16" fill="var(--pcb)"/><circle cx="184" cy="66" r="4" fill="#fff"/>`;
+  s+=`<circle cx="203" cy="44" r="7" fill="none" stroke="var(--mute)" stroke-width="2"/><circle cx="257" cy="286" r="7" fill="none" stroke="var(--mute)" stroke-width="2"/>`;
+  pads.forEach((p,i)=>{const r=Math.floor(i/2),cl=i%2;const x=203+cl*54,y=100+r*70;const on=p[2]!=='–';
+    s+=`<circle cx="${x}" cy="${y}" r="18" fill="${on?'#d4a34a':'#4b5563'}"/><text x="${x}" y="${y+5}" text-anchor="middle" style="fill:#111;font:800 15px system-ui">${p[0]}</text>`;
+    const lx=cl?x+42:x-42, anc=cl?'start':'end';
+    s+=`<text x="${lx}" y="${y-4}" text-anchor="${anc}" style="fill:var(${p[3]});font:800 13px system-ui">${on?p[2]:'not used'}</text><text x="${lx}" y="${y+13}" text-anchor="${anc}" style="fill:var(--mute);font:600 11px system-ui">${p[1]}</text>`;});
+  s+=`<text x="230" y="316" text-anchor="middle" style="fill:var(--mute);font:600 12px system-ui">● pin-1 dot · ○ optional Ø1.0 mm locating holes</text>`;
+  document.getElementById('padMap').innerHTML=s;
+  document.getElementById('padNotes').innerHTML=`<h3>${c[0]} <span class="pill ${ST[c[6]][1]}">${ST[c[6]][0]}</span></h3><p><b>Modules:</b> ${c[1]}</p><p style="margin-top:8px"><b>Target board must add:</b> ${c[5]}</p>${c[7]?`<p style="margin-top:8px">${c[7]}</p>`:''}<p style="margin-top:8px"><b>Always:</b> keep the board's own EN pull-up (10k) + 100 nF–1 µF, and a boot-pin pull-up. No series resistor above 470 Ω on TX/RX. VDD from the jig is 3.3 V, limited to ≈0.6 A.</p>`;
+}
+document.getElementById('chipPick').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;pick=+b.dataset.i;renderPad()});
+renderPad();
+
+/* ---------- BOM ---------- */
+const BOM=[
+ ['P1 P2 P3',3,'Pogo pin strip 2P, 2.54 mm, 13.7 mm, housing 5.30 × 2.50 mm, plunger Ø0.90','PG2541-02-002P','CHIN-BAN','C49451500','200','⚠️ low stock'],
+ ['J1',1,'2 × 3 male header 2.54 mm (cable to flasher J4)','2.54-2*3P','BOOMELE','C65114','44,550',''],
+ ['LED1',1,'Green LED 0805: VDD present','NCD0805G1','NATIONSTAR','C84260','',''],
+ ['R1',1,'1k 0805: LED1','RC0805FR-071KL','YAGEO','C95781','',''],
+ ['G1 G2',2,'Ø1.0 × 16 mm steel dowel pin (optional)','generic','–','–','','not on LCSC'],
+ ['CBL',1,'6-way 2.54 mm F–F IDC ribbon / Dupont, 10–20 cm','generic','–','–','','pin 1 to pin 1'],
+];
+function renderBom(){
+  let h='<tr><th>Added</th><th>Ref</th><th>Qty</th><th>Part</th><th>MPN</th><th>LCSC</th><th>Stock</th><th>Note</th></tr>';
+  h+=BOM.map(r=>`<tr class="${TICK['bom:'+r[0]]?'done':''}"><td class="tick">${ck('bom:'+r[0],r[0]+' added')}</td><td class="ref">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}<br><small style="color:var(--mute)">${r[4]}</small></td><td class="mono">${r[5].startsWith('C')?`<a href="https://www.lcsc.com/product-detail/${r[5]}.html" target="_blank" rel="noopener">${r[5]}</a>`:r[5]}</td><td>${r[6]||'<small style="color:var(--mute)">–</small>'}</td><td>${r[7]}</td></tr>`).join('');
+  document.getElementById('bomTable').innerHTML=h;prog('bomProg',BOM.filter(r=>TICK['bom:'+r[0]]).length,BOM.length);
+}
+document.getElementById('bomTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(c){setTick(c.dataset.k,c.checked);renderBom()}});
+document.getElementById('bomReset').addEventListener('click',()=>{if(confirm('Clear BOM ticks?')){Object.keys(TICK).filter(k=>k.startsWith('bom:')).forEach(k=>delete TICK[k]);save();renderBom()}});
+renderBom();
+
+/* ---------- placement ---------- */
+// ref, side, x, y, w, h, note
+const PL=[
+ ['J1','Top',10,6,5.08,7.62,'Pin 1 at (8.73, 3.46)'],
+ ['LED1','Top',10,16,1.25,2,'Silk VDD'],
+ ['R1','Top',10,19,1.25,2,''],
+ ['P1','Bottom',10,36.92,5.3,2.5,'Pin 1 EN (8.73, 36.92) · pin 2 VDD (11.27, 36.92)'],
+ ['P2','Bottom',10,39.46,5.3,2.5,'Pin 1 ESP_TXD (8.73, 39.46) · pin 2 GND (11.27, 39.46)'],
+ ['P3','Bottom',10,42.00,5.3,2.5,'Pin 1 ESP_RXD (8.73, 42.00) · pin 2 IO0 (11.27, 42.00)'],
+ ['G1','Both',8.73,34.38,1,1,'Guide hole Ø1.0 plated, 2.54 above pad 1'],
+ ['G2','Both',11.27,44.54,1,1,'Guide hole Ø1.0 plated, 2.54 below pad 6'],
+];
+function renderMap(){
+  const O=[[0,0],[20,0],[20,28],[16,34],[16,47],[4,47],[4,34],[0,28]];
+  let s=`<polygon points="${O.map(p=>p.join(',')).join(' ')}" fill="var(--pcb)" stroke="#1f9d6b" stroke-width=".3"/>`;
+  s+=`<text x="10" y="25.5" text-anchor="middle" fill="#f8fafc" style="font:800 1.5px system-ui;letter-spacing:.15px">PROG JIG</text>`;
+  PL.forEach(p=>{const [r,side,x,y,w,h]=p;const done=!!TICK['pl:'+r];const col=done?'#22c55e':(side==='Bottom'?'#f97316':side==='Top'?'#0891b2':'#d4a34a');
+    if(r[0]==='G'){s+=`<circle cx="${x}" cy="${y}" r=".5" fill="#02150d" stroke="${col}" stroke-width=".25"/><text x="${x+(r==='G1'?-1:1)}" y="${y+.4}" text-anchor="${r==='G1'?'end':'start'}" fill="#f8fafc" style="font:700 .9px system-ui">${r}</text>`;return}
+    s+=`<rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx=".25" fill="${col}33" stroke="${col}" stroke-width=".2" ${side==='Bottom'?'stroke-dasharray=".5 .3"':''}/>`;
+    if(r==='J1'){for(let i=0;i<6;i++){const rr=Math.floor(i/2),c=i%2;s+=`<rect x="${8.73+c*2.54-.45}" y="${3.46+rr*2.54-.45}" width=".9" height=".9" fill="#f4c542"/>`}s+=`<circle cx="7.4" cy="3.46" r=".35" fill="#fff"/>`}
+    if(r[0]==='P'){for(let c=0;c<2;c++){s+=`<circle cx="${8.73+c*2.54}" cy="${y}" r=".8" fill="#d4a34a"/><circle cx="${8.73+c*2.54}" cy="${y}" r=".4" fill="#02150d"/>`}}
+    s+=`<text x="${r[0]==='P'?x+3.4:x+w/2+.6}" y="${y+.4}" fill="#f8fafc" style="font:700 1px system-ui">${r}</text>`;});
+  s+=`<path d="M0 -2.5H20M0 -3.3V-1.7M20 -3.3V-1.7" stroke="#94a3b8" stroke-width=".15"/><text x="10" y="-3.2" text-anchor="middle" fill="#94a3b8" style="font:600 1.2px system-ui">20 mm</text>`;
+  s+=`<path d="M-2.5 0V47M-3.3 0H-1.7M-3.3 47H-1.7" stroke="#94a3b8" stroke-width=".15"/><text x="-3.4" y="23.5" text-anchor="middle" fill="#94a3b8" transform="rotate(-90 -3.4 23.5)" style="font:600 1.2px system-ui">47 mm</text>`;
+  s+=`<text x="10" y="50.5" text-anchor="middle" fill="#94a3b8" style="font:600 1px system-ui">top view · cyan = top · orange dashed = bottom</text>`;
+  document.getElementById('jigMap').innerHTML=s;
+}
+function renderPl(){
+  let h='<tr><th>Placed</th><th>Ref</th><th>Side</th><th>X</th><th>Y</th><th>Note</th></tr>';
+  h+=PL.map(p=>`<tr class="${TICK['pl:'+p[0]]?'done':''}"><td class="tick">${ck('pl:'+p[0],p[0]+' placed')}</td><td class="ref">${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td><td>${p[6]}</td></tr>`).join('');
+  document.getElementById('plTable').innerHTML=h;prog('plProg',PL.filter(p=>TICK['pl:'+p[0]]).length,PL.length);renderMap();
+}
+document.getElementById('plTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(c){setTick(c.dataset.k,c.checked);renderPl()}});
+document.getElementById('plReset').addEventListener('click',()=>{if(confirm('Clear placement ticks?')){Object.keys(TICK).filter(k=>k.startsWith('pl:')).forEach(k=>delete TICK[k]);save();renderPl()}});
+renderPl();
+
+/* ---------- assembly ---------- */
+const BUILD=['Order PCB: 20 × 47 mm, 1.6 mm, ENIG recommended (pogo tails are only 1.7 mm)','Solder J1, R1 and LED1 on the top side','Insert P1–P3 from the bottom, housings flat (they may just touch)','Press the board pins-down onto a flat surface so all 6 plungers are level','Tack one pin per strip, check they are square, then solder the rest','Optional: press the dowels into G1/G2, sticking out ≈12.8 mm below the board','Check continuity J1.1–6 → pogo P1.1, P1.2, P2.1, P2.2, P3.1, P3.2','Connect to flasher J4, check the LED lights and the tip measures 3.3 V on pad 2'];
+function renderBuild(){document.getElementById('buildTable').innerHTML='<tr><th>Done</th><th>#</th><th>Step</th></tr>'+BUILD.map((b,i)=>`<tr class="${TICK['b:'+i]?'done':''}"><td class="tick">${ck('b:'+i,'step '+(i+1))}</td><td class="ref">${i+1}</td><td>${b}</td></tr>`).join('')}
+document.getElementById('buildTable').addEventListener('change',e=>{const c=e.target.closest('.ck');if(c){setTick(c.dataset.k,c.checked);renderBuild()}});
+renderBuild();
+</script>
+</body>
+</html>
