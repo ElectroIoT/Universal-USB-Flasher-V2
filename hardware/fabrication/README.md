@@ -20,3 +20,7 @@ The zip also holds EasyEDA's flying-probe test data (`FlyingProbeTesting.json`) 
 - U2 (CH342F, QFN-24, 0.5 mm pitch): stencil + hot air or SMT service. Exposed pad = GND.
 - Through-hole: H1, J2, J3, J4, J5, SJ1, SJ2 and the SW3 / SW4 slide switches. Fit them after the SMT parts.
 - Fit jumper caps (C5305, not in the EasyEDA BOM) on SJ1 and SJ2 to turn auto-program on.
+
+## Vendor-neutral copies (`Fab_*`)
+
+`Fab_Gerber_…zip`, `Fab_BOM_…csv`, `Fab_Centroid_…csv` and `Fab_3D_…STEP.zip` are the same design with tool and supplier names removed (no EDA-tool comments in the Gerber/STEP headers, no supplier part-number column, plain UTF-8 CSV, centroid origin bottom-left). Use these when uploading to a PCB fab's project-sharing site.
